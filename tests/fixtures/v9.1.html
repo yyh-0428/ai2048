@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f3f0e9" />
+  <meta name="color-scheme" content="light" />
+  <title>2048 — Search AI V9.1 · Compute Reallocation</title>
+  <style>
+    :root{
+      --paper:#f3f0e9;
+      --paper-2:#ebe7de;
+      --ink:#24231f;
+      --muted:#777269;
+      --hair:#d7d1c6;
+      --surface:#fbfaf6;
+      --board:#a99e90;
+      --slot:rgba(255,255,255,.22);
+      --accent:#25241f;
+      --gold:#bd8f35;
+      --danger:#9b4d3f;
+      --gap:11px;
+      --radius:22px;
+      --move-ms:145ms;
+      --ease:cubic-bezier(.22,.78,.22,1);
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--paper);-webkit-text-size-adjust:100%}
+    body{margin:0;min-height:100vh;color:var(--ink);background:var(--paper);font-family:"Avenir Next",Avenir,"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+    button,input,select{font:inherit;color:inherit}
+    button{border:0}
+    button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+    .page{width:min(1048px,calc(100% - 36px));margin:0 auto;padding:32px 0 max(28px,env(safe-area-inset-bottom))}
+
+    .masthead{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end;margin:0 0 25px}
+    .title-row{display:flex;align-items:flex-end;gap:14px;min-width:0}
+    h1{margin:0;font-size:clamp(58px,8.2vw,92px);line-height:.78;letter-spacing:-.075em;font-weight:850;font-variant-numeric:tabular-nums}
+    .intro{max-width:250px;margin:0 0 2px;color:var(--muted);font-size:13px;line-height:1.5;letter-spacing:.01em}
+    .score-strip{display:flex;align-items:flex-end;gap:24px;padding-bottom:2px}
+    .score{min-width:70px;text-align:right}
+    .score span{display:block;margin-bottom:3px;color:var(--muted);font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase}
+    .score strong{display:block;font-size:24px;line-height:1;font-weight:730;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:34px;align-items:start}
+    .play-column{min-width:0}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+    .tool-left,.tool-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .quiet-label{color:var(--muted);font-size:12px;line-height:1.3}
+    .icon-btn,.text-btn{min-height:36px;border:1px solid var(--hair);background:rgba(255,255,255,.34);border-radius:999px;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+    .icon-btn{width:36px;padding:0}.text-btn{padding:0 13px;font-size:12px;font-weight:690}
+    .icon-btn:hover,.text-btn:hover{background:rgba(255,255,255,.72);border-color:#c7c0b5}
+    .icon-btn:active,.text-btn:active{transform:scale(.96)}
+    .icon-btn[disabled],.text-btn[disabled]{opacity:.34;cursor:not-allowed;transform:none}
+    .icon-btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+    .board-wrap{position:relative;width:min(100%,620px);aspect-ratio:1;margin:0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+    .board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:var(--gap);padding:var(--gap);overflow:hidden;border-radius:var(--radius);background:var(--board);box-shadow:0 1px 0 rgba(255,255,255,.45) inset,0 22px 60px rgba(50,44,35,.10);isolation:isolate}
+    .cell{border-radius:14px;background:var(--slot);box-shadow:0 1px 0 rgba(255,255,255,.10) inset}
+    .tiles,.motion-layer{position:absolute;inset:var(--gap);pointer-events:none}
+    .tiles.is-moving{opacity:0}
+    .tile,.motion-tile{position:absolute;width:calc((100% - 3 * var(--gap))/4);height:calc((100% - 3 * var(--gap))/4);display:grid;place-items:center;border-radius:14px;font-weight:780;letter-spacing:-.055em;font-variant-numeric:tabular-nums;box-shadow:0 2px 0 rgba(67,58,45,.06);will-change:transform}
+    .motion-tile{z-index:6;transition:transform var(--move-ms) var(--ease)}
+    .tile.spawn{animation:tileIn 165ms var(--ease) both}
+    .tile.merged{animation:tileMerge 210ms var(--ease) both}
+    @keyframes tileIn{0%{transform:var(--pos) scale(.72);opacity:.08}100%{transform:var(--pos) scale(1);opacity:1}}
+    @keyframes tileMerge{0%,100%{transform:var(--pos) scale(1)}52%{transform:var(--pos) scale(1.085)}}
+
+    .v2{background:#e8e2d8;color:#524d45}.v4{background:#ded4c4;color:#514b42}.v8{background:#d7a56f;color:#fffaf1}.v16{background:#cf875a;color:#fffaf3}.v32{background:#c86b52;color:#fffaf5}.v64{background:#b94d3f;color:#fffaf6}.v128{background:#d1ab59;color:#fffaf0}.v256{background:#c9a04a;color:#fffaf0}.v512{background:#bd9137;color:#fffaf0}.v1024{background:#ad7e2b;color:#fffaf0}.v2048{background:#24231f;color:#f6d88f;box-shadow:0 2px 0 rgba(0,0,0,.08),0 0 0 1px rgba(246,216,143,.16) inset}.super{background:#191814;color:#f0c96c;box-shadow:0 2px 0 rgba(0,0,0,.10),0 0 0 1px rgba(240,201,108,.18) inset}
+
+    .hint{position:absolute;z-index:12;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border:1px solid rgba(255,255,255,.18);border-radius:50%;display:grid;place-items:center;background:rgba(35,34,30,.82);color:#fff;font-size:27px;box-shadow:0 12px 30px rgba(35,31,25,.15);backdrop-filter:blur(10px);opacity:0;transform:scale(.86);transition:opacity .16s ease,transform .22s var(--ease);pointer-events:none}
+    .hint.show{opacity:1;transform:scale(1)}
+    .overlay{position:absolute;inset:0;z-index:18;display:grid;place-items:center;padding:24px;border-radius:var(--radius);background:rgba(243,240,233,.91);backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:opacity .2s ease;text-align:center}
+    .overlay.show{opacity:1;pointer-events:auto}
+    .overlay h2{margin:0 0 6px;font-size:34px;letter-spacing:-.045em}.overlay p{margin:0 0 18px;color:var(--muted);font-size:13px}
+    .primary{border-radius:999px;background:var(--ink);color:#fff;padding:10px 17px;font-size:12px;font-weight:720;cursor:pointer;transition:transform .16s ease,opacity .16s ease}.primary:hover{opacity:.88}.primary:active{transform:scale(.97)}
+    .under-board{display:flex;justify-content:space-between;gap:16px;width:min(100%,620px);margin:12px auto 0;color:var(--muted);font-size:11px;line-height:1.45}
+    .under-board kbd{padding:2px 5px;border:1px solid var(--hair);border-bottom-width:2px;border-radius:5px;background:rgba(255,255,255,.42);font:inherit;color:#5e5951}
+
+    .aside{position:sticky;top:22px;display:flex;flex-direction:column;gap:12px}
+    .assist{border-top:1px solid var(--hair);padding-top:17px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+    .section-head h2{margin:0;font-size:14px;font-weight:760;letter-spacing:-.015em}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:#aaa399;box-shadow:0 0 0 4px rgba(170,163,153,.10)}
+    .status-dot.think{background:#b48735;box-shadow:0 0 0 4px rgba(180,135,53,.12);animation:softPulse .85s ease-in-out infinite alternate}
+    .status-dot.active{background:#537761;box-shadow:0 0 0 4px rgba(83,119,97,.11)}
+    @keyframes softPulse{to{transform:scale(.78);opacity:.7}}
+    .status{min-height:47px;margin-bottom:12px}
+    .status strong{display:block;font-size:17px;letter-spacing:-.025em;margin-bottom:3px}.status span{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+    .assist-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 15px}
+    .assist-btn{height:42px;border-radius:12px;border:1px solid var(--hair);background:rgba(255,255,255,.42);font-size:12px;font-weight:720;cursor:pointer;transition:.16s ease}.assist-btn:hover{background:#fff;border-color:#c6bfb4}.assist-btn:active{transform:scale(.985)}.assist-btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}.assist-btn.dark.on{background:#537761;border-color:#537761}.assist-btn[disabled]{opacity:.38;cursor:not-allowed;transform:none}
+    .label-row{display:flex;align-items:center;justify-content:space-between;margin:0 0 7px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .segments{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border:1px solid var(--hair);border-radius:12px;background:rgba(255,255,255,.30);margin-bottom:13px}
+    .seg{height:31px;border-radius:8px;background:transparent;color:var(--muted);font-size:11px;font-weight:720;cursor:pointer}.seg.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(52,45,35,.08)}
+    .range-row{margin:0 0 15px}.range-row input{width:100%;accent-color:var(--ink)}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:3px}
+    .metric{padding:12px 0}.metric:nth-child(odd){padding-right:10px}.metric:nth-child(even){padding-left:13px;border-left:1px solid var(--hair)}.metric:nth-child(n+3){border-top:1px solid var(--hair)}
+    .metric span{display:block;color:var(--muted);font-size:9px;font-weight:720;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.metric b{display:block;font-size:14px;font-weight:730;font-variant-numeric:tabular-nums}
+    details{border-bottom:1px solid var(--hair)}
+    summary{list-style:none;cursor:pointer;padding:13px 0;color:#5e5951;font-size:11px;font-weight:690;display:flex;align-items:center;justify-content:space-between}summary::-webkit-details-marker{display:none}summary::after{content:"＋";font-size:14px;font-weight:400;color:var(--muted)}details[open] summary::after{content:"−"}
+    .move-bars{padding:1px 0 13px;display:flex;flex-direction:column;gap:7px}.move-row{display:grid;grid-template-columns:21px 1fr 39px;gap:8px;align-items:center;color:var(--muted);font-size:9px}.move-row b{font-size:12px;color:var(--ink)}.bar{height:4px;border-radius:999px;background:#ddd8ce;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#4d4a43;border-radius:inherit;transition:width .24s var(--ease)}.move-row span{text-align:right;font-variant-numeric:tabular-nums}
+    .tech-note{padding:2px 0 0;color:var(--muted);font-size:10.5px;line-height:1.55}.tech-note strong{color:#504b44;font-weight:720}
+    .tiny-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}.tiny-tag{padding:4px 7px;border-radius:999px;border:1px solid var(--hair);font-size:9px;color:#6b665e;background:rgba(255,255,255,.25)}
+    .toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));z-index:40;transform:translate(-50%,10px);padding:9px 12px;border-radius:999px;background:#24231f;color:#fff;font-size:11px;box-shadow:0 8px 26px rgba(0,0,0,.14);opacity:0;pointer-events:none;transition:.18s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media (max-width:900px){
+      .page{width:min(680px,calc(100% - 28px));padding-top:24px}.masthead{margin-bottom:19px}.layout{grid-template-columns:1fr;gap:27px}.aside{position:static;width:min(100%,620px);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:22px}.assist{grid-column:1/-1}.tech-note{padding-top:18px;border-top:1px solid var(--hair)}
+    }
+    @media (max-width:620px){
+      :root{--gap:8px;--radius:18px;--move-ms:135ms}.page{width:calc(100% - 20px);padding-top:max(14px,env(safe-area-inset-top))}.masthead{grid-template-columns:1fr;margin-bottom:16px;gap:16px}.title-row{align-items:flex-end}h1{font-size:60px}.intro{font-size:11px;max-width:185px;margin-bottom:0}.score-strip{justify-content:space-between;gap:8px;border-top:1px solid var(--hair);padding-top:11px}.score{min-width:0;flex:1;text-align:left}.score:last-child{text-align:right}.score:nth-child(2){text-align:center}.score strong{font-size:20px}.toolbar{margin-bottom:9px}.quiet-label{display:none}.text-btn{padding:0 11px}.board{border-radius:18px}.cell,.tile,.motion-tile{border-radius:10px}.under-board{font-size:10px}.under-board span:last-child{display:none}.aside{grid-template-columns:1fr;gap:16px}.assist{grid-column:auto}.tech-note{padding-top:16px}.status strong{font-size:16px}
+    }
+    @media (max-height:760px) and (min-width:901px){.page{padding-top:20px}.masthead{margin-bottom:16px}.board-wrap{width:min(100%,560px)}.under-board{width:min(100%,560px)}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.motion-tile{transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div class="title-row">
+        <h1>2048</h1>
+        <p class="intro">合并相同数字，留出空间。<br>你来玩，或让智能辅助接手。</p>
+      </div>
+      <div class="score-strip" aria-label="分数">
+        <div class="score"><span>Score</span><strong id="score">0</strong></div>
+        <div class="score"><span>Best</span><strong id="best">0</strong></div>
+        <div class="score"><span>Largest</span><strong id="maxTile">2</strong></div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="play-column">
+        <div class="toolbar">
+          <div class="tool-left"><span class="quiet-label">方向键 / WASD / 滑动</span></div>
+          <div class="tool-right">
+            <button class="icon-btn" id="soundBtn" aria-label="声音开关" title="声音开关">
+              <svg id="soundIcon" viewBox="0 0 24 24"><path d="M11 5 6.8 8.5H3.5v7h3.3L11 19z"/><path d="M15 9.2a4.2 4.2 0 0 1 0 5.6"/><path d="M17.8 6.5a8 8 0 0 1 0 11"/></svg>
+            </button>
+            <button class="text-btn" id="undoBtn">撤销</button>
+            <button class="text-btn" id="newBtn">新游戏</button>
+          </div>
+        </div>
+
+        <div class="board-wrap" id="boardWrap">
+          <div class="board" id="board" role="application" aria-label="2048 游戏棋盘">
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="cell"></div><div class="cell"></div><div class="cell"></div><div class="cell"></div>
+            <div class="tiles" id="tiles"></div>
+            <div class="motion-layer" id="motionLayer"></div>
+          </div>
+          <div class="hint" id="hintArrow">↑</div>
+          <div class="overlay" id="gameOverlay"><div><h2>到这里了</h2><p id="gameOverText">棋盘已经没有可移动的位置。</p><button class="primary" id="overlayNew">再来一局</button></div></div>
+        </div>
+        <div class="under-board"><span><kbd>Space</kbd> 自动玩 · <kbd>H</kbd> 提示</span><span>本地运行 · 自动利用多核 · 不上传棋局</span></div>
+      </section>
+
+      <aside class="aside">
+        <section class="assist" aria-label="智能辅助">
+          <div class="section-head"><h2>智能辅助</h2><i class="status-dot" id="aiDot"></i></div>
+          <div class="status"><strong id="aiStatusText">随时可以接手</strong><span id="aiSubText">Search V9.1：阶段算力封顶 + 后盘预算增强 + Survival 回退。</span></div>
+          <div class="assist-actions">
+            <button class="assist-btn" id="hintBtn">提示一步</button>
+            <button class="assist-btn dark" id="autoplayBtn">自动玩</button>
+          </div>
+
+          <div class="label-row"><span>思考强度</span><span id="strengthCaption">极致 · 前中盘封顶 + H7/H6 回退</span></div>
+          <div class="segments" id="strengthSegments" role="group" aria-label="AI 强度">
+            <button class="seg" data-strength="fast">轻快</button>
+            <button class="seg" data-strength="strong">深入</button>
+            <button class="seg on" data-strength="extreme">极致</button>
+          </div>
+
+          <div class="range-row" id="speedRow">
+            <div class="label-row"><span>自动节奏（越左越快 · 不影响棋力）</span><span id="speedText">极速</span></div>
+            <input id="speed" type="range" min="0" max="520" value="0" step="10" aria-label="自动播放速度" />
+          </div>
+
+          <div class="metrics">
+            <div class="metric"><span>建议</span><b id="mMove">—</b></div>
+            <div class="metric"><span>深度</span><b id="mDepth">—</b></div>
+            <div class="metric"><span>节点</span><b id="mNodes">—</b></div>
+            <div class="metric"><span>耗时</span><b id="mTime">—</b></div>
+          </div>
+
+          <details>
+            <summary>这一步为什么</summary>
+            <div class="move-bars">
+              <div class="move-row" data-dir="up"><b>↑</b><div class="bar"><i></i></div><span>—</span></div>
+              <div class="move-row" data-dir="left"><b>←</b><div class="bar"><i></i></div><span>—</span></div>
+              <div class="move-row" data-dir="right"><b>→</b><div class="bar"><i></i></div><span>—</span></div>
+              <div class="move-row" data-dir="down"><b>↓</b><div class="bar"><i></i></div><span>—</span></div>
+            </div>
+          </details>
+        </section>
+
+        <p class="tech-note"><strong>Search V9.1 · Compute Reallocation。</strong> 保留 V7.2 高速 WASM 主核与 V9 风险保护，但把算力从低价值的前中盘超深搜索搬到后盘：深入/极致在空格较多时限制最高深度，拥挤后恢复完整搜索；轻快与深入在关键残局获得少量额外预算。极致 H7 Survival 若撞到节点上限，会自动回退到可完成的 H6，而不是直接失去风险保护。</p>
+        <div class="tiny-links"><span class="tiny-tag">Expectimax</span><span class="tiny-tag">WASM 64-bit</span><span class="tiny-tag">4 Worker</span><span class="tiny-tag">Survival WASM</span><span class="tiny-tag">TT isolated</span></div>
+      </aside>
+    </div>
+  </main>
+  <div class="toast" id="toast"></div>
+
+  <script id="ai-worker-source" type="text/plain">
+
+'use strict';
+const WASM_B64='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cXIiBEHrlK+veGxzIA5zIgFBEHYgAXNBreqs/wdsIgFBD3YgAXNBi82yo3hsIgFBEHYgAXNBACgCqIiAgABxIgFBsIiIggBqQQE6AAAgAUEDdCIFQdCJmIIAaiAANwMAIAFBAXRB0ImYgwBqIAQ7AQAgBUHQibiDAGogDDkDACAMDwsgDAsLNwEAQYAICzAEAAAAAQAAAAMAAAAAAAAAYTJVMCqpMz8CAAAAAAAAAAAAAACAhD5B//8AAAEAAAAA1gEEbmFtZQAQD2VuZ2luZV92N2Uud2FzbQGeAQ4ABm5vd19tcwENYW5hbHl6ZV9leGFjdAIIZXZhbHVhdGUDC2NoYW5jZV9ub2RlBAxhbmFseXplX3Jvb3QFCGNsZWFyX3R0BgZtZW1zZXQHCmV2YWxfYm9hcmQICWdldF9kZXB0aAkJZ2V0X2xldmVsCglnZXRfbm9kZXMLC2luaXRfdGFibGVzDAltb3ZlX3Rlc3QNCG1heF9ub2RlBxIBAA9fX3N0YWNrX3BvaW50ZXIJCAEABS5kYXRhAH8JcHJvZHVjZXJzAQxwcm9jZXNzZWQtYnkBBWNsYW5nXzE3LjAuMCAoaHR0cHM6Ly9naXRodWIuY29tL3N3aWZ0bGFuZy9sbHZtLXByb2plY3QuZ2l0IDEwOTk5YjZkMDM0ZmUzMThmM2Q1NmM4M2JkZGI2NTcyNTkzYThiYjApAEkPdGFyZ2V0X2ZlYXR1cmVzBCsKbXVsdGl2YWx1ZSsPbXV0YWJsZS1nbG9iYWxzKw9yZWZlcmVuY2UtdHlwZXMrCHNpZ24tZXh0';
+const SURVIVAL_WASM_B64='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';
+let WASM=null,WASM_FAILED=false,SURVIVAL_WASM=null;
+const SURVIVAL_READY=(async()=>{try{const bin=atob(SURVIVAL_WASM_B64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const mod=await WebAssembly.instantiate(bytes,{});SURVIVAL_WASM=mod.instance.exports;SURVIVAL_WASM.init_tables();return SURVIVAL_WASM}catch(e){return null}})();
+const WASM_READY=(async()=>{
+  try{
+    const bin=atob(WASM_B64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    const mod=await WebAssembly.instantiate(bytes,{env:{now_ms:()=>performance.now()}});WASM=mod.instance.exports;WASM.init_tables();return WASM;
+  }catch(e){WASM_FAILED=true;return null;}
+})();
+function pack4(board){let lo=0,hi=0,n15=0;for(let i=0;i<16;i++){let v=board[i],r=0;while(v>1){v=Math.floor(v/2);r++}if(r>=15)return null;if(i<8)lo=(lo|(r<<(i*4)))>>>0;else hi=(hi|(r<<((i-8)*4)))>>>0}return[lo>>>0,hi>>>0]}
+async function wasmRoot(board,gain,cfg){
+  const w=await WASM_READY;if(!w)return null;const p=pack4(board);if(!p)return null;const start=performance.now();
+  try{w.analyze_root(p[0],p[1],gain>>>0,Math.max(1,Math.ceil(cfg.budget)),cfg.maxDepth,cfg.minDepth||0,cfg.sampleCap,cfg.exactPlies,cfg.exactWhenEmpty,cfg.probCut,cfg.phase||0,cfg.ttBits,cfg.cacheMinDepth,cfg.overflowBonus||2000000)}catch(e){if(!(e instanceof WebAssembly.RuntimeError)){WASM_FAILED=true;return null}}
+  const depth=w.get_depth()|0,levels=new Array(depth+1);for(let i=0;i<=depth;i++)levels[i]=w.get_level(i);return{depth,levels,nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'wasm64'};
+}
+async function wasmExact(board,gain,depth,cfg,hardBudget=0){
+  const w=await WASM_READY;if(!w)return null;const p=pack4(board);if(!p)return null;const start=performance.now();
+  try{
+    w.clear_tt();
+    w.analyze_exact(p[0],p[1],gain>>>0,depth|0,Math.max(0,Math.ceil(hardBudget||0)),cfg.sampleCap,cfg.exactPlies,cfg.exactWhenEmpty,cfg.probCut,cfg.phase||0,cfg.ttBits,cfg.cacheMinDepth,cfg.overflowBonus||2000000);
+  }catch(e){
+    if(e instanceof WebAssembly.RuntimeError)return{ok:false,depth:depth|0,score:NaN,nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'wasm64'};
+    WASM_FAILED=true;return null;
+  }
+  return{ok:true,depth:depth|0,score:w.get_level(depth|0),nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'wasm64'};
+}
+async function wasmRiskAll(board,horizon,nodeLimit){
+  const w=await SURVIVAL_READY;if(!w)return null;const p=pack4(board);if(!p)return null;const start=performance.now();
+  try{const code=w.analyze_survival(p[0],p[1],horizon|0,nodeLimit>>>0),aborted=w.get_aborted?!!w.get_aborted():code<0,dirs=['up','left','right','down'],survivals={};for(let i=0;i<4;i++)survivals[dirs[i]]=w.get_survival(i);return{ok:!aborted,best:code>=0?dirs[code]:null,survivals,nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'survival-v9.1'}}catch(e){return null}
+}
+const LEGACY=(()=>{
+'use strict';
+const DIRS=['up','left','right','down'];
+const LINESETS={
+  left:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]],
+  right:[[3,2,1,0],[7,6,5,4],[11,10,9,8],[15,14,13,12]],
+  up:[[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]],
+  down:[[12,8,4,0],[13,9,5,1],[14,10,6,2],[15,11,7,3]]
+};
+const ROW_OUT=new Uint32Array(1<<20), ROW_GAIN=new Uint32Array(1<<20);
+let DEADLINE=0,NODES=0,CFG=null,EPOCH=1,TT=null,TTMASK=0;
+function ensureTT(bits){
+  const size=1<<bits;
+  if(TT&&TT.size===size)return;
+  TT={size,k1:new Uint32Array(size),k2:new Uint32Array(size),epoch:new Uint16Array(size),val:new Float64Array(size)};
+  TTMASK=size-1;EPOCH=1;
+}
+function clearTT(){EPOCH=(EPOCH+1)&65535;if(EPOCH===0){TT.epoch.fill(0);EPOCH=1}}
+function rowMove(code){
+  let packed=ROW_OUT[code];if(packed)return [packed-1,ROW_GAIN[code]];
+  const a=code&31,b=(code>>>5)&31,c=(code>>>10)&31,d=(code>>>15)&31;
+  const src=[a,b,c,d],v=[];for(let i=0;i<4;i++)if(src[i])v.push(src[i]);
+  const out=[];let gain=0;
+  for(let i=0;i<v.length;i++){
+    if(i+1<v.length&&v[i]===v[i+1]){const r=Math.min(31,v[i]+1);out.push(r);gain+=2**r;i++}else out.push(v[i]);
+  }
+  while(out.length<4)out.push(0);
+  const outCode=(out[0]|(out[1]<<5)|(out[2]<<10)|(out[3]<<15))>>>0;
+  ROW_OUT[code]=outCode+1;ROW_GAIN[code]=gain>>>0;return [outCode,gain];
+}
+function moveBoard(board,dir){
+  const out=new Uint8Array(16), lines=LINESETS[dir];let moved=false,gain=0;
+  for(let k=0;k<4;k++){
+    const ids=lines[k],code=(board[ids[0]]|(board[ids[1]]<<5)|(board[ids[2]]<<10)|(board[ids[3]]<<15))>>>0;
+    const rm=rowMove(code),oc=rm[0];gain+=rm[1];
+    const v0=oc&31,v1=(oc>>>5)&31,v2=(oc>>>10)&31,v3=(oc>>>15)&31;
+    out[ids[0]]=v0;out[ids[1]]=v1;out[ids[2]]=v2;out[ids[3]]=v3;
+    if(v0!==board[ids[0]]||v1!==board[ids[1]]||v2!==board[ids[2]]||v3!==board[ids[3]])moved=true;
+  }
+  return [out,moved,gain];
+}
+function legalMoves(board){const out=[];for(const d of DIRS){const m=moveBoard(board,d);if(m[1])out.push([d,m[0],m[2]])}return out}
+function toRanks(board){const a=new Uint8Array(16);for(let i=0;i<16;i++){let v=board[i],r=0;while(v>1){v>>=1;r++}a[i]=r}return a}
+const SNAKES=[
+  [15,14,13,12,8,9,10,11,7,6,5,4,0,1,2,3],[12,13,14,15,11,10,9,8,4,5,6,7,3,2,1,0],
+  [3,2,1,0,4,5,6,7,11,10,9,8,12,13,14,15],[0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12],
+  [15,11,7,3,2,6,10,14,13,9,5,1,0,4,8,12],[12,8,4,0,1,5,9,13,14,10,6,2,3,7,11,15],
+  [3,7,11,15,14,10,6,2,1,5,9,13,12,8,4,0],[0,4,8,12,13,9,5,1,2,6,10,14,15,11,7,3]
+];
+const SW=SNAKES.map(()=>{const w=new Float64Array(16);let x=1;for(let i=0;i<16;i++){w[i]=x;x*=1.38}return w});
+function evaluate(a){
+  NODES++;if((NODES&2047)===0&&performance.now()>DEADLINE)throw 1;
+  let empties=0,maxR=0,maxI=0,merge=0,smooth=0,islands=0;
+  for(let i=0;i<16;i++){const v=a[i];if(!v){empties++;continue}if(v>maxR){maxR=v;maxI=i}}
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    const i=r*4+c,v=a[i];if(!v)continue;let near=0;
+    if(c<3&&a[i+1]){smooth-=Math.abs(v-a[i+1]);near++;if(v===a[i+1])merge+=1+v*.12}
+    if(c>0&&a[i-1])near++;
+    if(r<3&&a[i+4]){smooth-=Math.abs(v-a[i+4]);near++;if(v===a[i+4])merge+=1+v*.12}
+    if(r>0&&a[i-4])near++;
+    if(near===4&&v<=3)islands++;
+  }
+  let mono=0;
+  for(let r=0;r<4;r++){const o=r*4;let up=0,down=0;for(let c=0;c<3;c++){const d=a[o+c]-a[o+c+1];if(d>0)down+=d;else up-=d}mono-=Math.min(up,down)}
+  for(let c=0;c<4;c++){let up=0,down=0;for(let r=0;r<3;r++){const d=a[r*4+c]-a[(r+1)*4+c];if(d>0)down+=d;else up-=d}mono-=Math.min(up,down)}
+  let snakeBest=-1e18;
+  for(let s=0;s<8;s++){const order=SNAKES[s],w=SW[s];let x=0;for(let p=0;p<16;p++)x+=a[order[p]]*w[p];if(x>snakeBest)snakeBest=x}
+  const corner=maxI===0||maxI===3||maxI===12||maxI===15,edge=maxI<4||maxI>11||maxI%4===0||maxI%4===3;
+  const late=empties<=4,critical=empties<=2;
+  let score=empties*(late?3000:2050)+mono*(late?330:270)+smooth*52+merge*520+snakeBest*(late?1.42:1.08)-islands*180;
+  score+=maxR*(corner?(late?1550:1180):edge?280:-360);if(critical)score+=empties*1600;return score;
+}
+function probClass(p){return p>.08?0:p>.018?1:p>.004?2:3}
+function hash(board,meta){
+  let h1=(0x811c9dc5^meta)>>>0,h2=(0x9e3779b9+Math.imul(meta,0x85ebca6b))>>>0;
+  for(let i=0;i<16;i++){const x=board[i]+i*37;h1=Math.imul(h1^x,0x01000193)>>>0;h2=Math.imul(h2^(x+0x9e37),0x27d4eb2d)>>>0}
+  h1^=h1>>>16;h2^=h2>>>15;return [h1>>>0,h2>>>0];
+}
+function cacheGet(board,type,depth,pathP){
+  if(depth<CFG.cacheMinDepth)return NaN;const meta=(depth&31)|((type&1)<<5)|(probClass(pathP)<<6)|((CFG.phase||0)<<8),h=hash(board,meta),i=h[0]&TTMASK;
+  return TT.epoch[i]===EPOCH&&TT.k1[i]===h[0]&&TT.k2[i]===h[1]?TT.val[i]:NaN;
+}
+function cachePut(board,type,depth,pathP,v){
+  if(depth<CFG.cacheMinDepth)return v;const meta=(depth&31)|((type&1)<<5)|(probClass(pathP)<<6)|((CFG.phase||0)<<8),h=hash(board,meta),i=h[0]&TTMASK;
+  TT.k1[i]=h[0];TT.k2[i]=h[1];TT.val[i]=v;TT.epoch[i]=EPOCH;return v;
+}
+function collectEmpties(board){const e=[];for(let i=0;i<16;i++)if(board[i]===0)e.push(i);return e}
+function sampledEmpties(e,cap,ply){if(e.length<=cap)return e;const out=[],step=e.length/cap,offset=((ply*0.61803398875)%1);for(let k=0;k<cap;k++)out.push(e[Math.floor((k+offset)*step)%e.length]);return out}
+function maxNode(board,depth,pathP,ply){
+  if(depth<=0||pathP<CFG.probCut)return evaluate(board);
+  const hit=cacheGet(board,0,depth,pathP);if(hit===hit)return hit;
+  const moves=legalMoves(board);if(!moves.length)return -1e15;
+  let best=-1e18;for(const m of moves){const v=m[2]*2.55+chanceNode(m[1],depth-1,pathP,ply);if(v>best)best=v}
+  return cachePut(board,0,depth,pathP,best);
+}
+function chanceNode(board,depth,pathP,ply){
+  const hit=cacheGet(board,1,depth,pathP);if(hit===hit)return hit;
+  const all=collectEmpties(board);if(!all.length)return maxNode(board,depth,pathP,ply+1);
+  const exact=ply<CFG.exactPlies||all.length<=CFG.exactWhenEmpty;
+  const cap=Math.max(2,CFG.sampleCap-(ply>2?1:0)-(ply>4?1:0));
+  const empt=exact?all:sampledEmpties(all,cap,ply);let sum=0;
+  const inv=1/all.length;
+  for(let j=0;j<empt.length;j++){
+    const p=empt[j],b2=board.slice(),b4=board.slice();b2[p]=1;b4[p]=2;
+    sum+=.9*maxNode(b2,depth,pathP*.9*inv,ply+1)+.1*maxNode(b4,depth,pathP*.1*inv,ply+1);
+  }
+  const v=sum/empt.length;return cachePut(board,1,depth,pathP,v);
+}
+function begin(cfg){CFG=cfg;ensureTT(cfg.ttBits);DEADLINE=performance.now()+cfg.budget;NODES=0}
+function analyze(board,cfg){
+  begin(cfg);const root=toRanks(board),legal=legalMoves(root),start=performance.now();if(!legal.length)return{best:null,depth:0,nodes:0,scores:{},time:0};
+  let scores={},best=legal[0][0],doneDepth=0;
+  for(const m of legal)scores[m[0]]=evaluate(m[1])+m[2]*2.55;
+  for(let depth=1;depth<=cfg.maxDepth;depth++){
+    const next={};try{for(const m of legal){if(performance.now()>DEADLINE)throw 1;next[m[0]]=m[2]*2.55+chanceNode(m[1],depth-1,1,0)}}catch(_){break}
+    scores=next;doneDepth=depth;best=Object.entries(scores).reduce((a,b)=>b[1]>a[1]?b:a)[0];if(performance.now()>DEADLINE)break;
+  }
+  best=Object.entries(scores).reduce((a,b)=>b[1]>a[1]?b:a)[0];return{best,depth:doneDepth,nodes:NODES,scores,time:performance.now()-start};
+}
+function analyzeRoot(board,gain,cfg){
+  begin(cfg);const root=toRanks(board),start=performance.now(),levels=[evaluate(root)+gain*2.55];let doneDepth=0;
+  for(let depth=1;depth<=cfg.maxDepth;depth++){
+    try{if(performance.now()>DEADLINE)throw 1;levels[depth]=gain*2.55+chanceNode(root,depth-1,1,0)}catch(_){break}
+    doneDepth=depth;if(performance.now()>DEADLINE)break;
+  }
+  return{depth:doneDepth,levels,nodes:NODES,time:performance.now()-start};
+}
+return {analyze,analyzeRoot,clearTT};
+})();
+
+onmessage=async e=>{
+  const m=e.data;
+  if(m.type==='clear'){if(WASM)WASM.clear_tt();LEGACY.clearTT();return}
+  if(m.type==='exact'){
+    let r=await wasmExact(m.board,m.gain,m.depth,m.cfg,m.hardBudget||0);
+    if(!r){LEGACY.clearTT();const fc={...m.cfg,budget:m.cfg.fallbackBudget||Math.max(60,m.hardBudget||0),maxDepth:m.depth,minDepth:m.depth};const x=LEGACY.analyzeRoot(m.board,m.gain,fc);r={ok:x.depth>=m.depth,depth:m.depth,score:x.levels[m.depth],nodes:x.nodes,time:x.time,engine:'js-fallback-v8'}}
+    postMessage({id:m.id,round:m.round,dir:m.dir,...r,engine:r.engine||'js-fallback-v8'});return;
+  }
+  if(m.type==='riskall'){
+    let r=await wasmRiskAll(m.board,m.horizon,m.nodeLimit);if(!r)r={ok:false,best:null,survivals:{},nodes:0,time:0,engine:'risk-unavailable'};postMessage({id:m.id,round:m.round,...r});return;
+  }
+  if(m.type==='root'){
+    let r=await wasmRoot(m.board,m.gain,m.cfg);if(!r){const fc={...m.cfg,budget:m.cfg.fallbackBudget||m.cfg.budget};r=LEGACY.analyzeRoot(m.board,m.gain,fc)}postMessage({id:m.id,dir:m.dir,...r,engine:r.engine||'js-fallback'});return;
+  }
+  if(m.type==='analyze'){const fc={...m.cfg,budget:m.cfg.fallbackBudget||m.cfg.budget};const r=LEGACY.analyze(m.board,fc);postMessage({id:m.id,...r,engine:'js-fallback'});}
+};
+
+  
+  </script>
+
+  <script>
+
+  (()=>{
+    'use strict';
+    const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+    const els={score:$('#score'),best:$('#best'),maxTile:$('#maxTile'),tiles:$('#tiles'),motion:$('#motionLayer'),wrap:$('#boardWrap'),undo:$('#undoBtn'),newBtn:$('#newBtn'),overlay:$('#gameOverlay'),overlayNew:$('#overlayNew'),gameOverText:$('#gameOverText'),hint:$('#hintArrow'),hintBtn:$('#hintBtn'),autoBtn:$('#autoplayBtn'),speed:$('#speed'),speedText:$('#speedText'),speedRow:$('#speedRow'),dot:$('#aiDot'),status:$('#aiStatusText'),sub:$('#aiSubText'),mMove:$('#mMove'),mDepth:$('#mDepth'),mNodes:$('#mNodes'),mTime:$('#mTime'),strengthCaption:$('#strengthCaption'),soundBtn:$('#soundBtn'),soundIcon:$('#soundIcon'),toast:$('#toast')};
+    const arrow={up:'↑',down:'↓',left:'←',right:'→'},zh={up:'上',down:'下',left:'左',right:'右'};
+    const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const MOVE_MS=reduceMotion?0:(innerWidth<=620?135:145);
+    function storageGet(k,fallback=null){try{const v=localStorage.getItem(k);return v===null?fallback:v}catch(_){return fallback}}
+    function storageSet(k,v){try{localStorage.setItem(k,v);return true}catch(_){return false}}
+    let board=Array(16).fill(0),score=0,best=+(storageGet('refined2048-best',storageGet('ai2048-best','0'))||0),history=[],newIndex=-1,mergedIndices=[],gameOver=false,animating=false;
+    let autoplay=false,aiBusy=false,reqId=0,activeReq=0,moveCount=0,hintTimer=null,strength='extreme';
+    let soundOn=storageGet('refined2048-sound','on')!=='off',audioCtx=null;
+    let wakeLock=null,lastStatsPaint=0;
+    let bestDirty=false,lastBestSave=0,turboPaintTimer=0,lastTurboPaint=0,lastTurboSound=0;
+    async function holdWake(){if(!autoplay||!('wakeLock' in navigator)||document.visibilityState!=='visible')return;try{wakeLock=await navigator.wakeLock.request('screen');wakeLock.addEventListener?.('release',()=>{wakeLock=null})}catch(_){}}
+    async function releaseWake(){try{await wakeLock?.release()}catch(_){}wakeLock=null}
+
+    const workerSrc=$('#ai-worker-source').textContent;
+    let workerURL=null;
+    const POOL_SIZE=Math.min(4,Math.max(2,navigator.hardwareConcurrency||4));
+    let workers=[],workerBusy=[],parallelJob=null,pendingKind='hint',workerInitError=null;
+    function ensureWorkerURL(){if(workerURL)return workerURL;workerURL=URL.createObjectURL(new Blob([workerSrc],{type:'text/javascript'}));return workerURL}
+    function attachWorker(i){
+      try{
+        const w=new Worker(ensureWorkerURL());
+        w.onmessage=e=>handleWorkerMessage(e.data,i);
+        w.onerror=e=>{
+          workerBusy[i]=false;workerInitError=e?.message||'Worker 启动失败';
+          try{w.terminate()}catch(_){}
+          workers[i]=null;
+          if(parallelJob&&parallelJob.id===activeReq){activeReq=++reqId;parallelJob=null;aiBusy=false;autoplay=false;syncAutoUI();setAIStatus('','AI 引擎未能启动','浏览器阻止了本地 Worker。请重新打开页面，或改用 Chrome / Safari 的普通窗口。');toast('AI Worker 启动失败')}
+        };
+        workers[i]=w;workerBusy[i]=false;return true;
+      }catch(e){workerInitError=e?.message||String(e);workers[i]=null;workerBusy[i]=false;return false}
+    }
+    function destroyPool(){for(const w of workers)try{w?.terminate()}catch(_){}workers=[];workerBusy=[]}
+    function ensurePool(){
+      if(workers.some(Boolean))return true;workerInitError=null;workers=[];workerBusy=[];
+      for(let i=0;i<POOL_SIZE;i++)if(!attachWorker(i))break;
+      workers=workers.filter(Boolean);workerBusy=workers.map(()=>false);
+      return workers.length>0;
+    }
+    function rebuildPool(){destroyPool();return ensurePool()}
+
+    const LINES={
+      left:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]],right:[[3,2,1,0],[7,6,5,4],[11,10,9,8],[15,14,13,12]],
+      up:[[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]],down:[[12,8,4,0],[13,9,5,1],[14,10,6,2],[15,11,7,3]]
+    };
+    function moveBoardDetailed(src,dir){
+      const out=Array(16).fill(0),motions=[],merged=[],lines=LINES[dir],vals=new Array(4),from=new Int8Array(4);let moved=false,gain=0;
+      for(let k=0;k<4;k++){
+        const ids=lines[k];let n=0;for(let j=0;j<4;j++){const idx=ids[j],v=src[idx];if(v){vals[n]=v;from[n++]=idx}}let slot=0;
+        for(let i=0;i<n;i++){const dest=ids[slot],v=vals[i];if(i+1<n&&v===vals[i+1]){const value=v*2;out[dest]=value;gain+=value;merged.push(dest);motions.push({from:from[i],to:dest,value:v},{from:from[i+1],to:dest,value:v});i++;slot++}else{out[dest]=v;motions.push({from:from[i],to:dest,value:v});slot++}}
+      }
+      for(let i=0;i<16;i++)if(out[i]!==src[i]){moved=true;break}
+      return{board:out,moved,gain,merged,motions};
+    }
+    function moveBoardPlain(src,dir){
+      const out=Array(16).fill(0),lines=LINES[dir],vals=new Array(4);let moved=false,gain=0;
+      for(let k=0;k<4;k++){const ids=lines[k];let n=0;for(let j=0;j<4;j++){const v=src[ids[j]];if(v)vals[n++]=v}let slot=0;for(let i=0;i<n;i++){const dest=ids[slot],v=vals[i];if(i+1<n&&v===vals[i+1]){const nv=v*2;out[dest]=nv;gain+=nv;i++;slot++}else{out[dest]=v;slot++}}}
+      for(let i=0;i<16;i++)if(out[i]!==src[i]){moved=true;break}return{board:out,moved,gain};
+    }
+    function addRandom(){let n=0;for(let i=0;i<16;i++)if(!board[i])n++;if(!n)return-1;let k=Math.floor(Math.random()*n);for(let i=0;i<16;i++)if(!board[i]&&k--===0){board[i]=Math.random()<.9?2:4;return i}return-1}
+    function canMove(){for(let i=0;i<16;i++)if(!board[i])return true;for(let r=0;r<4;r++)for(let c=0;c<4;c++){const i=r*4+c,v=board[i];if(c<3&&v===board[i+1])return true;if(r<3&&v===board[i+4])return true}return false}
+    function maxTile(){let m=2;for(let i=0;i<16;i++)if(board[i]>m)m=board[i];return m}
+    function fontFor(v){const d=String(v).length;return d<=2?'clamp(30px,7vw,52px)':d===3?'clamp(27px,6.5vw,47px)':d===4?'clamp(22px,5.7vw,40px)':'clamp(17px,4.8vw,31px)'}
+    function pos(i){const r=Math.floor(i/4),c=i%4,gap=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--gap'))||11;return`translate(calc(${c*100}% + ${c*gap}px), calc(${r*100}% + ${r*gap}px))`}
+    function tileClass(v){return v<=2048?'v'+v:'super'}
+    function tileEl(v,i,extra=''){const el=document.createElement('div');el.className=`tile ${tileClass(v)} ${extra}`;el.textContent=v;el.style.fontSize=fontFor(v);el.style.setProperty('--pos',pos(i));el.style.transform=pos(i);return el}
+    function renderTiles(){els.tiles.innerHTML='';board.forEach((v,i)=>{if(!v)return;let extra='';if(i===newIndex)extra+=' spawn';if(mergedIndices.includes(i))extra+=' merged';els.tiles.appendChild(tileEl(v,i,extra))});newIndex=-1;mergedIndices=[]}
+    function renderMeta(){els.score.textContent=score.toLocaleString();els.best.textContent=best.toLocaleString();els.maxTile.textContent=maxTile().toLocaleString();els.undo.disabled=!history.length||autoplay||animating;els.overlay.classList.toggle('show',gameOver)}
+    function render(){renderTiles();renderMeta()}
+    function snapshot(){return{board:board.slice(),score}}
+    function restore(s){board=s.board.slice();score=s.score;gameOver=false;animating=false;newIndex=-1;mergedIndices=[];render()}
+
+    function persistBest(force=false){if(!bestDirty)return;const now=performance.now();if(!force&&now-lastBestSave<900)return;if(storageSet('refined2048-best',String(best))){bestDirty=false;lastBestSave=now}}
+    function scheduleTurboRender(force=false){
+      if(force){if(turboPaintTimer){clearTimeout(turboPaintTimer);turboPaintTimer=0}lastTurboPaint=performance.now();render();persistBest(true);return}
+      if(turboPaintTimer)return;const wait=Math.max(0,32-(performance.now()-lastTurboPaint));
+      turboPaintTimer=setTimeout(()=>requestAnimationFrame(()=>{turboPaintTimer=0;lastTurboPaint=performance.now();render();persistBest(false);if(soundOn&&autoplay&&lastTurboPaint-lastTurboSound>170){lastTurboSound=lastTurboPaint;soundMove()}}),wait);
+    }
+
+    let queuedAutoResult=null;
+    function autoAnimMs(){if(reduceMotion)return 0;const delay=+els.speed.value;if(delay===0)return 18;if(delay<=20)return 28;if(delay<=80)return 48;return Math.min(MOVE_MS,78)}
+    function animateMove(motions,onDone,duration=MOVE_MS){
+      if(!duration){onDone();return}
+      animating=true;els.undo.disabled=true;els.motion.innerHTML='';els.tiles.classList.add('is-moving');
+      const ghosts=[];for(const m of motions){const el=document.createElement('div');el.className=`motion-tile ${tileClass(m.value)}`;el.textContent=m.value;el.style.fontSize=fontFor(m.value);el.style.transitionDuration=duration+'ms';el.style.transform=pos(m.from);els.motion.appendChild(el);ghosts.push([el,m.to])}
+      void els.motion.offsetWidth;requestAnimationFrame(()=>{for(const[g,to]of ghosts)g.style.transform=pos(to)});
+      setTimeout(()=>{els.motion.innerHTML='';els.tiles.classList.remove('is-moving');animating=false;onDone();if(queuedAutoResult&&autoplay){const q=queuedAutoResult;queuedAutoResult=null;consumeAutoResult(q)}},duration+8);
+    }
+
+    function doTurboMove(dir){
+      if(gameOver)return false;const m=moveBoardPlain(board,dir);if(!m.moved)return false;
+      history.push(snapshot());if(history.length>60)history.shift();const beforeMax=maxTile();board=m.board;score+=m.gain;mergedIndices=[];newIndex=addRandom();moveCount++;
+      if(score>best){best=score;bestDirty=true}const afterMax=maxTile();if(afterMax>=2048&&afterMax>beforeMax)soundMilestone(afterMax);
+      if(!canMove()){gameOver=true;autoplay=false;syncAutoUI();scheduleTurboRender(true);els.gameOverText.textContent=`${score.toLocaleString()} 分 · 最大数字 ${afterMax.toLocaleString()}`;soundGameOver()}else scheduleTurboRender(false);
+      return true;
+    }
+    function doMove(dir,autoMode=false){
+      if(autoMode&&+els.speed.value===0)return doTurboMove(dir);
+      if(gameOver||animating)return false;const m=moveBoardDetailed(board,dir);if(!m.moved)return false;
+      history.push(snapshot());if(history.length>60)history.shift();
+      const beforeMax=maxTile();board=m.board;score+=m.gain;mergedIndices=m.merged.slice();newIndex=addRandom();moveCount++;
+      if(score>best){best=score;bestDirty=true;persistBest(!autoMode)}
+      const afterMax=maxTile();if(!canMove()){gameOver=true;autoplay=false;syncAutoUI()}
+      const dur=autoMode?autoAnimMs():MOVE_MS;renderMeta();if(!autoMode||+els.speed.value>20||(moveCount&3)===0)soundMove();if(m.merged.length&&(!autoMode||+els.speed.value>20||(moveCount&1)===0))setTimeout(()=>soundMerges(m.merged.map(i=>m.board[i]).filter(Boolean)),Math.max(10,dur*.55));if(afterMax>=2048&&afterMax>beforeMax)setTimeout(()=>soundMilestone(afterMax),dur+16);
+      animateMove(m.motions,()=>{render();if(gameOver){els.gameOverText.textContent=`${score.toLocaleString()} 分 · 最大数字 ${maxTile().toLocaleString()}`;soundGameOver()}},dur);
+      return true;
+    }
+
+    function newGame(silent=false){persistBest(true);autoplay=false;aiBusy=false;animating=false;queuedAutoResult=null;syncAutoUI();activeReq=++reqId;parallelJob=null;if(workers.length)destroyPool();history=[];score=0;moveCount=0;gameOver=false;board.fill(0);newIndex=addRandom();const first=newIndex;addRandom();mergedIndices=[];clearAIStats();render();if(!silent)toast('新的一局')}
+    function undo(){if(!history.length||autoplay||animating)return;persistBest(true);queuedAutoResult=null;activeReq=++reqId;parallelJob=null;if(workers.length)destroyPool();restore(history.pop());clearAIStats();soundSoft(150,.025)}
+
+    function transformCoord(i,t){const r=(i/4)|0,c=i&3;let rr=r,cc=c;switch(t){case 1:rr=c;cc=3-r;break;case 2:rr=3-r;cc=3-c;break;case 3:rr=3-c;cc=r;break;case 4:rr=r;cc=3-c;break;case 5:rr=3-c;cc=3-r;break;case 6:rr=3-r;cc=c;break;case 7:rr=c;cc=r;break}return rr*4+cc}
+    function transformBoard(src,t){const out=Array(16);for(let i=0;i<16;i++)out[transformCoord(i,t)]=src[i];return out}
+    function transformDir(dir,t){const vec={up:[-1,0],down:[1,0],left:[0,-1],right:[0,1]}[dir],a=transformCoord(5,t),b=transformCoord((1+vec[0])*4+(1+vec[1]),t),dr=((b/4)|0)-((a/4)|0),dc=(b&3)-(a&3);return dr<0?'up':dr>0?'down':dc<0?'left':'right'}
+    function inverseTransformDir(dir,t){for(const d of ['up','left','right','down'])if(transformDir(d,t)===dir)return d;return dir}
+    function canonicalAI(src){let best=null,bestT=0;for(let t=0;t<8;t++){const b=transformBoard(src,t);if(!best){best=b;bestT=t;continue}let better=false;for(let i=0;i<16;i++){if(b[i]===best[i])continue;better=b[i]>best[i];break}if(better){best=b;bestT=t}}return{board:best,t:bestT}}
+    function countEmpties(src){let n=0;for(let i=0;i<16;i++)if(!src[i])n++;return n}
+    function cfg(){
+      const empties=countEmpties(board),late=empties<=5;
+      // V9.1 keeps V9's proven fast search semantics. The new change is compute
+      // reallocation: cap low-value early/mid refinements, then spend a little more
+      // only after the board becomes genuinely crowded.
+      const common={sampleCap:4,exactPlies:1,exactWhenEmpty:3,probCut:late?1.8e-4:3e-4,phase:late?1:0,ttBits:15,cacheMinDepth:1,overflowBonus:2000000};
+      const stageCap=empties>=7?5:empties===6?6:empties===5?7:null;
+      if(strength==='fast'){
+        // Fast keeps the V9 main line. Only true late game gets a small budget bump;
+        // the rejected global "<=7 empties => d4" rule stays rejected.
+        const baseDepth=empties<=2?5:empties<=5?4:3;
+        const budget=empties<=1?10:empties<=3?8:6;
+        return{...common,baseDepth,budget,fallbackBudget:48,maxDepth:8,riskH:6,riskNodes:120000,riskGap:.018,verifyBudget:20};
+      }
+      if(strength==='extreme'){
+        const baseDepth=empties<=2?5:4,modeMax=11,maxDepth=stageCap?Math.min(modeMax,stageCap):modeMax;
+        return{...common,baseDepth,budget:58,fallbackBudget:480,maxDepth,riskH:7,riskNodes:300000,riskGap:.012,verifyBudget:72};
+      }
+      // Strong keeps d4 as its quality floor, but no longer burns the whole 22ms
+      // budget chasing d8/d9/d10 while the board is still open. The saved average
+      // compute is re-invested once empties <= 4, where deeper horizon matters more.
+      const modeMax=10,maxDepth=stageCap?Math.min(modeMax,stageCap):modeMax;
+      const budget=empties<=2?32:empties<=4?28:22;
+      return{...common,baseDepth:empties<=2?5:4,budget,fallbackBudget:180,maxDepth,riskH:6,riskNodes:180000,riskGap:.015,verifyBudget:36};
+    }
+    function legalRootBranches(src=board){
+      const out=[];for(const d of ['up','left','right','down']){const m=moveBoardPlain(src,d);if(m.moved)out.push({dir:d,board:m.board,gain:m.gain})}return out;
+    }
+    function askAI(kind='hint'){
+      if(aiBusy||gameOver||(animating&&kind!=='auto'))return;
+      if(!ensurePool()){setAIStatus('','AI 引擎未能启动',workerInitError||'当前浏览器无法创建本地 Worker。');toast('AI Worker 启动失败');return}
+      aiBusy=true;pendingKind=kind;const id=++reqId;activeReq=id;const c=cfg(),canon=canonicalAI(board),branches=legalRootBranches(canon.board);
+      if(!branches.length){aiBusy=false;gameOver=true;renderMeta();return}
+      if(branches.length===1){const real=inverseTransformDir(branches[0].dir,canon.t);queueMicrotask(()=>finishAI({id,best:real,depth:0,nodes:0,scores:{[real]:0},time:0,parallel:0,engine:'forced',riskChecked:false},kind));return}
+      setAIStatus('think',kind==='auto'?'正在看下一步':'正在分析',`V9.1 ×${Math.min(POOL_SIZE,branches.length)} · 前中盘控深，后盘增算；危险局追加生存复核。`);
+      parallelJob={id,kind,cfg:c,branches,rootBoard:canon.board,transform:canon.t,phase:'search',expected:branches.length,depth:c.baseDepth,queue:[],roundResults:{},started:performance.now(),roundStarted:0,lastComplete:null,totalNodes:0,riskNodes:0,verifyNodes:0,riskResult:null,overrideBest:null,verified:false,riskGap:0,riskFallbackTried:false,riskHOverride:0,riskNodesOverride:0};
+      startDepthRound();
+    }
+    function startDepthRound(){
+      const job=parallelJob;if(!job||job.id!==activeReq)return;job.phase='search';job.roundResults={};job.queue=job.branches.slice();job.expected=job.branches.length;job.roundStarted=performance.now();
+      const elapsed=job.roundStarted-job.started;job.hardBudget=job.depth===job.cfg.baseDepth?0:Math.max(1,job.cfg.budget-elapsed);dispatchJob();
+    }
+    function dispatchJob(){
+      const job=parallelJob;if(!job||job.id!==activeReq)return;
+      if(job.phase==='search'){
+        for(let i=0;i<workers.length&&job.queue.length;i++)if(workers[i]&&!workerBusy[i]){const t=job.queue.shift();workerBusy[i]=true;workers[i].postMessage({type:'exact',id:job.id,round:'d'+job.depth,dir:t.dir,board:t.board,gain:t.gain,depth:job.depth,hardBudget:job.hardBudget,cfg:job.cfg})}
+      }else if(job.phase==='risk'){
+        for(let i=0;i<workers.length;i++)if(workers[i]&&!workerBusy[i]){workerBusy[i]=true;workers[i].postMessage({type:'riskall',id:job.id,round:'risk',board:job.rootBoard,horizon:job.riskHOverride||job.cfg.riskH,nodeLimit:job.riskNodesOverride||job.cfg.riskNodes});break}
+      }else if(job.phase==='verify'){
+        for(let i=0;i<workers.length&&job.queue.length;i++)if(workers[i]&&!workerBusy[i]){const t=job.queue.shift();workerBusy[i]=true;workers[i].postMessage({type:'exact',id:job.id,round:'verify',dir:t.dir,board:t.board,gain:t.gain,depth:job.verifyDepth,hardBudget:job.cfg.verifyBudget,cfg:job.verifyCfg||job.cfg})}
+      }
+    }
+    function baseScores(job){const scores={};for(const x of job.lastComplete||[])scores[x.dir]=x.score;return scores}
+    function baselineBest(job){const a=Object.entries(baseScores(job));return a.length?a.reduce((x,y)=>y[1]>x[1]?y:x)[0]:null}
+    function moveCountPlain(src){let n=0;for(const d of ['up','left','right','down'])if(moveBoardPlain(src,d).moved)n++;return n}
+    function spawnFragility(src,dir){
+      const m=moveBoardPlain(src,dir);if(!m.moved)return null;const empty=[];for(let i=0;i<16;i++)if(!m.board[i])empty.push(i);
+      if(!empty.length){const lm=moveCountPlain(m.board);return{dead:lm?0:1,forced:lm<=1?1:0,tight:lm<=2?1:0,minMoves:lm,avgMoves:lm}}
+      let dead=0,forced=0,tight=0,avgMoves=0,minMoves=4;
+      for(const i of empty)for(const [v,q0] of [[2,.9],[4,.1]]){const b=m.board.slice(),q=q0/empty.length;b[i]=v;const lm=moveCountPlain(b);minMoves=Math.min(minMoves,lm);avgMoves+=q*lm;if(lm===0)dead+=q;if(lm<=1)forced+=q;if(lm<=2)tight+=q}
+      return{dead,forced,tight,minMoves,avgMoves};
+    }
+    function verifierCfg(job){
+      // The expensive semantics upgrade is deliberately reserved for rare
+      // Survival disagreements; applying it to every normal node was measured to
+      // be much slower without proportional decision gains.
+      const e=countEmpties(job.rootBoard),late=e<=5,c=job.cfg;
+      return{...c,sampleCap:Math.max(5,c.sampleCap),exactPlies:Math.max(2,c.exactPlies),exactWhenEmpty:Math.max(5,c.exactWhenEmpty),probCut:Math.min(c.probCut,late?2e-5:5e-5),ttBits:Math.max(15,c.ttBits)};
+    }
+    function shouldRiskCheck(job){
+      const e=countEmpties(job.rootBoard),base=baselineBest(job),f=base?spawnFragility(job.rootBoard,base):null;job.fragility=f;
+      if(e<=1)return true;
+      if(e<=3&&job.branches.length<=2)return true;
+      if(!f)return false;
+      return f.dead>0||f.forced>=.06||f.tight>=.45||f.minMoves<=1;
+    }
+    function finishDepthJob(){
+      const job=parallelJob;if(!job||!job.lastComplete){parallelJob=null;aiBusy=false;return}const canonicalScores=baseScores(job),scores={};for(const[d,v]of Object.entries(canonicalScores))scores[inverseTransformDir(d,job.transform)]=v;
+      const cBest=job.overrideBest||baselineBest(job),best=inverseTransformDir(cBest,job.transform),out={id:job.id,best,depth:job.lastComplete[0].depth,nodes:job.totalNodes+job.riskNodes+job.verifyNodes,scores,time:performance.now()-job.started,parallel:Math.min(POOL_SIZE,job.branches.length),engine:job.lastComplete.every(x=>x.engine==='wasm64')?'wasm64-v9.1':'mixed-v9.1',riskChecked:!!job.riskResult,verified:job.verified,riskGap:job.riskGap,riskFallback:job.riskFallbackTried},kind=job.kind;parallelJob=null;finishAI(out,kind);
+    }
+    function maybeStartRisk(){const job=parallelJob;if(!job)return;if(!shouldRiskCheck(job)){finishDepthJob();return}job.phase='risk';job.roundResults={};job.expected=1;job.riskHOverride=0;job.riskNodesOverride=0;dispatchJob()}
+    function completeDepthRound(){
+      const job=parallelJob;if(!job)return;const rs=Object.values(job.roundResults);job.totalNodes+=rs.reduce((n,x)=>n+(x.nodes||0),0);
+      if(rs.length!==job.expected||rs.some(x=>!x.ok||!Number.isFinite(x.score))){if(job.lastComplete)maybeStartRisk();else finishDepthJob();return}
+      job.lastComplete=rs;const elapsed=performance.now()-job.started;if(job.depth>=job.cfg.maxDepth||elapsed>=job.cfg.budget-1.0){maybeStartRisk();return}
+      job.depth++;startDepthRound();
+    }
+    function completeRiskRound(r){
+      const job=parallelJob;if(!job)return;job.riskNodes+=(r.nodes||0);
+      const attemptedH=job.riskHOverride||job.cfg.riskH;
+      // V9.1: Extreme's H7 can legitimately hit its node cap on some full-board
+      // states. V9 discarded the whole risk layer in that case. Fall back once to
+      // exact H6, which is much cheaper and still better than having no sentinel.
+      if((!r.ok||!r.best||!r.survivals)&&attemptedH>6&&!job.riskFallbackTried){
+        job.riskFallbackTried=true;job.riskHOverride=6;job.riskNodesOverride=job.cfg.riskNodes;job.phase='risk';dispatchJob();return;
+      }
+      job.riskResult=r;if(!r.ok||!r.best||!r.survivals){finishDepthJob();return}
+      const base=baselineBest(job),cur=r.survivals[base],alt=r.survivals[r.best];if(!Number.isFinite(cur)||!Number.isFinite(alt)||r.best===base){finishDepthJob();return}
+      const gap=alt-cur;job.riskGap=gap;if(gap<job.cfg.riskGap){finishDepthJob();return}
+      job.phase='verify';job.verifyDepth=(job.lastComplete[0].depth||job.depth)+1;job.verifyBase=base;job.verifySafe=r.best;job.verifyCfg=verifierCfg(job);job.roundResults={};job.queue=job.branches.filter(x=>x.dir===base||x.dir===r.best);job.expected=job.queue.length;if(job.expected<2){finishDepthJob();return}dispatchJob();
+    }
+    function completeVerifyRound(){
+      const job=parallelJob;if(!job)return;const rs=Object.values(job.roundResults);job.verifyNodes+=rs.reduce((n,x)=>n+(x.nodes||0),0);if(rs.length!==job.expected||rs.some(x=>!x.ok||!Number.isFinite(x.score))){finishDepthJob();return}
+      const a=rs.find(x=>x.dir===job.verifyBase),b=rs.find(x=>x.dir===job.verifySafe);if(a&&b&&b.score>a.score){job.overrideBest=job.verifySafe;job.verified=true}finishDepthJob();
+    }
+    function handleWorkerMessage(r,wi){
+      workerBusy[wi]=false;const job=parallelJob;if(r.id!==activeReq){dispatchJob();return}
+      if(job&&job.id===r.id){
+        if(job.phase==='search'&&r.dir&&r.round==='d'+job.depth){job.roundResults[r.dir]=r;dispatchJob();if(Object.keys(job.roundResults).length===job.expected)completeDepthRound();return}
+        if(job.phase==='risk'&&r.round==='risk'){completeRiskRound(r);return}
+        if(job.phase==='verify'&&r.dir&&r.round==='verify'){job.roundResults[r.dir]=r;dispatchJob();if(Object.keys(job.roundResults).length===job.expected)completeVerifyRound();return}
+      }
+      finishAI(r,pendingKind);
+    }
+    function finishAI(r,kind){
+      if(r.id&&r.id!==activeReq)return;aiBusy=false;if(!r.best){if(!canMove()){gameOver=true;renderMeta()}return}
+      updateAIStats(r);
+      const engineName=r.engine==='forced'?'直走':String(r.engine||'').includes('wasm')?'V9.1 Hybrid':String(r.engine||'').includes('mixed')?'V9.1 混合':'JS';const riskNote=r.verified?' · 生存复核已覆盖':r.riskFallback?' · H7超限→H6':r.riskChecked?' · 已查生存风险':'';const engineNote=(r.parallel?`${engineName} ×${r.parallel} · ${compact(r.nodes)} 节点`:`${engineName} · ${compact(r.nodes)} 节点`)+riskNote;
+      if(autoplay){setAIStatus('active','自动玩中',`第 ${moveCount+1} 步 · ${engineNote}`);if(animating){queuedAutoResult=r}else consumeAutoResult(r)}
+      else{setAIStatus('',`建议 ${arrow[r.best]} ${zh[r.best]}`,`搜索到 ${r.depth||1} 层 · ${engineNote}`);showHint(r.best);soundHint()}
+    }
+    function consumeAutoResult(r){
+      if(!autoplay||gameOver)return;const moved=doMove(r.best,true);if(!moved)return;
+      if(!gameOver){const delay=+els.speed.value;if(delay>0)setTimeout(()=>askAI('auto'),delay);else queueMicrotask(()=>askAI('auto'))}
+    }
+    function updateAIStats(r){const now=performance.now();if(autoplay&&+els.speed.value===0&&now-lastStatsPaint<70)return;lastStatsPaint=now;els.mMove.textContent=arrow[r.best]+' '+zh[r.best];els.mDepth.textContent=r.depth||1;els.mNodes.textContent=compact(r.nodes);els.mTime.textContent=Math.round(r.time)+'ms';const vals=Object.values(r.scores).filter(Number.isFinite),min=vals.length?Math.min(...vals):0,max=vals.length?Math.max(...vals):1,range=Math.max(1,max-min);$$('.move-row').forEach(row=>{const v=r.scores[row.dataset.dir],bar=row.querySelector('i'),lab=row.querySelector('span');if(!Number.isFinite(v)){bar.style.width='0';lab.textContent='—';row.style.opacity=.35;return}row.style.opacity=1;const pct=12+88*(v-min)/range;bar.style.width=pct+'%';lab.textContent=row.dataset.dir===r.best?'best':Math.round((v-min)/range*100)+'%'})}
+    function clearAIStats(){els.mMove.textContent=els.mDepth.textContent=els.mNodes.textContent=els.mTime.textContent='—';$$('.move-row').forEach(r=>{r.querySelector('i').style.width='0';r.querySelector('span').textContent='—';r.style.opacity=1});setAIStatus('','随时可以接手','Search V9.1：阶段算力封顶 + 后盘预算增强 + Survival 回退。')}
+    function setAIStatus(mode,title,sub){els.dot.className='status-dot'+(mode?' '+mode:'');els.status.textContent=title;els.sub.textContent=sub}
+    function compact(n){if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return String(n)}
+    function showHint(dir){clearTimeout(hintTimer);els.hint.textContent=arrow[dir];els.hint.classList.add('show');hintTimer=setTimeout(()=>els.hint.classList.remove('show'),1050)}
+    function syncAutoUI(){els.autoBtn.classList.toggle('on',autoplay);els.autoBtn.textContent=autoplay?'停止':'自动玩';els.hintBtn.disabled=autoplay;$$('.seg').forEach(b=>b.disabled=autoplay);if(!autoplay&&!aiBusy)setAIStatus('','随时可以接手','Search V9.1：阶段算力封顶 + 后盘预算增强 + Survival 回退。')}
+    function toggleAuto(force){const next=typeof force==='boolean'?force:!autoplay;if(next===autoplay)return;if(next&&animating)return;autoplay=next;activeReq=++reqId;aiBusy=false;parallelJob=null;if(next)holdWake();else{releaseWake();queuedAutoResult=null;persistBest(true);scheduleTurboRender(true);if(workers.length)destroyPool()}syncAutoUI();if(autoplay){if(gameOver){newGame(true);autoplay=true;syncAutoUI()}setAIStatus('active','自动玩中','会持续搜索，但你随时可以停止。');askAI('auto')}else{setAIStatus('','已停下','你可以继续手动玩，或者再让它接手。');toast('自动玩已停止')}}
+    function setStrength(v){if(autoplay)return;queuedAutoResult=null;strength=v;$$('.seg').forEach(b=>b.classList.toggle('on',b.dataset.strength===v));els.strengthCaption.textContent=v==='fast'?'轻快 · 原速主线 + 后盘增算':v==='extreme'?'极致 · 前中盘控深 + H7/H6':'深入 · d4底线 + 后盘增算';activeReq=++reqId;aiBusy=false;parallelJob=null;if(workers.length)destroyPool();clearAIStats()}
+
+    function ensureAudio(){if(!soundOn)return null;if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;audioCtx=new AC()}if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx}
+    function tone(freq,dur=.05,vol=.025,type='sine',delay=0){const c=ensureAudio();if(!c)return;const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+delay;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.02)}
+    function soundMove(){tone(118,.035,.012,'triangle')}
+    function soundSoft(f=180,v=.018){tone(f,.045,v,'sine')}
+    function soundMerges(values){values.slice(0,3).forEach((v,i)=>{const r=Math.log2(v);tone(155*Math.pow(2,(r-2)/16),.075,.018,'sine',i*.018)})}
+    function soundHint(){tone(430,.045,.012,'sine');tone(610,.06,.009,'sine',.045)}
+    function soundMilestone(v){const base=v>=4096?330:294;tone(base,.16,.025,'sine');tone(base*1.25,.18,.018,'sine',.055);tone(base*1.5,.2,.014,'sine',.11)}
+    function soundGameOver(){tone(180,.12,.018,'triangle');tone(135,.16,.014,'triangle',.09)}
+    function syncSoundIcon(){els.soundBtn.setAttribute('aria-pressed',soundOn?'true':'false');els.soundBtn.title=soundOn?'关闭声音':'打开声音';els.soundIcon.style.opacity=soundOn?'1':'.45'}
+    function toggleSound(){soundOn=!soundOn;storageSet('refined2048-sound',soundOn?'on':'off');syncSoundIcon();if(soundOn){ensureAudio();soundSoft(360,.016);toast('声音已开启')}else toast('声音已关闭')}
+
+    let toastT;function toast(msg){clearTimeout(toastT);els.toast.textContent=msg;els.toast.classList.add('show');toastT=setTimeout(()=>els.toast.classList.remove('show'),1100)}
+
+    els.newBtn.onclick=()=>newGame();els.overlayNew.onclick=()=>newGame();els.undo.onclick=undo;els.hintBtn.onclick=()=>askAI('hint');els.autoBtn.onclick=()=>toggleAuto();els.speed.oninput=()=>els.speedText.textContent=(+els.speed.value===0?'极速':els.speed.value+'ms');els.soundBtn.onclick=toggleSound;
+    $$('.seg').forEach(b=>b.onclick=()=>setStrength(b.dataset.strength));
+    function reportAIError(reason){
+      if(!autoplay&&!aiBusy)return;const msg=String(reason?.message||reason||'未知错误');autoplay=false;aiBusy=false;parallelJob=null;queuedAutoResult=null;activeReq=++reqId;destroyPool();syncAutoUI();setAIStatus('','AI 运行异常',msg.slice(0,180));toast('AI 运行异常 · 已安全停止');
+    }
+    window.addEventListener('error',e=>reportAIError(e.error||e.message));
+    window.addEventListener('unhandledrejection',e=>reportAIError(e.reason));
+    document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
+    document.addEventListener('keydown',e=>{if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName))return;ensureAudio();const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'};if(map[e.key]){e.preventDefault();if(!autoplay)doMove(map[e.key])}else if(e.key===' '){e.preventDefault();toggleAuto()}else if(e.key==='h'||e.key==='H'){e.preventDefault();askAI('hint')}else if(e.key==='m'||e.key==='M'){toggleSound()}});
+    let px=0,py=0,pid=null;els.wrap.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse'&&e.button!==0)return;px=e.clientX;py=e.clientY;pid=e.pointerId;els.wrap.setPointerCapture?.(e.pointerId)});els.wrap.addEventListener('pointerup',e=>{if(e.pointerId!==pid||autoplay||animating)return;const dx=e.clientX-px,dy=e.clientY-py;pid=null;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;doMove(Math.abs(dx)>Math.abs(dy)?(dx>0?'right':'left'):(dy>0?'down':'up'))});
+    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')persistBest(true);else if(autoplay)holdWake()});
+    window.addEventListener('pagehide',()=>persistBest(true));
+    window.addEventListener('resize',()=>{if(!animating)renderTiles()});
+    syncSoundIcon();
+    $$('.seg').forEach(b=>b.classList.toggle('on',b.dataset.strength===strength));
+    els.strengthCaption.textContent='极致 · 前中盘封顶 + H7/H6 回退';
+    clearAIStats();
+    newGame(true);
+  })();
+  
+  </script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+game {"seed":1,"version":"9.2","score":77892,"moves":3602,"maxTile":4096,"completed":true,"searchMs":{"count":3602,"mean":8.089084437534714,"p50":7.623430999999982,"p95":13.684591000001092}}
+game {"seed":1,"version":"9.3","score":81200,"moves":3786,"maxTile":4096,"completed":true,"searchMs":{"count":3786,"mean":8.22521483386163,"p50":8.073969999997644,"p95":13.89454200000182}}
+game {"seed":2,"version":"9.3","score":132980,"moves":5590,"maxTile":8192,"completed":true,"searchMs":{"count":5590,"mean":8.539452088729757,"p50":8.538323000000673,"p95":13.956223000001046}}
+game {"seed":2,"version":"9.2","score":79632,"moves":3664,"maxTile":4096,"completed":true,"searchMs":{"count":3664,"mean":8.24920451883214,"p50":7.949338999998872,"p95":13.822179999988293}}
+game {"seed":3,"version":"9.2","score":79036,"moves":3645,"maxTile":4096,"completed":true,"searchMs":{"count":3645,"mean":8.106946669409957,"p50":7.857335000007879,"p95":13.68667500000447}}
+game {"seed":3,"version":"9.3","score":37744,"moves":1979,"maxTile":2048,"completed":true,"searchMs":{"count":1979,"mean":7.763301282970634,"p50":7.268041000002995,"p95":13.549245000001974}}
+game {"seed":4,"version":"9.3","score":157340,"moves":6561,"maxTile":8192,"completed":true,"searchMs":{"count":6561,"mean":8.5001453897272,"p50":8.582869999983814,"p95":13.890335000003688}}
+game {"seed":4,"version":"9.2","score":72132,"moves":3340,"maxTile":4096,"completed":true,"searchMs":{"count":3340,"mean":8.170735371557258,"p50":7.823973999998998,"p95":13.748520999972243}}
+game {"seed":5,"version":"9.2","score":35848,"moves":1856,"maxTile":2048,"completed":true,"searchMs":{"count":1856,"mean":8.059029485452529,"p50":7.413472999993246,"p95":13.94621200003894}}
+game {"seed":5,"version":"9.3","score":59336,"moves":2753,"maxTile":4096,"completed":true,"searchMs":{"count":2753,"mean":8.297648166727958,"p50":7.937332000001334,"p95":13.884734000021126}}
+game {"seed":6,"version":"9.3","score":60772,"moves":2840,"maxTile":4096,"completed":true,"searchMs":{"count":2840,"mean":8.297575473944057,"p50":7.946951000019908,"p95":13.9468469999847}}
+game {"seed":6,"version":"9.2","score":36180,"moves":1870,"maxTile":2048,"completed":true,"searchMs":{"count":1870,"mean":7.961781757754115,"p50":7.339761000010185,"p95":13.861001999990549}}

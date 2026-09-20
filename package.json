@@ -1,0 +1,14 @@
+{
+  "name": "2048-ai-local",
+  "version": "9.3.0",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "test": "node --test --test-concurrency=1 tests/regression.cjs tests/coordinator.cjs tests/upgrades-v9.3.cjs",
+    "benchmark": "node tests/benchmark-v9.3.cjs all",
+    "benchmark:fixed": "node tests/benchmark-v9.3.cjs fixed",
+    "benchmark:latency": "node tests/benchmark-v9.3.cjs latency",
+    "benchmark:games": "node tests/benchmark-v9.3.cjs games",
+    "report": "node tools/report-v9.3.mjs"
+  }
+}

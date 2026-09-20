@@ -1,0 +1,8 @@
+# 本地启动脚本运行时产生的文件
+.2048-ai-server.pid
+.2048-ai-server.port
+.2048-ai-server.log
+.2048-ai-response-*
+
+# 系统
+.DS_Store
