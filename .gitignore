@@ -13,3 +13,6 @@ docs/raw-v118/
 docs/_probe*.json
 docs/_play_run*.log
 docs/_v119_diag.log
+
+# 本地多版本对比测试产物（不随仓库发布）
+docs/V11_8_COMPARE_*
