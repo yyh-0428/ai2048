@@ -64,6 +64,12 @@ test('UI: new game cancels animation frames/timers and restores visible tiles',a
 test('UI: stop invalidates scheduled autoplay callback and does not cold-restart workers',async()=>{
  const h=uiHarness();try{h.hook.set({board:[2,2,...Array(14).fill(0)]});h.hook.toggleAuto();const s=h.hook.state();h.hook.finishAI({id:s.activeReq,revision:s.revision,best:'left',scores:{left:1},nodes:1,time:1,depth:1,engine:'wasm64'});h.hook.toggleAuto();for(let i=0;i<8;i++)h.flushOne();assert.equal(h.hook.state().autoplay,false);assert.equal(h.hook.state().aiBusy,false);assert.equal(h.workers.length,5);assert.ok(h.workers.every(w=>!w.terminated));}finally{await h.close();}
 });
+test('UI: autoplay overlaps next search with the configured move interval',async()=>{
+ const h=uiHarness({reduced:false});try{h.ids.get('speed').value='200';h.hook.set({board:[2,2,...Array(14).fill(0)]});h.hook.toggleAuto();let s=h.hook.state();
+  assert.equal(s.aiBusy,true);h.hook.finishAI({id:s.activeReq,revision:s.revision,best:'left',scores:{left:1},nodes:1,time:1,depth:1,engine:'wasm64'});s=h.hook.state();
+  assert.equal(s.moveCount,1);assert.equal(s.animating,true);assert.equal(s.aiBusy,true);assert.equal(s.queuedAutoResult,null);
+ }finally{await h.close();}
+});
 test('UI: reduced motion, accessible hidden overlay, progress restore, safe corrupt storage',async()=>{
  const h=uiHarness({session:{board:[2048,2,...Array(14).fill(0)],score:1234,moveCount:100}});try{assert.equal(h.hook.state().score,1234);assert.equal(h.ids.get('gameOverlay').hidden,true);h.hook.doMove('right');assert.equal(h.hook.state().animating,false);assert.equal(h.cells.length,16);assert.ok(h.cells[2].getAttribute('aria-label').includes('2048'));}finally{await h.close();}
  const bad=uiHarness({session:{board:Array(16).fill(3),score:-3}});try{assert.equal(bad.hook.state().score,0);assert.equal(bad.hook.state().board.filter(Boolean).length,2);}finally{await bad.close();}

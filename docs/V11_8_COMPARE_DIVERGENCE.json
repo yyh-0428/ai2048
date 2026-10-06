@@ -1,0 +1,1887 @@
+{
+  "date": "2026-10-06T09:30:00.838Z",
+  "builds": [
+    "V11.6",
+    "V11.7",
+    "V11.7-2",
+    "V11.8",
+    "V11.9"
+  ],
+  "rows": [
+    {
+      "id": "seed-601",
+      "board": [
+        0,
+        16,
+        512,
+        8192,
+        0,
+        2,
+        128,
+        4096,
+        0,
+        2,
+        4,
+        2048,
+        0,
+        0,
+        2,
+        512
+      ],
+      "agree": true,
+      "uniqBests": [
+        "up"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "up",
+          "depth": 4,
+          "nodes": 223892,
+          "time": 21.682874999999996,
+          "wallMs": 103.60591600000001,
+          "scores": {
+            "up": 1076815.75,
+            "down": 1074452.375,
+            "left": 232178.28125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "up",
+          "depth": 4,
+          "nodes": 223892,
+          "time": 11.969083000000012,
+          "wallMs": 12.345583000000005,
+          "scores": {
+            "up": 1076815.75,
+            "down": 1074452.375,
+            "left": 232178.28125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "up",
+          "depth": 4,
+          "nodes": 223892,
+          "time": 14.069959000000011,
+          "wallMs": 15.033875000000023,
+          "scores": {
+            "up": 1076815.75,
+            "down": 1074452.375,
+            "left": 232178.28125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "up",
+          "depth": 4,
+          "nodes": 223892,
+          "time": 13.015291000000019,
+          "wallMs": 13.50045799999998,
+          "scores": {
+            "up": 1076815.75,
+            "down": 1074452.375,
+            "left": 232178.28125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "up",
+          "depth": 4,
+          "nodes": 223892,
+          "time": 12.834708000000006,
+          "wallMs": 13.417417,
+          "scores": {
+            "up": 1076815.75,
+            "down": 1074452.375,
+            "left": 232178.28125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-602",
+      "board": [
+        0,
+        2,
+        4,
+        2,
+        2,
+        2,
+        8,
+        4,
+        0,
+        4,
+        8,
+        1024,
+        16,
+        2048,
+        4096,
+        8192
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1605266,
+          "time": 12.967500000000001,
+          "wallMs": 13.204999999999984,
+          "scores": {
+            "down": 1123176.875,
+            "right": 1123286.125,
+            "left": 963442.9375,
+            "up": 607997.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1605266,
+          "time": 10.916416999999996,
+          "wallMs": 11.076917000000009,
+          "scores": {
+            "down": 1123176.875,
+            "right": 1123286.125,
+            "left": 963442.9375,
+            "up": 607997.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1605266,
+          "time": 11.421334000000002,
+          "wallMs": 11.585124999999948,
+          "scores": {
+            "down": 1123176.875,
+            "right": 1123286.125,
+            "left": 963442.9375,
+            "up": 607997.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1605266,
+          "time": 13.020249999999976,
+          "wallMs": 13.353749999999991,
+          "scores": {
+            "down": 1123176.875,
+            "right": 1123286.125,
+            "left": 963442.9375,
+            "up": 607997.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1605266,
+          "time": 12.360124999999982,
+          "wallMs": 12.625459000000035,
+          "scores": {
+            "down": 1123176.875,
+            "right": 1123286.125,
+            "left": 963442.9375,
+            "up": 607997.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-603",
+      "board": [
+        4,
+        0,
+        4,
+        2,
+        2,
+        8,
+        8,
+        0,
+        2048,
+        1024,
+        4,
+        4,
+        8192,
+        4096,
+        2,
+        4
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1275737,
+          "time": 3.236500000000035,
+          "wallMs": 3.467333999999994,
+          "scores": {
+            "down": 1110265.25,
+            "left": 1108589.375,
+            "right": 889129.3125,
+            "up": 772537.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1275737,
+          "time": 2.742166999999995,
+          "wallMs": 2.8877919999999904,
+          "scores": {
+            "down": 1110265.25,
+            "left": 1108589.375,
+            "right": 889129.3125,
+            "up": 772537.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1275737,
+          "time": 2.525165999999956,
+          "wallMs": 2.6727500000000077,
+          "scores": {
+            "down": 1110265.25,
+            "left": 1108589.375,
+            "right": 889129.3125,
+            "up": 772537.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1275737,
+          "time": 2.5884169999999926,
+          "wallMs": 2.744833999999969,
+          "scores": {
+            "down": 1110265.25,
+            "left": 1108589.375,
+            "right": 889129.3125,
+            "up": 772537.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1339474,
+          "time": 69.51120800000001,
+          "wallMs": 69.81433299999998,
+          "scores": {
+            "down": 1110265.25,
+            "left": 1108589.375,
+            "right": 889129.3125,
+            "up": 772537.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-604",
+      "board": [
+        4,
+        2,
+        4,
+        2,
+        2,
+        8,
+        2,
+        4,
+        0,
+        2,
+        1024,
+        2048,
+        8,
+        2,
+        4096,
+        8192
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 604948,
+          "time": 12.598082999999974,
+          "wallMs": 12.891707999999994,
+          "scores": {
+            "down": 1120626.5,
+            "left": 414845.3125,
+            "up": 1116506.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 604580,
+          "time": 9.44037499999996,
+          "wallMs": 9.653957999999989,
+          "scores": {
+            "down": 1120626.5,
+            "left": 414845.3125,
+            "up": 1116506.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 604740,
+          "time": 8.226749999999981,
+          "wallMs": 8.398333999999977,
+          "scores": {
+            "down": 1120626.5,
+            "left": 414845.3125,
+            "up": 1116506.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 604740,
+          "time": 8.256209000000013,
+          "wallMs": 8.479624999999999,
+          "scores": {
+            "down": 1120626.5,
+            "left": 414845.3125,
+            "up": 1116506.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 700788,
+          "time": 63.51804199999998,
+          "wallMs": 63.79845799999998,
+          "scores": {
+            "down": 1120626.5,
+            "left": 414845.3125,
+            "up": 1116506.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-605",
+      "board": [
+        4,
+        4,
+        4,
+        0,
+        32,
+        16,
+        4,
+        2,
+        4096,
+        1024,
+        0,
+        0,
+        8192,
+        2048,
+        2,
+        0
+      ],
+      "agree": true,
+      "uniqBests": [
+        "up"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 2812205,
+          "time": 7.256167000000005,
+          "wallMs": 7.441833999999972,
+          "scores": {
+            "left": 1119819.875,
+            "down": 1119267.125,
+            "up": 1119940.25,
+            "right": 558517.0625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 2812205,
+          "time": 6.669332999999995,
+          "wallMs": 6.932084000000032,
+          "scores": {
+            "left": 1119819.875,
+            "down": 1119267.125,
+            "up": 1119940.25,
+            "right": 558517.0625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 2812205,
+          "time": 5.4368330000000356,
+          "wallMs": 5.624500000000012,
+          "scores": {
+            "left": 1119819.875,
+            "down": 1119267.125,
+            "up": 1119940.25,
+            "right": 558517.0625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 2812205,
+          "time": 5.357792000000018,
+          "wallMs": 5.549374999999998,
+          "scores": {
+            "left": 1119819.875,
+            "down": 1119267.125,
+            "up": 1119940.25,
+            "right": 558517.0625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 2812205,
+          "time": 5.592291000000046,
+          "wallMs": 5.76887499999998,
+          "scores": {
+            "left": 1119819.875,
+            "down": 1119267.125,
+            "up": 1119940.25,
+            "right": 558517.0625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-606",
+      "board": [
+        2,
+        4,
+        2,
+        2,
+        2,
+        4,
+        16,
+        2,
+        1024,
+        64,
+        0,
+        0,
+        8192,
+        4096,
+        2048,
+        2
+      ],
+      "agree": true,
+      "uniqBests": [
+        "left"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "left",
+          "depth": 5,
+          "nodes": 1673093,
+          "time": 3.934750000000065,
+          "wallMs": 4.0529580000000465,
+          "scores": {
+            "down": 1097378,
+            "left": 1111498.75,
+            "right": 792688,
+            "up": 541373.6875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "left",
+          "depth": 5,
+          "nodes": 1673093,
+          "time": 3.7759999999999536,
+          "wallMs": 3.8795410000000174,
+          "scores": {
+            "down": 1097378,
+            "left": 1111498.75,
+            "right": 792688,
+            "up": 541373.6875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "left",
+          "depth": 5,
+          "nodes": 1673093,
+          "time": 3.657624999999939,
+          "wallMs": 3.75750000000005,
+          "scores": {
+            "down": 1097378,
+            "left": 1111498.75,
+            "right": 792688,
+            "up": 541373.6875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "left",
+          "depth": 5,
+          "nodes": 1673093,
+          "time": 3.8273750000000746,
+          "wallMs": 3.94395899999995,
+          "scores": {
+            "down": 1097378,
+            "left": 1111498.75,
+            "right": 792688,
+            "up": 541373.6875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "left",
+          "depth": 5,
+          "nodes": 1673094,
+          "time": 3.6992500000000064,
+          "wallMs": 3.8273750000000746,
+          "scores": {
+            "down": 1097378,
+            "left": 1111498.75,
+            "right": 792688,
+            "up": 541373.6875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-608",
+      "board": [
+        8192,
+        4096,
+        2048,
+        4,
+        1024,
+        64,
+        32,
+        2,
+        2,
+        4,
+        8,
+        0,
+        4,
+        2,
+        4,
+        0
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 387386,
+          "time": 7.057999999999993,
+          "wallMs": 7.155459000000064,
+          "scores": {
+            "right": 1108056.125,
+            "down": 1105313.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 386868,
+          "time": 7.404916999999955,
+          "wallMs": 7.5020829999999705,
+          "scores": {
+            "right": 1108056.125,
+            "down": 1105313.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 386954,
+          "time": 7.575042000000053,
+          "wallMs": 7.673584000000005,
+          "scores": {
+            "right": 1108056.125,
+            "down": 1105313.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 386916,
+          "time": 7.339207999999985,
+          "wallMs": 7.456749999999943,
+          "scores": {
+            "right": 1108056.125,
+            "down": 1105313.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 465075,
+          "time": 50.29558399999996,
+          "wallMs": 50.500541999999996,
+          "scores": {
+            "right": 1108056.125,
+            "down": 1105313.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-610",
+      "board": [
+        0,
+        0,
+        0,
+        2,
+        2,
+        4,
+        8,
+        2,
+        128,
+        512,
+        32,
+        16,
+        512,
+        2048,
+        4096,
+        8192
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 93139,
+          "time": 0.7045839999999544,
+          "wallMs": 0.9065000000000509,
+          "scores": {
+            "down": 877250,
+            "left": 874924.1875,
+            "up": 197608.90625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 93139,
+          "time": 0.43929100000002563,
+          "wallMs": 0.53774999999996,
+          "scores": {
+            "down": 877250,
+            "left": 874924.1875,
+            "up": 197608.90625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 93139,
+          "time": 0.4297909999999092,
+          "wallMs": 0.5386249999999109,
+          "scores": {
+            "down": 877250,
+            "left": 874924.1875,
+            "up": 197608.90625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 93139,
+          "time": 0.5686670000000049,
+          "wallMs": 0.6877079999999296,
+          "scores": {
+            "down": 877250,
+            "left": 874924.1875,
+            "up": 197608.90625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 93139,
+          "time": 0.4070000000000391,
+          "wallMs": 0.5254580000000715,
+          "scores": {
+            "down": 877250,
+            "left": 874924.1875,
+            "up": 197608.90625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-612",
+      "board": [
+        16,
+        2,
+        4096,
+        8192,
+        2,
+        4,
+        1024,
+        2048,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        2,
+        4
+      ],
+      "agree": true,
+      "uniqBests": [
+        "left"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 368774,
+          "time": 0.8633330000000115,
+          "wallMs": 0.953125,
+          "scores": {
+            "up": 1115333.875,
+            "right": 1113473.75,
+            "left": 1116070.625,
+            "down": 899625.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 368774,
+          "time": 0.7476669999999785,
+          "wallMs": 0.8345419999999422,
+          "scores": {
+            "up": 1115333.875,
+            "right": 1113473.75,
+            "left": 1116070.625,
+            "down": 899625.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 368774,
+          "time": 0.734375,
+          "wallMs": 0.8129579999999805,
+          "scores": {
+            "up": 1115333.875,
+            "right": 1113473.75,
+            "left": 1116070.625,
+            "down": 899625.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 368774,
+          "time": 0.7487910000000966,
+          "wallMs": 0.8482079999999996,
+          "scores": {
+            "up": 1115333.875,
+            "right": 1113473.75,
+            "left": 1116070.625,
+            "down": 899625.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 368774,
+          "time": 0.8623340000000326,
+          "wallMs": 0.9697499999999764,
+          "scores": {
+            "up": 1115333.875,
+            "right": 1113473.75,
+            "left": 1116070.625,
+            "down": 899625.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-614",
+      "board": [
+        2,
+        8,
+        0,
+        2,
+        4,
+        2,
+        8,
+        4,
+        2048,
+        1024,
+        2,
+        0,
+        8192,
+        4096,
+        2,
+        8
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1270558,
+          "time": 2.5174999999999272,
+          "wallMs": 2.6013750000000755,
+          "scores": {
+            "down": 1117684.5,
+            "left": 1116836.5,
+            "right": 559257.1875,
+            "up": 1116223.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1270558,
+          "time": 2.5278749999999945,
+          "wallMs": 2.6089580000000296,
+          "scores": {
+            "down": 1117684.5,
+            "left": 1116836.5,
+            "right": 559257.1875,
+            "up": 1116223.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1270558,
+          "time": 2.731999999999971,
+          "wallMs": 2.8210000000000264,
+          "scores": {
+            "down": 1117684.5,
+            "left": 1116836.5,
+            "right": 559257.1875,
+            "up": 1116223.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1270558,
+          "time": 2.3854169999999613,
+          "wallMs": 2.498124999999959,
+          "scores": {
+            "down": 1117684.5,
+            "left": 1116836.5,
+            "right": 559257.1875,
+            "up": 1116223.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1415111,
+          "time": 58.707250000000045,
+          "wallMs": 58.85145799999998,
+          "scores": {
+            "down": 1117684.5,
+            "left": 1116836.5,
+            "right": 559257.1875,
+            "up": 1116223.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-615",
+      "board": [
+        8,
+        2,
+        4,
+        0,
+        2,
+        16,
+        8,
+        4,
+        8192,
+        512,
+        512,
+        2,
+        2,
+        4096,
+        2048,
+        128
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 508503,
+          "time": 8.714875000000006,
+          "wallMs": 8.929124999999999,
+          "scores": {
+            "right": 436586.40625,
+            "left": 182462.5,
+            "up": 610.7517700195312
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 508421,
+          "time": 7.4945410000000265,
+          "wallMs": 7.62783300000001,
+          "scores": {
+            "right": 436586.40625,
+            "left": 182462.5,
+            "up": 610.7517700195312
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 508421,
+          "time": 7.566291999999976,
+          "wallMs": 7.683957999999961,
+          "scores": {
+            "right": 436586.40625,
+            "left": 182462.5,
+            "up": 610.7517700195312
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 508441,
+          "time": 7.367333999999914,
+          "wallMs": 7.488083000000074,
+          "scores": {
+            "right": 436586.40625,
+            "left": 182462.5,
+            "up": 610.7517700195312
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 5,
+          "nodes": 635002,
+          "time": 65.23474999999996,
+          "wallMs": 65.43154200000004,
+          "scores": {
+            "right": 436586.40625,
+            "left": 182462.5,
+            "up": 610.7517700195312
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-616",
+      "board": [
+        0,
+        4,
+        0,
+        2,
+        0,
+        16,
+        8,
+        8,
+        2,
+        4,
+        1024,
+        4096,
+        4,
+        2,
+        2048,
+        8192
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 194488,
+          "time": 1.1149580000000014,
+          "wallMs": 1.2610839999999826,
+          "scores": {
+            "right": 1123400.75,
+            "up": 748341,
+            "left": 1108323.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 194488,
+          "time": 0.6587090000000444,
+          "wallMs": 0.7417080000000169,
+          "scores": {
+            "right": 1123400.75,
+            "up": 748341,
+            "left": 1108323.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 194488,
+          "time": 0.6162499999999227,
+          "wallMs": 0.6797080000000051,
+          "scores": {
+            "right": 1123400.75,
+            "up": 748341,
+            "left": 1108323.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 194488,
+          "time": 0.6196250000000418,
+          "wallMs": 0.6941249999999854,
+          "scores": {
+            "right": 1123400.75,
+            "up": 748341,
+            "left": 1108323.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 194488,
+          "time": 0.5831660000000056,
+          "wallMs": 0.6556249999999864,
+          "scores": {
+            "right": 1123400.75,
+            "up": 748341,
+            "left": 1108323.625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-617",
+      "board": [
+        4,
+        2,
+        1024,
+        8192,
+        2,
+        8,
+        2,
+        4096,
+        4,
+        2,
+        2,
+        2048,
+        8,
+        0,
+        0,
+        4
+      ],
+      "agree": true,
+      "uniqBests": [
+        "up"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 1903643,
+          "time": 3.9039999999999964,
+          "wallMs": 3.9889590000000226,
+          "scores": {
+            "right": 1120322.625,
+            "up": 1121434.75,
+            "down": 810394.1875,
+            "left": 778981.9375
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 1903643,
+          "time": 3.8452909999999747,
+          "wallMs": 3.938041999999996,
+          "scores": {
+            "right": 1120322.625,
+            "up": 1121434.75,
+            "down": 810394.1875,
+            "left": 778981.9375
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 1903643,
+          "time": 4.045000000000073,
+          "wallMs": 4.152042000000051,
+          "scores": {
+            "right": 1120322.625,
+            "up": 1121434.75,
+            "down": 810394.1875,
+            "left": 778981.9375
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 1903643,
+          "time": 3.980458999999996,
+          "wallMs": 4.101417000000083,
+          "scores": {
+            "right": 1120322.625,
+            "up": 1121434.75,
+            "down": 810394.1875,
+            "left": 778981.9375
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "up",
+          "depth": 5,
+          "nodes": 2027903,
+          "time": 58.685834,
+          "wallMs": 58.868791999999985,
+          "scores": {
+            "right": 1120322.625,
+            "up": 1121434.75,
+            "down": 810394.1875,
+            "left": 778981.9375
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-618",
+      "board": [
+        4,
+        8,
+        4096,
+        8192,
+        4,
+        8,
+        1024,
+        2048,
+        0,
+        8,
+        2,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 566591,
+          "time": 2.1397499999999354,
+          "wallMs": 2.2863330000000133,
+          "scores": {
+            "up": 1127389.125,
+            "right": 1127990.375,
+            "left": 1127850.5,
+            "down": 643043.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 566591,
+          "time": 2.0525420000000167,
+          "wallMs": 2.2067500000000564,
+          "scores": {
+            "up": 1127389.125,
+            "right": 1127990.375,
+            "left": 1127850.5,
+            "down": 643043.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 566591,
+          "time": 1.7613340000000335,
+          "wallMs": 1.8702499999999418,
+          "scores": {
+            "up": 1127389.125,
+            "right": 1127990.375,
+            "left": 1127850.5,
+            "down": 643043.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 566591,
+          "time": 1.9810840000000098,
+          "wallMs": 2.0922500000000355,
+          "scores": {
+            "up": 1127389.125,
+            "right": 1127990.375,
+            "left": 1127850.5,
+            "down": 643043.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 566591,
+          "time": 4.1940830000000915,
+          "wallMs": 4.316958,
+          "scores": {
+            "up": 1127389.125,
+            "right": 1127990.375,
+            "left": 1127850.5,
+            "down": 643043.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-619",
+      "board": [
+        2,
+        2,
+        8,
+        8,
+        2,
+        4,
+        8,
+        4,
+        0,
+        0,
+        16,
+        1024,
+        2,
+        2048,
+        4096,
+        8192
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1693039,
+          "time": 3.275833999999918,
+          "wallMs": 3.376125000000002,
+          "scores": {
+            "down": 1121961.25,
+            "right": 1110566.5,
+            "left": 877186.0625,
+            "up": 583820.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1693039,
+          "time": 3.443125000000009,
+          "wallMs": 3.5476660000000493,
+          "scores": {
+            "down": 1121961.25,
+            "right": 1110566.5,
+            "left": 877186.0625,
+            "up": 583820.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1693039,
+          "time": 3.4069169999999076,
+          "wallMs": 3.5136660000000575,
+          "scores": {
+            "down": 1121961.25,
+            "right": 1110566.5,
+            "left": 877186.0625,
+            "up": 583820.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1693039,
+          "time": 3.8768330000000333,
+          "wallMs": 3.988707999999974,
+          "scores": {
+            "down": 1121961.25,
+            "right": 1110566.5,
+            "left": 877186.0625,
+            "up": 583820.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 5,
+          "nodes": 1693039,
+          "time": 3.8090409999999792,
+          "wallMs": 3.950207999999975,
+          "scores": {
+            "down": 1121961.25,
+            "right": 1110566.5,
+            "left": 877186.0625,
+            "up": 583820.875
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-621",
+      "board": [
+        8,
+        8,
+        2048,
+        8192,
+        4,
+        16,
+        1024,
+        4096,
+        0,
+        32,
+        8,
+        2,
+        0,
+        4,
+        2,
+        0
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 305010,
+          "time": 0.9585419999999658,
+          "wallMs": 1.05112500000007,
+          "scores": {
+            "right": 1116546.5,
+            "down": 730897.4375,
+            "left": 836931.5625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 305010,
+          "time": 1.202874999999949,
+          "wallMs": 1.2795419999999922,
+          "scores": {
+            "right": 1116546.5,
+            "down": 730897.4375,
+            "left": 836931.5625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 305010,
+          "time": 1.0628750000000764,
+          "wallMs": 1.13799999999992,
+          "scores": {
+            "right": 1116546.5,
+            "down": 730897.4375,
+            "left": 836931.5625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 305010,
+          "time": 0.9604580000000169,
+          "wallMs": 1.0441250000000082,
+          "scores": {
+            "right": 1116546.5,
+            "down": 730897.4375,
+            "left": 836931.5625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 305010,
+          "time": 0.8528340000000298,
+          "wallMs": 0.9383749999999509,
+          "scores": {
+            "right": 1116546.5,
+            "down": 730897.4375,
+            "left": 836931.5625
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-622",
+      "board": [
+        0,
+        32,
+        2048,
+        16384,
+        0,
+        0,
+        16,
+        8,
+        0,
+        0,
+        2,
+        4,
+        0,
+        0,
+        4,
+        2
+      ],
+      "agree": true,
+      "uniqBests": [
+        "down"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 285360,
+          "time": 0.8591660000000729,
+          "wallMs": 0.9235000000001037,
+          "scores": {
+            "left": 1161633.25,
+            "down": 1255500.25
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 285360,
+          "time": 0.8477090000000089,
+          "wallMs": 0.9084589999999935,
+          "scores": {
+            "left": 1161633.25,
+            "down": 1255500.25
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 285360,
+          "time": 0.8194999999999482,
+          "wallMs": 0.8791250000000446,
+          "scores": {
+            "left": 1161633.25,
+            "down": 1255500.25
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 285360,
+          "time": 0.7687499999999545,
+          "wallMs": 0.8307080000000724,
+          "scores": {
+            "left": 1161633.25,
+            "down": 1255500.25
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "down",
+          "depth": 4,
+          "nodes": 285360,
+          "time": 0.848165999999992,
+          "wallMs": 0.91700000000003,
+          "scores": {
+            "left": 1161633.25,
+            "down": 1255500.25
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-623",
+      "board": [
+        0,
+        0,
+        0,
+        4,
+        0,
+        2,
+        8,
+        4,
+        0,
+        4,
+        32,
+        8,
+        16384,
+        2048,
+        16,
+        4
+      ],
+      "agree": true,
+      "uniqBests": [
+        "left"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 477118,
+          "time": 1.1054579999999987,
+          "wallMs": 1.1632080000000542,
+          "scores": {
+            "down": 1238100.875,
+            "left": 1239190.75,
+            "up": 864686.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 477118,
+          "time": 1.119792000000075,
+          "wallMs": 1.1760830000000624,
+          "scores": {
+            "down": 1238100.875,
+            "left": 1239190.75,
+            "up": 864686.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 477118,
+          "time": 1.341957999999977,
+          "wallMs": 1.3969170000000304,
+          "scores": {
+            "down": 1238100.875,
+            "left": 1239190.75,
+            "up": 864686.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 477118,
+          "time": 1.0636670000000095,
+          "wallMs": 1.1263750000000528,
+          "scores": {
+            "down": 1238100.875,
+            "left": 1239190.75,
+            "up": 864686.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "left",
+          "depth": 4,
+          "nodes": 477118,
+          "time": 1.039625000000001,
+          "wallMs": 1.1007500000000618,
+          "scores": {
+            "down": 1238100.875,
+            "left": 1239190.75,
+            "up": 864686.5
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-624",
+      "board": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        2,
+        4,
+        8,
+        4,
+        8,
+        2,
+        2048,
+        16384
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 555760,
+          "time": 1.275792000000024,
+          "wallMs": 1.3324579999999742,
+          "scores": {
+            "right": 1274404.75,
+            "left": 1273861,
+            "up": 905237.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 555760,
+          "time": 1.3120420000000195,
+          "wallMs": 1.3632910000000038,
+          "scores": {
+            "right": 1274404.75,
+            "left": 1273861,
+            "up": 905237.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 555760,
+          "time": 1.274041000000011,
+          "wallMs": 1.3284999999999627,
+          "scores": {
+            "right": 1274404.75,
+            "left": 1273861,
+            "up": 905237.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 555760,
+          "time": 1.2403749999999718,
+          "wallMs": 1.2995409999999765,
+          "scores": {
+            "right": 1274404.75,
+            "left": 1273861,
+            "up": 905237.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 555760,
+          "time": 1.2512499999999136,
+          "wallMs": 1.3179590000000871,
+          "scores": {
+            "right": 1274404.75,
+            "left": 1273861,
+            "up": 905237.8125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    },
+    {
+      "id": "seed-625",
+      "board": [
+        16384,
+        2048,
+        128,
+        2,
+        2,
+        8,
+        4,
+        0,
+        8,
+        4,
+        8,
+        4,
+        2,
+        0,
+        0,
+        0
+      ],
+      "agree": true,
+      "uniqBests": [
+        "right"
+      ],
+      "res": {
+        "V11.6": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 424880,
+          "time": 0.8735830000000533,
+          "wallMs": 0.9253749999999172,
+          "scores": {
+            "up": 1243741,
+            "right": 1250283.125,
+            "down": 896941.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 424880,
+          "time": 0.8751250000000255,
+          "wallMs": 0.9220839999999271,
+          "scores": {
+            "up": 1243741,
+            "right": 1250283.125,
+            "down": 896941.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.7-2": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 424880,
+          "time": 0.8740420000000313,
+          "wallMs": 0.9207079999999905,
+          "scores": {
+            "up": 1243741,
+            "right": 1250283.125,
+            "down": 896941.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.8": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 424880,
+          "time": 0.87337500000001,
+          "wallMs": 0.9273749999999836,
+          "scores": {
+            "up": 1243741,
+            "right": 1250283.125,
+            "down": 896941.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        },
+        "V11.9": {
+          "best": "right",
+          "depth": 4,
+          "nodes": 424880,
+          "time": 0.8514579999999796,
+          "wallMs": 0.9104160000000547,
+          "scores": {
+            "up": 1243741,
+            "right": 1250283.125,
+            "down": 896941.125
+          },
+          "engine": "v10.5-wasm-expectimax"
+        }
+      }
+    }
+  ]
+}

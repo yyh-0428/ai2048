@@ -1,0 +1,21 @@
+{
+  "name": "2048-ai-local",
+  "version": "11.6.0",
+  "private": true,
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "build:core": "node tools/extend-core.cjs && node tools/build.mjs",
+    "test": "node tools/test.mjs",
+    "benchmark": "node tools/benchmark-wide.cjs",
+    "benchmark:latency": "node tools/benchmark.cjs latency",
+    "benchmark:games": "node tools/benchmark.cjs games 10 1",
+    "benchmark:risk": "node tests/benchmark-v10.cjs",
+    "stress": "node tests/stress-v10.cjs",
+    "stress:wide": "node tests/stress-wide-v10.cjs",
+    "report": "node tools/report-wide.cjs",
+    "benchmark:wide": "node tools/benchmark-wide.cjs",
+    "benchmark:v107": "node tools/benchmark-v107.cjs",
+    "benchmark:late": "node tools/late-game.cjs compare",
+    "benchmark:v116": "node tools/benchmark-v116.cjs"
+  }
+}

@@ -1,0 +1,615 @@
+{
+  "date": "2026-10-05T17:23:22Z",
+  "modelId": "v118-escape-8bbc1db5048b94bf",
+  "modelSHA256": "e1a97c19a2a89a93abe1af90f00228a5a0f661f73fe7ad540df1382e58520ee2",
+  "dataSHA256": "917cdfa0a7192c7ba32204b53d0f7b1b8e1ad44a3cd5829929b9bf66e64f7e2f",
+  "examples": 17114,
+  "trainExamples": 14235,
+  "heldOutExamples": 2879,
+  "trainSeedClusters": [
+    1,
+    2,
+    3,
+    4,
+    101,
+    102,
+    103,
+    601,
+    602,
+    603,
+    604,
+    606,
+    608,
+    612,
+    614,
+    616,
+    617,
+    618,
+    619,
+    621,
+    622,
+    623,
+    624
+  ],
+  "heldOutSeedClusters": [
+    5,
+    605,
+    610,
+    615,
+    625
+  ],
+  "recipe": {
+    "epochs": 30,
+    "batch": 256,
+    "hiddenUnits": 32,
+    "ensemble": 3,
+    "bootstrap": "whole seed clusters",
+    "optimizer": "Adam",
+    "learningRate": 0.002,
+    "conditionalHeads": [
+      256,
+      1024,
+      4096
+    ],
+    "threads": 1,
+    "epochSelection": "fixed final epoch"
+  },
+  "members": [
+    {
+      "seed": 11801,
+      "bootstrapGroups": [
+        618,
+        601,
+        619,
+        604,
+        623,
+        4,
+        606,
+        601,
+        621,
+        4,
+        616,
+        619,
+        103,
+        603,
+        616,
+        616,
+        622,
+        601,
+        616,
+        4,
+        608,
+        101,
+        4
+      ],
+      "epochs": [
+        {
+          "epoch": 1,
+          "heldOutCrossEntropy": 0.516286686379887
+        },
+        {
+          "epoch": 2,
+          "heldOutCrossEntropy": 0.49621286689301475
+        },
+        {
+          "epoch": 3,
+          "heldOutCrossEntropy": 0.4816473559695952
+        },
+        {
+          "epoch": 4,
+          "heldOutCrossEntropy": 0.4704865604355557
+        },
+        {
+          "epoch": 5,
+          "heldOutCrossEntropy": 0.4675666272890972
+        },
+        {
+          "epoch": 6,
+          "heldOutCrossEntropy": 0.4682645336392655
+        },
+        {
+          "epoch": 7,
+          "heldOutCrossEntropy": 0.4637327921575114
+        },
+        {
+          "epoch": 8,
+          "heldOutCrossEntropy": 0.45976322159392763
+        },
+        {
+          "epoch": 9,
+          "heldOutCrossEntropy": 0.45986402468012194
+        },
+        {
+          "epoch": 10,
+          "heldOutCrossEntropy": 0.45239341017353246
+        },
+        {
+          "epoch": 11,
+          "heldOutCrossEntropy": 0.4485580017722646
+        },
+        {
+          "epoch": 12,
+          "heldOutCrossEntropy": 0.445076164293834
+        },
+        {
+          "epoch": 13,
+          "heldOutCrossEntropy": 0.4429568184416766
+        },
+        {
+          "epoch": 14,
+          "heldOutCrossEntropy": 0.43941797897563484
+        },
+        {
+          "epoch": 15,
+          "heldOutCrossEntropy": 0.4357127009386825
+        },
+        {
+          "epoch": 16,
+          "heldOutCrossEntropy": 0.43354321385038397
+        },
+        {
+          "epoch": 17,
+          "heldOutCrossEntropy": 0.4376351083706208
+        },
+        {
+          "epoch": 18,
+          "heldOutCrossEntropy": 0.4312987539785849
+        },
+        {
+          "epoch": 19,
+          "heldOutCrossEntropy": 0.43158237387734893
+        },
+        {
+          "epoch": 20,
+          "heldOutCrossEntropy": 0.42986371815914526
+        },
+        {
+          "epoch": 21,
+          "heldOutCrossEntropy": 0.43132512263741846
+        },
+        {
+          "epoch": 22,
+          "heldOutCrossEntropy": 0.4255170264076834
+        },
+        {
+          "epoch": 23,
+          "heldOutCrossEntropy": 0.42503288075702544
+        },
+        {
+          "epoch": 24,
+          "heldOutCrossEntropy": 0.42720449768471436
+        },
+        {
+          "epoch": 25,
+          "heldOutCrossEntropy": 0.42163026001928666
+        },
+        {
+          "epoch": 26,
+          "heldOutCrossEntropy": 0.4243460625164856
+        },
+        {
+          "epoch": 27,
+          "heldOutCrossEntropy": 0.4243941136856652
+        },
+        {
+          "epoch": 28,
+          "heldOutCrossEntropy": 0.42274444268987516
+        },
+        {
+          "epoch": 29,
+          "heldOutCrossEntropy": 0.42025681321627356
+        },
+        {
+          "epoch": 30,
+          "heldOutCrossEntropy": 0.42139823020661404
+        }
+      ],
+      "heldOut": [
+        {
+          "horizon": 256,
+          "brier": 0.11251508662253122,
+          "auc": 0.8422470253636843,
+          "positiveRate": 0.8009725599166377,
+          "predictedMean": 0.8217953339347661,
+          "accuracy": 0.8416116707189997
+        },
+        {
+          "horizon": 1024,
+          "brier": 0.15696751054089614,
+          "auc": 0.8265571493622298,
+          "positiveRate": 0.667245571378951,
+          "predictedMean": 0.6898936845283903,
+          "accuracy": 0.76276484890587
+        },
+        {
+          "horizon": 4096,
+          "brier": 0.12994139148347533,
+          "auc": 0.8248893346998408,
+          "positiveRate": 0.21014241055922195,
+          "predictedMean": 0.22581346260161703,
+          "accuracy": 0.8131295588746092
+        }
+      ]
+    },
+    {
+      "seed": 11802,
+      "bootstrapGroups": [
+        618,
+        103,
+        617,
+        101,
+        617,
+        1,
+        617,
+        3,
+        1,
+        608,
+        622,
+        621,
+        617,
+        612,
+        2,
+        2,
+        601,
+        604,
+        101,
+        624,
+        624,
+        624,
+        101
+      ],
+      "epochs": [
+        {
+          "epoch": 1,
+          "heldOutCrossEntropy": 0.5320288566420213
+        },
+        {
+          "epoch": 2,
+          "heldOutCrossEntropy": 0.5034025803960294
+        },
+        {
+          "epoch": 3,
+          "heldOutCrossEntropy": 0.47482566127454284
+        },
+        {
+          "epoch": 4,
+          "heldOutCrossEntropy": 0.47031044855343324
+        },
+        {
+          "epoch": 5,
+          "heldOutCrossEntropy": 0.477134692663238
+        },
+        {
+          "epoch": 6,
+          "heldOutCrossEntropy": 0.49196783334121197
+        },
+        {
+          "epoch": 7,
+          "heldOutCrossEntropy": 0.4725771050106025
+        },
+        {
+          "epoch": 8,
+          "heldOutCrossEntropy": 0.45708087080344667
+        },
+        {
+          "epoch": 9,
+          "heldOutCrossEntropy": 0.46889670756953455
+        },
+        {
+          "epoch": 10,
+          "heldOutCrossEntropy": 0.47097995715670177
+        },
+        {
+          "epoch": 11,
+          "heldOutCrossEntropy": 0.463639344590394
+        },
+        {
+          "epoch": 12,
+          "heldOutCrossEntropy": 0.4614050689174756
+        },
+        {
+          "epoch": 13,
+          "heldOutCrossEntropy": 0.47551003827178817
+        },
+        {
+          "epoch": 14,
+          "heldOutCrossEntropy": 0.45856696540190695
+        },
+        {
+          "epoch": 15,
+          "heldOutCrossEntropy": 0.4608312714762436
+        },
+        {
+          "epoch": 16,
+          "heldOutCrossEntropy": 0.4589413575584341
+        },
+        {
+          "epoch": 17,
+          "heldOutCrossEntropy": 0.4589715539037234
+        },
+        {
+          "epoch": 18,
+          "heldOutCrossEntropy": 0.4722162789211019
+        },
+        {
+          "epoch": 19,
+          "heldOutCrossEntropy": 0.46831017484092546
+        },
+        {
+          "epoch": 20,
+          "heldOutCrossEntropy": 0.45962004982052684
+        },
+        {
+          "epoch": 21,
+          "heldOutCrossEntropy": 0.4461892217934117
+        },
+        {
+          "epoch": 22,
+          "heldOutCrossEntropy": 0.46062999477551203
+        },
+        {
+          "epoch": 23,
+          "heldOutCrossEntropy": 0.4555442176129185
+        },
+        {
+          "epoch": 24,
+          "heldOutCrossEntropy": 0.46053672131647744
+        },
+        {
+          "epoch": 25,
+          "heldOutCrossEntropy": 0.46744068625230645
+        },
+        {
+          "epoch": 26,
+          "heldOutCrossEntropy": 0.4806228083109394
+        },
+        {
+          "epoch": 27,
+          "heldOutCrossEntropy": 0.461673137910053
+        },
+        {
+          "epoch": 28,
+          "heldOutCrossEntropy": 0.4588439434846838
+        },
+        {
+          "epoch": 29,
+          "heldOutCrossEntropy": 0.46454620127902957
+        },
+        {
+          "epoch": 30,
+          "heldOutCrossEntropy": 0.4700268507828525
+        }
+      ],
+      "heldOut": [
+        {
+          "horizon": 256,
+          "brier": 0.11532148375756347,
+          "auc": 0.8469354548192817,
+          "positiveRate": 0.8009725599166377,
+          "predictedMean": 0.8397117281347412,
+          "accuracy": 0.8329281000347343
+        },
+        {
+          "horizon": 1024,
+          "brier": 0.1688948069907994,
+          "auc": 0.8304885351336019,
+          "positiveRate": 0.667245571378951,
+          "predictedMean": 0.7417209761617425,
+          "accuracy": 0.7460923931920805
+        },
+        {
+          "horizon": 4096,
+          "brier": 0.17915060062833216,
+          "auc": 0.7480792574340188,
+          "positiveRate": 0.21014241055922195,
+          "predictedMean": 0.36747166882649485,
+          "accuracy": 0.7453977075373394
+        }
+      ]
+    },
+    {
+      "seed": 11803,
+      "bootstrapGroups": [
+        614,
+        622,
+        2,
+        614,
+        4,
+        614,
+        616,
+        612,
+        601,
+        622,
+        1,
+        612,
+        2,
+        102,
+        102,
+        101,
+        604,
+        103,
+        4,
+        612,
+        612,
+        101,
+        621
+      ],
+      "epochs": [
+        {
+          "epoch": 1,
+          "heldOutCrossEntropy": 0.525062911049738
+        },
+        {
+          "epoch": 2,
+          "heldOutCrossEntropy": 0.5018014109411336
+        },
+        {
+          "epoch": 3,
+          "heldOutCrossEntropy": 0.48580825758963414
+        },
+        {
+          "epoch": 4,
+          "heldOutCrossEntropy": 0.4768488818441033
+        },
+        {
+          "epoch": 5,
+          "heldOutCrossEntropy": 0.4688437876690277
+        },
+        {
+          "epoch": 6,
+          "heldOutCrossEntropy": 0.4668819955742147
+        },
+        {
+          "epoch": 7,
+          "heldOutCrossEntropy": 0.46465568907403304
+        },
+        {
+          "epoch": 8,
+          "heldOutCrossEntropy": 0.46274647973719585
+        },
+        {
+          "epoch": 9,
+          "heldOutCrossEntropy": 0.4638648855291516
+        },
+        {
+          "epoch": 10,
+          "heldOutCrossEntropy": 0.46373089173106036
+        },
+        {
+          "epoch": 11,
+          "heldOutCrossEntropy": 0.46515936888824816
+        },
+        {
+          "epoch": 12,
+          "heldOutCrossEntropy": 0.46008820472022055
+        },
+        {
+          "epoch": 13,
+          "heldOutCrossEntropy": 0.460910020294962
+        },
+        {
+          "epoch": 14,
+          "heldOutCrossEntropy": 0.4620926467250301
+        },
+        {
+          "epoch": 15,
+          "heldOutCrossEntropy": 0.45906145706312446
+        },
+        {
+          "epoch": 16,
+          "heldOutCrossEntropy": 0.4567611886736068
+        },
+        {
+          "epoch": 17,
+          "heldOutCrossEntropy": 0.45514473348637674
+        },
+        {
+          "epoch": 18,
+          "heldOutCrossEntropy": 0.4515091954699184
+        },
+        {
+          "epoch": 19,
+          "heldOutCrossEntropy": 0.45216266906807845
+        },
+        {
+          "epoch": 20,
+          "heldOutCrossEntropy": 0.451539732230184
+        },
+        {
+          "epoch": 21,
+          "heldOutCrossEntropy": 0.45763146620133127
+        },
+        {
+          "epoch": 22,
+          "heldOutCrossEntropy": 0.45637295549476753
+        },
+        {
+          "epoch": 23,
+          "heldOutCrossEntropy": 0.45400991507855293
+        },
+        {
+          "epoch": 24,
+          "heldOutCrossEntropy": 0.4492884791847135
+        },
+        {
+          "epoch": 25,
+          "heldOutCrossEntropy": 0.44639260457905694
+        },
+        {
+          "epoch": 26,
+          "heldOutCrossEntropy": 0.4596665265196571
+        },
+        {
+          "epoch": 27,
+          "heldOutCrossEntropy": 0.45133533344856464
+        },
+        {
+          "epoch": 28,
+          "heldOutCrossEntropy": 0.44881458896149695
+        },
+        {
+          "epoch": 29,
+          "heldOutCrossEntropy": 0.44531758784052866
+        },
+        {
+          "epoch": 30,
+          "heldOutCrossEntropy": 0.44350622678789553
+        }
+      ],
+      "heldOut": [
+        {
+          "horizon": 256,
+          "brier": 0.11816557178907597,
+          "auc": 0.8266128727093295,
+          "positiveRate": 0.8009725599166377,
+          "predictedMean": 0.8211696099619017,
+          "accuracy": 0.8311913858978812
+        },
+        {
+          "horizon": 1024,
+          "brier": 0.17424178323646675,
+          "auc": 0.7881469398223568,
+          "positiveRate": 0.667245571378951,
+          "predictedMean": 0.6908991601432344,
+          "accuracy": 0.7419242792636332
+        },
+        {
+          "horizon": 4096,
+          "brier": 0.1397279945962822,
+          "auc": 0.7552970336611498,
+          "positiveRate": 0.21014241055922195,
+          "predictedMean": 0.22906125373658912,
+          "accuracy": 0.8037513025356027
+        }
+      ]
+    }
+  ],
+  "ensembleHeldOut": [
+    {
+      "horizon": 256,
+      "brier": 0.11287858166958464,
+      "auc": 0.8419435451035239,
+      "positiveRate": 0.8009725599166377,
+      "predictedMean": 0.8275588906934397,
+      "accuracy": 0.8377908996179229
+    },
+    {
+      "horizon": 1024,
+      "brier": 0.1635768920063277,
+      "auc": 0.8183998635018513,
+      "positiveRate": 0.667245571378951,
+      "predictedMean": 0.7075046070927112,
+      "accuracy": 0.7537339353942341
+    },
+    {
+      "horizon": 4096,
+      "brier": 0.14117699573006434,
+      "auc": 0.7750205339555304,
+      "positiveRate": 0.21014241055922195,
+      "predictedMean": 0.27411546194781783,
+      "accuracy": 0.8086141021187913
+    }
+  ],
+  "wallSeconds": 1.1735824560000765,
+  "limits": "Held-out historical seed clusters assess prediction only; both teachers and duplicate-max labels introduce optimistic selection. These are learned escape scores, not calibrated real survival probabilities or V11.8 terminal strength evidence."
+}

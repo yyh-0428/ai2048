@@ -25,12 +25,12 @@ const Game2048=(()=>{
     function inverseTransformDir(dir,t){for(const d of ['up','left','right','down'])if(transformDir(d,t)===dir)return d;return dir}
     function canonicalAI(src){let best=null,bestT=0;for(let t=0;t<8;t++){const b=transformBoard(src,t);if(!best){best=b;bestT=t;continue}let better=false;for(let i=0;i<16;i++){if(b[i]===best[i])continue;better=b[i]>best[i];break}if(better){best=b;bestT=t}}return{board:best,t:bestT}}
     function countEmpties(src){let n=0;for(let i=0;i<16;i++)if(!src[i])n++;return n}
-    function config(board,strength){
+    function config(board,strength,branches=null){
       const empties=countEmpties(board),late=empties<=5;
       // V9.1 keeps V9's proven fast search semantics. The new change is compute
       // reallocation: cap low-value early/mid refinements, then spend a little more
       // only after the board becomes genuinely crowded.
-      const common={forceJS:board.some(v=>v>=32768)||legalRootBranches(board).some(b=>b.board.some(v=>v>=32768)),sampleCap:4,exactPlies:1,exactWhenEmpty:3,probCut:late?1.8e-4:3e-4,phase:late?1:0,ttBits:15,cacheMinDepth:1,overflowBonus:2000000};
+      const common={forceJS:board.some(v=>v>=32768)||(branches||legalRootBranches(board)).some(b=>b.board.some(v=>v>=32768)),sampleCap:4,exactPlies:1,exactWhenEmpty:3,probCut:late?1.8e-4:3e-4,phase:late?1:0,ttBits:15,cacheMinDepth:1,overflowBonus:2000000};
       const stageCap=empties>=7?5:empties===6?6:empties===5?7:null;
       if(strength==='fast'){
         // Fast keeps the V9 main line. Only true late game gets a small budget bump;

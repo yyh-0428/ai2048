@@ -2,9 +2,9 @@
   'use strict';
   const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
   const {moveBoardPlain,moveBoardDetailed,legalRootBranches}=Game2048;
-  const els={score:$('#score'),best:$('#best'),maxTile:$('#maxTile'),tiles:$('#tiles'),motion:$('#motionLayer'),wrap:$('#boardWrap'),undo:$('#undoBtn'),newBtn:$('#newBtn'),overlay:$('#gameOverlay'),overlayNew:$('#overlayNew'),gameOverText:$('#gameOverText'),hint:$('#hintArrow'),hintBtn:$('#hintBtn'),autoBtn:$('#autoplayBtn'),speed:$('#speed'),speedText:$('#speedText'),dot:$('#aiDot'),status:$('#aiStatusText'),sub:$('#aiSubText'),mMove:$('#mMove'),mDepth:$('#mDepth'),mNodes:$('#mNodes'),mTime:$('#mTime'),strengthCaption:$('#strengthCaption'),soundBtn:$('#soundBtn'),soundIcon:$('#soundIcon'),toast:$('#toast'),live:$('#liveStatus'),analysisCaption:$('#analysisCaption'),analysisNote:$('#analysisNote')};
+  const els={score:$('#score'),best:$('#best'),maxTile:$('#maxTile'),tiles:$('#tiles'),motion:$('#motionLayer'),wrap:$('#boardWrap'),undo:$('#undoBtn'),newBtn:$('#newBtn'),overlay:$('#gameOverlay'),overlayNew:$('#overlayNew'),gameOverText:$('#gameOverText'),hint:$('#hintArrow'),hintBtn:$('#hintBtn'),autoBtn:$('#autoplayBtn'),speed:$('#speed'),speedText:$('#speedText'),dot:$('#aiDot'),status:$('#aiStatusText'),sub:$('#aiSubText'),mMove:$('#mMove'),mDepth:$('#mDepth'),mNodes:$('#mNodes'),mTime:$('#mTime'),strengthCaption:$('#strengthCaption'),soundBtn:$('#soundBtn'),soundIcon:$('#soundIcon'),toast:$('#toast'),live:$('#liveStatus'),analysisCaption:$('#analysisCaption'),analysisNote:$('#analysisNote'),exportBtn:$('#exportBtn'),importBtn:$('#importBtn'),saveFile:$('#saveFile'),counterfactual:$('#counterfactualToggle'),learnedSurvival:$('#learnedSurvivalToggle'),learnedGuard:$('#learnedGuardToggle')};
   const arrows={up:'↑',down:'↓',left:'←',right:'→'},names={up:'上',down:'下',left:'左',right:'右'};
-  const captions={fast:'轻快 · 优先速度',strong:'深入 · 均衡思考',extreme:'极致 · 更多残局复核'};
+  const captions={fast:'轻快 · 优先速度',strong:'深入 · 高速拥挤盘精算',extreme:'极致 · 高速残局深搜',god:'神级 · 高分残局共识复核'};
   const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
   function storageGet(k,fallback=null){try{return localStorage.getItem(k)??fallback;}catch(_){return fallback;}}
   function storageSet(k,v){try{localStorage.setItem(k,v);return true;}catch(_){return false;}}
@@ -12,12 +12,20 @@
   let best=Number(storageGet('refined2048-best',storageGet('ai2048-best','0')))||0;
   if(!Number.isFinite(best)||best<0)best=0;
   let gameOver=false,animating=false,autoplay=false,aiBusy=false,queuedAutoResult=null;
-  let strength=storageGet('refined2048-strength','extreme');if(!captions[strength])strength='extreme';
+  let strength=storageGet('refined2048-strength','god');if(!captions[strength])strength='god';
+  const COUNTERFACTUAL_DEFAULT=false;
+  const LEARNED_GUARD_DEFAULT=false;
+  let learnedGuardEnabled=storageGet('refined2048-learned-guard-v118',LEARNED_GUARD_DEFAULT?'on':'off')==='on';
+  const LEARNED_TRAJECTORY_DEFAULT=false;
+  let learnedTrajectoryEnabled=storageGet('refined2048-learned-trajectory-v118',LEARNED_TRAJECTORY_DEFAULT?'on':'off')==='on';
+  const LEARNED_SURVIVAL_DEFAULT=false;
+  let learnedSurvivalEnabled=storageGet('refined2048-learned-survival-v118',LEARNED_SURVIVAL_DEFAULT?'on':'off')==='on';
+  let counterfactualEnabled=storageGet('refined2048-counterfactual-v118',COUNTERFACTUAL_DEFAULT?'on':'off')==='on';
   let soundOn=storageGet('refined2048-sound','on')!=='off',audioCtx=null;
-  let reqId=0,activeReq=0,coordinator=null,workers=[],workerURLs=[],watchdog=0,autoTimer=0;
+  let reqId=0,activeReq=0,coordinator=null,workers=[],workerURLs=[],watchdog=0,autoTimer=0,autoReadyAt=0;
   let animationTimer=0,animationFrame=0,visualEpoch=0,paintTimer=0,paintFrame=0,lastPaint=0;
   let hintTimer=0,toastTimer=0,lastSaved=0,lastStatsPaint=0,lastStatusPaint=0,lastSound=0,wakeLock=null,wakePending=false;
-  let newIndex=-1,mergedIndices=[];
+  let newIndex=-1,mergedIndices=[],exportURL=null,importToken=0;
   const nodes=Array.from({length:16},(_,i)=>{const el=document.createElement('div');el.hidden=true;el.dataset.index=String(i);els.tiles.appendChild(el);return el;});
   const cells=$$('.cell'),bars=$$('.move-row').map(row=>({row,bar:row.querySelector('i'),label:row.querySelector('span')}));
   const compact=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n);
@@ -31,10 +39,29 @@
   function announce(text){els.live.textContent=text;}
   function save(force=false){const now=performance.now();if(!force&&now-lastSaved<1000)return;lastSaved=now;storageSet('refined2048-best',String(best));storageSet('refined2048-session',JSON.stringify(snapshot()));}
   function readSession(){
-    try{const s=JSON.parse(storageGet('refined2048-session','null'));
-      if(!s||!Array.isArray(s.board)||s.board.length!==16||!s.board.some(Boolean)||!s.board.every(v=>Number.isSafeInteger(v)&&v>=0&&(v===0||(v>=2&&Number.isInteger(Math.log2(v)))))||!Number.isSafeInteger(s.score)||s.score<0)return null;
-      return {...s,moveCount:Number.isSafeInteger(s.moveCount)&&s.moveCount>=0?s.moveCount:0};
-    }catch(_){return null;}
+    try{return Game2048Save.validateGame(JSON.parse(storageGet('refined2048-session','null')),true);}catch{return null;}
+  }
+  function exportSave(){
+    let link=null;
+    try{
+      const text=Game2048Save.encode(snapshot());
+      if(exportURL)URL.revokeObjectURL(exportURL);
+      exportURL=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+      link=document.createElement('a');link.href=exportURL;link.download=`2048-v11.8-${new Date().toISOString().slice(0,10)}-${score}.json`;
+      link.hidden=true;document.body.appendChild(link);link.click();toast('已准备存档下载');
+    }catch{toast('无法导出，请稍后重试。');}finally{link?.remove();}
+  }
+  async function importSave(file){
+    if(!file)return false;
+    const token=++importToken,rev=revision;
+    try{
+      if(!Number.isFinite(file.size)||file.size>Game2048Save.MAX_BYTES)throw new Error('存档过大，未替换当前棋局。');
+      const game=Game2048Save.decode(await file.text());
+      if(token!==importToken||revision!==rev||autoplay){if(token===importToken)toast('棋局已变化，请重新选择要导入的存档。');return false;}
+      const before=snapshot();invalidateAI();cancelVisuals();releaseWake();history=[before];
+      board=game.board;score=game.score;moveCount=game.moveCount;best=Math.max(best,score);revision++;gameOver=!canMove();newIndex=-1;mergedIndices=[];
+      clearStats();flushRender();syncControls();save(true);setStatus('',gameOver?'本局结束':'已恢复存档',gameOver?'可以撤销导入，或开始新的一局。':'可以继续走棋；撤销一步可恢复导入前的棋局。');toast('已恢复存档');announce('已恢复存档。');return true;
+    }catch(error){if(token===importToken)toast(error instanceof Error?error.message:'无法读取这个存档文件。');return false;}
   }
   function render(){
     const turbo=autoplay&&+els.speed.value===0;
@@ -66,7 +93,7 @@
     animationFrame=requestAnimationFrame(()=>{animationFrame=requestAnimationFrame(()=>{
       if(epoch!==visualEpoch)return;
       for(const [el,to]of ghosts)el.style.transform=position(to);
-      animationTimer=setTimeout(()=>{if(epoch!==visualEpoch)return;cancelVisuals();flushRender();if(queuedAutoResult&&autoplay){const r=queuedAutoResult;queuedAutoResult=null;consumeAutoResult(r);}},duration+16);
+      animationTimer=setTimeout(()=>{if(epoch!==visualEpoch)return;cancelVisuals();flushRender();tryConsumeQueuedAuto();},duration+16);
     });});
   }
   function syncControls(){
@@ -74,11 +101,15 @@
     els.hintBtn.disabled=autoplay||aiBusy||gameOver;els.hintBtn.textContent=aiBusy&&!autoplay?'思考中…':'提示一步';
     els.undo.disabled=!history.length||autoplay||animating;
     for(const b of $$('.seg')){b.disabled=autoplay;b.classList.toggle('on',b.dataset.strength===strength);b.setAttribute('aria-pressed',String(b.dataset.strength===strength));}
-    els.strengthCaption.textContent=captions[strength];els.wrap.classList.toggle('autoplay',autoplay);
+    els.learnedGuard.checked=learnedGuardEnabled;els.learnedGuard.disabled=autoplay||strength!=='god'||!counterfactualEnabled;
+    const trajectory=$('#trajectoryToggle');trajectory.checked=learnedTrajectoryEnabled;trajectory.disabled=autoplay||strength!=='god'||!counterfactualEnabled;
+    els.learnedSurvival.checked=learnedSurvivalEnabled;els.learnedSurvival.disabled=autoplay||strength!=='god';
+    els.counterfactual.checked=counterfactualEnabled;els.counterfactual.disabled=autoplay||strength!=='god';
+    els.strengthCaption.textContent=strength==='god'&&learnedSurvivalEnabled?'神级 · 学习型生存复核':strength==='god'&&counterfactualEnabled&&learnedTrajectoryEnabled?'神级 · 分阶段续命仲裁':strength==='god'&&counterfactualEnabled?'神级 · 反事实续命规划':captions[strength];els.wrap.classList.toggle('autoplay',autoplay);
   }
   function invalidateAI(){
     activeReq=++reqId;clearTimeout(autoTimer);clearTimeout(watchdog);autoTimer=watchdog=0;
-    aiBusy=false;queuedAutoResult=null;coordinator?.postMessage({type:'cancel'});
+    aiBusy=false;queuedAutoResult=null;autoReadyAt=0;coordinator?.postMessage({type:'cancel'});
     clearTimeout(hintTimer);els.hint.classList.remove('show');syncControls();
   }
   function destroyPool(){coordinator?.terminate();coordinator=null;for(const w of workers)w.terminate();workers=[];for(const u of workerURLs)URL.revokeObjectURL(u);workerURLs=[];}
@@ -115,7 +146,7 @@
     if(!autoplay)setStatus('think','正在分析','正在比较所有可移动方向…');
     // A failed worker must not leave the interface permanently busy.
     clearTimeout(watchdog);watchdog=setTimeout(()=>{if(id===activeReq&&aiBusy)reportAIError('本次搜索未响应，请重新点击提示或自动玩。');},15000);
-    coordinator.postMessage({type:'analyze',id,revision,board:board.slice(),strength});
+    coordinator.postMessage({type:'analyze',id,revision,board:board.slice(),strength,policyOptions:{counterfactual:counterfactualEnabled,learnedSurvival:learnedSurvivalEnabled,learnedGuard:learnedGuardEnabled,learnedTrajectory:learnedTrajectoryEnabled,trajectoryEscape:learnedTrajectoryEnabled,trajectoryAssetGuard:learnedTrajectoryEnabled}});
   }
   function finishAI(r){
     if(r.id!==activeReq||r.revision!==revision)return;
@@ -123,16 +154,28 @@
     if(!r.best){if(!canMove())endGame();syncControls();return;}
     updateStats(r);if(!autoplay)syncControls();
     if(autoplay){
-      const now=performance.now();if(now-lastStatusPaint>=100){lastStatusPaint=now;setStatus('active','自动玩中',`第 ${moveCount+1} 步 · ${r.verified?'已复核危险方向':r.engine.startsWith('js')?'大数字兼容搜索':'持续思考，随时可以暂停'}`);}
-      if(animating)queuedAutoResult=r;else consumeAutoResult(r);
+      const now=performance.now();if(now-lastStatusPaint>=100){lastStatusPaint=now;setStatus('active','自动玩中',`第 ${moveCount+1} 步 · ${r.trajectoryStageHeld?'长期路线复核保留原方向':r.trajectoryEscaped?'强模拟续命证据支持换招':r.trajectoryPromoted?'长期续命评估支持换招':r.plannerChanged?'已按后续风险调整方向':r.learnedChanged?'学习模型已一致支持换招':r.ceilingConsensus?'高分残局已深度共识':r.verified?'已复核危险方向':r.engine.startsWith('js')?'大数字兼容搜索':'持续思考，随时可以暂停'}`);}
+      queuedAutoResult=r;tryConsumeQueuedAuto();
     }else{
-      setStatus('',`建议 ${arrows[r.best]} ${names[r.best]}`,r.engine==='forced'?'当前只有这一个可移动方向。':r.cached?'复用同一棋盘的完整分析结果。':r.recovered?'本次深搜超时，已返回完整的浅层分析。':r.verified?'已对危险方向做额外复核。':'留出空间，让相同数字更容易合并。');
+      setStatus('',`建议 ${arrows[r.best]} ${names[r.best]}`,r.engine==='forced'?'当前只有这一个可移动方向。':r.cached?'复用同一棋盘的完整分析结果。':r.recovered?'本次深搜超时，已返回完整的浅层分析。':r.trajectoryStageHeld?'长期预测提示换招可能损失后续续命余量，保留原方向。':r.trajectoryEscaped?'两组模拟均出现较强的逃生收益，已在安全约束内采用换招。':r.trajectoryPromoted?'短期模拟存活不降，长期续命优势已由另一组未来确认。':r.plannerChanged?'模拟中尾部存活较好的方向已通过另一组未来复核。':r.learnedChanged?'多个学习模型共同支持存活机会更好的方向。':r.terminalRescued?'残局方向已按完整短期生存复核重新选择。':r.ceilingConsensus?'高分临界局面已通过更深层共识复核。':r.ceilingRejected?'更深层判断未形成共识，保留稳定的原始选择。':r.verified?'已对危险方向做额外复核。':'留出空间，让相同数字更容易合并。');
       showHint(r.best);announce(`建议向${names[r.best]}移动。`);soundHint();
     }
   }
+  function tryConsumeQueuedAuto(){
+    if(!queuedAutoResult||!autoplay||gameOver||animating)return;
+    const wait=autoReadyAt-performance.now();
+    if(wait>1){
+      clearTimeout(autoTimer);const rev=queuedAutoResult.revision;
+      autoTimer=setTimeout(()=>{autoTimer=0;if(autoplay&&queuedAutoResult?.revision===rev)tryConsumeQueuedAuto();},wait);return;
+    }
+    clearTimeout(autoTimer);autoTimer=0;const r=queuedAutoResult;queuedAutoResult=null;consumeAutoResult(r);
+  }
   function scheduleAuto(){
-    clearTimeout(autoTimer);if(!autoplay||gameOver)return;
-    const rev=revision;autoTimer=setTimeout(()=>{autoTimer=0;if(autoplay&&rev===revision)askAI('auto');},+els.speed.value);
+    clearTimeout(autoTimer);autoTimer=0;if(!autoplay||gameOver)return;
+    // Start thinking immediately and use the configured move interval only as
+    // a presentation gate. Search now overlaps animation/idle time instead of
+    // being added after it; turbo (0 ms) retains the old throughput path.
+    autoReadyAt=performance.now()+(+els.speed.value);askAI('auto');
   }
   function consumeAutoResult(r){
     if(!autoplay||gameOver||r.revision!==revision)return;
@@ -146,6 +189,7 @@
     if(!autoMode){invalidateAI();clearStats();}
     history.push(snapshot());if(history.length>60)history.shift();const before=maxTile();
     board=m.board;score+=m.gain;best=Math.max(score,best);moveCount++;revision++;newIndex=addRandom();mergedIndices=m.merged||[];
+    if(document.visibilityState!=='visible')save();
     const after=maxTile(),now=performance.now();
     if(!turbo||now-lastSound>180){lastSound=now;soundMove();}
     if(m.gain&&!turbo)soundMerges((m.merged||[]).map(i=>m.board[i]));
@@ -183,7 +227,7 @@
     els.mMove.textContent=arrows[r.best]+' '+names[r.best];els.mDepth.textContent=r.engine==='forced'?'唯一方向':r.depth;
     els.mNodes.textContent=compact(r.nodes);els.mTime.textContent=(r.cached?'复用 · ':'')+Math.round(r.time)+' ms';
     els.analysisCaption.textContent=autoplay?'上一步的方向评估':'当前棋盘的方向评估';
-    els.analysisNote.textContent=r.verified?'推荐方向已通过额外的生存复核；条形显示常规搜索评分。':r.recovered?'深层搜索超时，显示已完整完成的浅层结果。':r.riskAborted?'生存复核达到计算上限，保留完整的常规搜索结果。':'相对评分用于比较方向，不代表获胜概率。';
+    els.analysisNote.textContent=r.trajectoryStageHeld?'大块阶段保留长期路线复核的否决，按原有完整搜索选择方向；模型判断仍可能有误。':r.trajectoryEscaped?'两组模拟中，逃生换招的续命收益较强且逐路径损失受限，支持推翻长期模型的否决；仍可能退步。方向条显示原主搜索评分。':r.trajectoryPromoted?'两组模拟均保留短期存活，长期模型支持后续续命余量更好的方向；这不是胜率保证。方向条显示原主搜索评分。':r.plannerChanged?'在两组模拟未来中，推荐方向的尾部存活更好；方向条仍显示原有完整搜索评分。':r.learnedChanged?'多个模型一致支持较好的长程存活机会；这是学习预测，方向条仍显示原有完整搜索评分。':r.proofCertified?(r.projectionApplied?'大数字局面经有限视野投影后，当前方向通过短期安全证明；条形仍显示原棋盘评分。':'当前方向已通过短期安全证明；这不代表整局不会失败。'):r.terminalRescued?'所有方向的常规评分均已降至终局底值，已按完整短期生存复核选择方向；这不保证长期存活。':r.ceilingConsensus?'高分临界局面已通过跨深度共识复核；条形显示最终采用深度的评分。':r.ceilingRejected?'更深层搜索出现排序振荡，已回退完整 d4 结果。':r.verified?'推荐方向已通过额外的生存复核；条形显示常规搜索评分。':r.projectionApplied&&r.riskChecked?'已完成大数字生存复核；条形仍显示原棋盘搜索评分。':r.recovered?'深层搜索超时，显示已完整完成的浅层结果。':r.riskAborted?'生存复核达到计算上限，保留完整的常规搜索结果。':'相对评分用于比较方向，不代表获胜概率。';
     const vals=Object.values(r.scores).filter(Number.isFinite),min=Math.min(...vals),max=Math.max(...vals),range=max-min;
     for(const {row,bar,label}of bars){const d=row.dataset.dir,v=r.scores[d],valid=Number.isFinite(v);row.classList.toggle('best',d===r.best);row.style.opacity=valid?'1':'.5';bar.style.width=valid?(range<1e-9?100:12+88*(v-min)/range)+'%':'0';label.textContent=!valid?'不可移':d===r.best?'推荐':range<1e-9?'并列':Math.round((v-min)/range*100)+' 分';}
   }
@@ -207,7 +251,14 @@
   function toggleSound(){soundOn=!soundOn;storageSet('refined2048-sound',soundOn?'on':'off');syncSound();if(soundOn)soundSoft(360,.016);toast(soundOn?'声音已开启':'声音已关闭');}
   function syncSpeed(){const v=+els.speed.value;els.speedText.textContent=v===0?'极速':v+' ms';els.speed.setAttribute('aria-valuetext',v===0?'极速，无额外等待':`每步等待 ${v} 毫秒`);storageSet('refined2048-speed',String(v));}
   els.newBtn.onclick=()=>newGame();els.overlayNew.onclick=()=>newGame();els.undo.onclick=undo;els.hintBtn.onclick=()=>askAI('hint');els.autoBtn.onclick=toggleAuto;els.soundBtn.onclick=toggleSound;
+  els.exportBtn.onclick=exportSave;
+  els.importBtn.onclick=()=>{importToken++;if(autoplay)toggleAuto();els.saveFile.value='';els.saveFile.click();};
+  els.saveFile.onchange=()=>{const file=els.saveFile.files?.[0];void importSave(file);};
   els.speed.oninput=()=>{syncSpeed();if(autoplay&&!aiBusy&&!queuedAutoResult)scheduleAuto();};
+  els.learnedGuard.onchange=()=>{if(autoplay||strength!=='god'||!counterfactualEnabled){syncControls();return;}const enabled=!!els.learnedGuard.checked;invalidateAI();learnedGuardEnabled=enabled;storageSet('refined2048-learned-guard-v118',enabled?'on':'off');clearStats();syncControls();};
+  $('#trajectoryToggle').onchange=()=>{if(autoplay||strength!=='god'||!counterfactualEnabled){syncControls();return;}const enabled=!!$('#trajectoryToggle').checked;invalidateAI();learnedTrajectoryEnabled=enabled;storageSet('refined2048-learned-trajectory-v118',enabled?'on':'off');clearStats();syncControls();};
+  els.learnedSurvival.onchange=()=>{if(autoplay||strength!=='god'){syncControls();return;}const enabled=!!els.learnedSurvival.checked;invalidateAI();learnedSurvivalEnabled=enabled;storageSet('refined2048-learned-survival-v118',enabled?'on':'off');clearStats();syncControls();};
+  els.counterfactual.onchange=()=>{if(autoplay||strength!=='god'){syncControls();return;}const enabled=!!els.counterfactual.checked;invalidateAI();counterfactualEnabled=enabled;storageSet('refined2048-counterfactual-v118',counterfactualEnabled?'on':'off');clearStats();syncControls();};
   for(const b of $$('.seg'))b.onclick=()=>setStrength(b.dataset.strength);
   document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
   document.addEventListener('keydown',e=>{
@@ -223,10 +274,10 @@
   els.wrap.addEventListener('pointerdown',e=>{if(autoplay||gameOver||e.target?.closest?.('button')||e.isPrimary===false||(e.pointerType==='mouse'&&e.button!==0))return;pointer={id:e.pointerId,x:e.clientX,y:e.clientY};els.wrap.setPointerCapture?.(e.pointerId);});
   els.wrap.addEventListener('pointerup',e=>{const p=pointer;pointer=null;if(!p||p.id!==e.pointerId||autoplay||animating)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.max(Math.abs(dx),Math.abs(dy))>=24)doMove(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up');});
   els.wrap.addEventListener('pointercancel',()=>{pointer=null;});els.wrap.addEventListener('lostpointercapture',()=>{pointer=null;});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){save(true);releaseWake();if(animating)cancelVisuals();if(queuedAutoResult&&autoplay){const r=queuedAutoResult;queuedAutoResult=null;consumeAutoResult(r);}}else{if(autoplay)holdWake();if(!animating)flushRender();}});
-  window.addEventListener('pagehide',()=>{save(true);autoplay=false;invalidateAI();destroyPool();releaseWake();cancelVisuals();});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){save(true);releaseWake();if(animating)cancelVisuals();autoReadyAt=0;tryConsumeQueuedAuto();}else{if(autoplay)holdWake();if(!animating)flushRender();}});
+  window.addEventListener('pagehide',()=>{importToken++;if(exportURL)URL.revokeObjectURL(exportURL);exportURL=null;save(true);autoplay=false;invalidateAI();destroyPool();releaseWake();cancelVisuals();});
   window.addEventListener('pageshow',e=>{if(e.persisted){syncControls();flushRender();setStatus('','已暂停','你可以继续手动玩，或再次让 AI 接手。');}});
-  window.addEventListener('resize',()=>{if(animating){cancelVisuals();flushRender();if(queuedAutoResult&&autoplay){const r=queuedAutoResult;queuedAutoResult=null;consumeAutoResult(r);}}});
+  window.addEventListener('resize',()=>{if(animating){cancelVisuals();flushRender();tryConsumeQueuedAuto();}});
   window.addEventListener('error',e=>{if(aiBusy||autoplay)reportAIError(e.error||e.message);});
   window.addEventListener('unhandledrejection',e=>{if(aiBusy||autoplay)reportAIError(e.reason);});
   const savedSpeed=Number(storageGet('refined2048-speed','0'));els.speed.value=String(Number.isFinite(savedSpeed)?Math.min(520,Math.max(0,Math.round(savedSpeed/10)*10)):0);syncSpeed();syncSound();

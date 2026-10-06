@@ -1,0 +1,463 @@
+{
+  "merged": "2026-10-06T09:51:34.406Z",
+  "checkpoints": [
+    "seed-601",
+    "seed-615",
+    "seed-622",
+    "seed-625",
+    "seed-603",
+    "seed-610",
+    "seed-623",
+    "seed-624"
+  ],
+  "table": [
+    {
+      "checkpoint": "seed-601",
+      "startScore": 170012,
+      "v116": {
+        "moves": 6995,
+        "score": 367980,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 2.7
+      },
+      "v117": {
+        "moves": 6932,
+        "score": 367196,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 2.8
+      },
+      "v117b": {
+        "moves": 6995,
+        "score": 367980,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 2.8
+      },
+      "v118": {
+        "moves": 6995,
+        "score": 367980,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 2.9
+      },
+      "v118x": {
+        "moves": 6949,
+        "score": 367344,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 14.4
+      },
+      "v119": {
+        "moves": 59,
+        "score": 170520,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 77.4
+      }
+    },
+    {
+      "checkpoint": "seed-615",
+      "startScore": 170108,
+      "v116": {
+        "moves": 5935,
+        "score": 342336,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 4
+      },
+      "v117": {
+        "moves": 4136,
+        "score": 290656,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 4.2
+      },
+      "v117b": {
+        "moves": 5935,
+        "score": 342336,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 3.6
+      },
+      "v118": {
+        "moves": 5935,
+        "score": 342336,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 3.4
+      },
+      "v118x": {
+        "moves": 4110,
+        "score": 290360,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 16.9
+      },
+      "v119": {
+        "moves": 363,
+        "score": 176644,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 61.1
+      }
+    },
+    {
+      "checkpoint": "seed-622",
+      "startScore": 230276,
+      "v116": {
+        "moves": 6212,
+        "score": 382096,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 6.3
+      },
+      "v117": {
+        "moves": 2375,
+        "score": 284028,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.3
+      },
+      "v117b": {
+        "moves": 6212,
+        "score": 382096,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 6.7
+      },
+      "v118": {
+        "moves": 6212,
+        "score": 382096,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.1
+      },
+      "v118x": {
+        "moves": 6212,
+        "score": 382096,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 42.4
+      },
+      "v119": {
+        "moves": 332,
+        "score": 234884,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 34
+      }
+    },
+    {
+      "checkpoint": "seed-625",
+      "startScore": 231024,
+      "v116": {
+        "moves": 5528,
+        "score": 367356,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 3.8
+      },
+      "v117": {
+        "moves": 6456,
+        "score": 387436,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 4.8
+      },
+      "v117b": {
+        "moves": 5528,
+        "score": 367356,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 6
+      },
+      "v118": {
+        "moves": 5528,
+        "score": 367356,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 5.9
+      },
+      "v118x": {
+        "moves": 5357,
+        "score": 364868,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 32.9
+      },
+      "v119": {
+        "moves": 406,
+        "score": 237292,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 69.2
+      }
+    },
+    {
+      "checkpoint": "seed-603",
+      "startScore": 170320,
+      "v116": {
+        "moves": 4118,
+        "score": 289560,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 8.3
+      },
+      "v117": {
+        "moves": 6147,
+        "score": 344556,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.3
+      },
+      "v117b": {
+        "moves": 4118,
+        "score": 289560,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.4
+      },
+      "v118": {
+        "moves": 4118,
+        "score": 289560,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.5
+      },
+      "v118x": {
+        "moves": 4118,
+        "score": 289560,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 39.7
+      },
+      "v119": {
+        "moves": 3035,
+        "score": 266352,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 62.6
+      }
+    },
+    {
+      "checkpoint": "seed-610",
+      "startScore": 170008,
+      "v116": {
+        "moves": 220,
+        "score": 174692,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 8.5
+      },
+      "v117": {
+        "moves": 227,
+        "score": 174768,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 8.5
+      },
+      "v117b": {
+        "moves": 220,
+        "score": 174692,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 8
+      },
+      "v118": {
+        "moves": 220,
+        "score": 174692,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 8.1
+      },
+      "v118x": {
+        "moves": 286,
+        "score": 175520,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 14.5
+      },
+      "v119": {
+        "moves": 247,
+        "score": 175120,
+        "maxTile": 8192,
+        "terminal": true,
+        "msPerMove": 127.5
+      }
+    },
+    {
+      "checkpoint": "seed-623",
+      "startScore": 230348,
+      "v116": {
+        "moves": 2666,
+        "score": 289412,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 8.8
+      },
+      "v117": {
+        "moves": 6295,
+        "score": 384760,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7
+      },
+      "v117b": {
+        "moves": 2666,
+        "score": 289412,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.3
+      },
+      "v118": {
+        "moves": 2666,
+        "score": 289412,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 7.8
+      },
+      "v118x": {
+        "moves": 2666,
+        "score": 289412,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 36.9
+      },
+      "v119": {
+        "moves": 431,
+        "score": 236892,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 46
+      }
+    },
+    {
+      "checkpoint": "seed-624",
+      "startScore": 230192,
+      "v116": {
+        "moves": 4628,
+        "score": 342420,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 5.9
+      },
+      "v117": {
+        "moves": 5593,
+        "score": 367024,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 5.7
+      },
+      "v117b": {
+        "moves": 4628,
+        "score": 342420,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 5.9
+      },
+      "v118": {
+        "moves": 4628,
+        "score": 342420,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 5.5
+      },
+      "v118x": {
+        "moves": 4628,
+        "score": 342420,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 38.5
+      },
+      "v119": {
+        "moves": 2382,
+        "score": 281980,
+        "maxTile": 16384,
+        "terminal": true,
+        "msPerMove": 74.3
+      }
+    }
+  ],
+  "summary": {
+    "v116": {
+      "label": "V11.6",
+      "games": 8,
+      "meanAdditionalMoves": 4538,
+      "medianAdditionalMoves": 5078,
+      "meanFinalScore": 319482,
+      "minFinalScore": 174692,
+      "maxFinalScore": 382096,
+      "reached16384": 7,
+      "reached32768": 0,
+      "earlyDeaths": 1,
+      "meanMsPerMove": 6
+    },
+    "v117": {
+      "label": "V11.7(val)",
+      "games": 8,
+      "meanAdditionalMoves": 4770,
+      "medianAdditionalMoves": 5870,
+      "meanFinalScore": 325053,
+      "minFinalScore": 174768,
+      "maxFinalScore": 387436,
+      "reached16384": 7,
+      "reached32768": 0,
+      "earlyDeaths": 1,
+      "meanMsPerMove": 6
+    },
+    "v117b": {
+      "label": "V11.7(2)release",
+      "games": 8,
+      "meanAdditionalMoves": 4538,
+      "medianAdditionalMoves": 5078,
+      "meanFinalScore": 319482,
+      "minFinalScore": 174692,
+      "maxFinalScore": 382096,
+      "reached16384": 7,
+      "reached32768": 0,
+      "earlyDeaths": 1,
+      "meanMsPerMove": 6
+    },
+    "v118": {
+      "label": "V11.8默认",
+      "games": 8,
+      "meanAdditionalMoves": 4538,
+      "medianAdditionalMoves": 5078,
+      "meanFinalScore": 319482,
+      "minFinalScore": 174692,
+      "maxFinalScore": 382096,
+      "reached16384": 7,
+      "reached32768": 0,
+      "earlyDeaths": 1,
+      "meanMsPerMove": 6
+    },
+    "v118x": {
+      "label": "V11.8实验",
+      "games": 8,
+      "meanAdditionalMoves": 4291,
+      "medianAdditionalMoves": 4373,
+      "meanFinalScore": 312698,
+      "minFinalScore": 175520,
+      "maxFinalScore": 382096,
+      "reached16384": 7,
+      "reached32768": 0,
+      "earlyDeaths": 1,
+      "meanMsPerMove": 29.5
+    },
+    "v119": {
+      "label": "V11.9",
+      "games": 8,
+      "meanAdditionalMoves": 907,
+      "medianAdditionalMoves": 385,
+      "meanFinalScore": 222461,
+      "minFinalScore": 170520,
+      "maxFinalScore": 281980,
+      "reached16384": 5,
+      "reached32768": 0,
+      "earlyDeaths": 6,
+      "meanMsPerMove": 69
+    }
+  }
+}

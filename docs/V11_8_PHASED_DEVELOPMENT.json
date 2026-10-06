@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-06T08:51:32.549Z",
+  "node": "v24.19.0",
+  "protocol": {
+    "driverSHA256": "95a51f0fbaba189b4aa47b5df63a89ddbca3023064ace26248be1103703ae6d0",
+    "poolSize": 4,
+    "parallelCPUWorkloads": false,
+    "repeats": 1,
+    "termination": "no legal moves",
+    "pairedBoardAndPRNG": true,
+    "selected": [
+      "phased"
+    ],
+    "startSHA256": "accef21d3e0eef3744dac384854040862cd649b9462760bd87fc812d52076f6b"
+  },
+  "signatures": {
+    "phased": {
+      "version": "current",
+      "strength": "god",
+      "policyOptions": {
+        "counterfactual": true,
+        "learnedTrajectory": true,
+        "trajectoryEscape": true,
+        "trajectoryAssetGuard": true
+      },
+      "HTMLSHA256": "e2ebcd5294fb340bd33e6f4608fa2bf4d8aa2627f6afc779f90c3a4e1eeedda7"
+    }
+  },
+  "rows": [],
+  "complete": false
+}

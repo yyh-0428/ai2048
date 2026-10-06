@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-06T07:11:36.380407+00:00",
+  "phase": "known-start feedback development",
+  "interruption": "Automation was interrupted after the first complete learned game while checking progress. No independent validation was in progress.",
+  "retained": "seed-1 learned:7031 additional moves, frozen HTML20262ff8ed091d773235018dd43b54f8e646442de6abe4538d36d6c20d541b66",
+  "partial": "Any unfinished guarded game is excluded from scores and restarted from the saved board and full PRNG; a partial result is not used as a terminal outcome.",
+  "resume": "Explicit RESUME=1 verifies identical source signatures and start corpus hash; complete rows are never rerun or overwritten.",
+  "checks": "Both new suites separately completed successfully:7 learned checks and11 CF checks."
+}

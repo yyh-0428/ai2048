@@ -1,8 +1,15 @@
-# 本地启动脚本运行时产生的文件
+# 运行期产物
 .2048-ai-server.pid
 .2048-ai-server.port
 .2048-ai-server.log
-.2048-ai-response-*
 
-# 系统
+# 本机 / 工具
 .DS_Store
+node_modules/
+.workbuddy-ai/
+
+# 体积巨大的原始测量日志（约 124MB）
+docs/raw-v118/
+docs/_probe*.json
+docs/_play_run*.log
+docs/_v119_diag.log

@@ -1,0 +1,10 @@
+{"examples":20827,"seedClusters":28,"moves":358154,"data":"/workspace/scratch/5652a33e0061/2048-ai-v11.8/models/v118-learning-data.jsonl.gz"}
+{"trained": "v118-escape-03875e5fe0d1d95e", "examples": 20827, "heldOut": [{"horizon": 256, "brier": 0.1112615313670217, "auc": 0.8634060287604189, "positiveRate": 0.7901272896615957, "predictedMean": 0.8071445474879843, "accuracy": 0.834833902514747}, {"horizon": 1024, "brier": 0.16105646795044307, "auc": 0.829352901194087, "positiveRate": 0.6556969885128842, "predictedMean": 0.6856592051204098, "accuracy": 0.7544240918969264}, {"horizon": 4096, "brier": 0.13815274548662668, "auc": 0.7596684525049063, "positiveRate": 0.18814032909034462, "predictedMean": 0.2610944864453922, "accuracy": 0.8106178205526234}], "seconds": 1.4188448090001202}
+Built 2048-ai.html (244906 bytes)
+✔ learned geometry features are exactly D4 invariant and contain no random state (24.670114ms)
+✔ learned critic enumerates every 2/4 birth cell and weights the lower quarter (2.730095ms)
+✔ one disagreeing learned member rejects a proposal that the mean alone accepts (0.768371ms)
+✔ incomplete model roots, wrong shapes, nonfinite weights and unsupported directions cannot select (0.194463ms)
+✔ trained JavaScript predictions match the independent Python golden vectors (3.301549ms)
+✔ long-route guard vetoes a long-horizon regression and rejects incomplete evidence (0.388007ms)
+✔ published native coordinator executes the trained critic on all legal roots without changing main scores or depth (227.041098ms)

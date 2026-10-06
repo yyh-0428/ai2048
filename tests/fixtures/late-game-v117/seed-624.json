@@ -1,0 +1,42 @@
+{
+  "id": "seed-624",
+  "split": "independent-v117",
+  "format": "2048-ai-save",
+  "version": 1,
+  "game": {
+    "board": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      2,
+      2,
+      0,
+      2,
+      4,
+      8,
+      4,
+      8,
+      2,
+      2048,
+      16384
+    ],
+    "score": 230192,
+    "moveCount": 8400
+  },
+  "random": {
+    "algorithm": "mulberry32",
+    "seed": 624,
+    "state": 4191246436,
+    "draws": 16804
+  },
+  "targetScore": 230000,
+  "reachability": {
+    "source": "V11.5 god",
+    "spawnMass": 18464,
+    "spawnPotential": 21784,
+    "terminal": false,
+    "decisionsSHA256": "2e8b71bb3b19e9403e30703ddc2bc0ca518f04578aa67407f405cb6f04300ba3"
+  }
+}

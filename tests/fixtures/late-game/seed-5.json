@@ -1,0 +1,40 @@
+{
+  "id": "seed-5",
+  "split": "development",
+  "format": "2048-ai-save",
+  "version": 1,
+  "game": {
+    "board": [
+      8192,
+      4096,
+      2,
+      4,
+      2048,
+      1024,
+      4,
+      4,
+      2,
+      8,
+      4,
+      2,
+      4,
+      0,
+      0,
+      0
+    ],
+    "score": 170260,
+    "moveCount": 6987
+  },
+  "random": {
+    "algorithm": "mulberry32",
+    "seed": 5,
+    "state": 3621849959,
+    "draws": 13978
+  },
+  "reachability": {
+    "source": "V11.5 god",
+    "spawnPotential": 18226,
+    "spawnMass": 15394,
+    "terminal": false
+  }
+}

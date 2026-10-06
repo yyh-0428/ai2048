@@ -4,11 +4,14 @@ const {root,engine,rules,rng}=require('./harness.cjs');
 const {sources,client}=require('./clients-v9.3.cjs');
 const corpus=JSON.parse(fs.readFileSync(path.join(root,'tests/fixtures/positions.json')));
 function exposed(source){return engine(source.replace('return {analyze,analyzeRoot,analyzeExact,clearTT};','return {analyze,analyzeRoot,analyzeExact,clearTT,begin,maxNode,chanceNode,evaluate,toRanks,moveBoard};'));}
-test('production WASM kernels and ordinary policy remain byte-identical to 9.2',()=>{
+test('production WASM and ordinary rule body retain V9.2 semantics',()=>{
   const old=sources('9.2').worker,now=sources('9.3').worker;
   for(const name of ['WASM_B64','SURVIVAL_WASM_B64']){const re=new RegExp(`const ${name}='([^']+)'`);assert.equal(old.match(re)[1],now.match(re)[1]);}
   const oldRules=sources('9.2').coordinator.split('// Owns the complete decision.')[0];
-  assert.equal(oldRules.trim(),fs.readFileSync(path.join(root,'src/rules.js'),'utf8').trim());
+  const current=fs.readFileSync(path.join(root,'src/rules.js'),'utf8')
+    .replace('config(board,strength,branches=null)','config(board,strength)')
+    .replace('(branches||legalRootBranches(board)).some','legalRootBranches(board).some');
+  assert.equal(oldRules.trim(),current.trim());
 });
 test('exact leaf memo withstands eviction, changed budgets and ranks above 31',async()=>{
   const a=exposed(sources('9.2').worker),b=exposed(sources('9.3').worker);await Promise.all([a.ready,b.ready]);

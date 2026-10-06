@@ -1,0 +1,580 @@
+{
+  "date": "2026-10-06T07:08:09.200Z",
+  "source": "actual V11.7 r0 terminal logs plus explicitly selected known V11.8 development logs; training evidence, not V11.8 independent validation outcomes",
+  "teachers": [
+    "stable",
+    "v116",
+    "cf",
+    "learned",
+    "guarded"
+  ],
+  "sources": [
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-1",
+      "teacher": "stable",
+      "moves": 6742,
+      "logSHA256": "63a74d0ed2c06fb5f88a9434e63ed14c33e9e776b9cbb3840e533cd28dcb2b73"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-1",
+      "teacher": "v116",
+      "moves": 15373,
+      "logSHA256": "f2873e7038845efd8c4811324aafb2d7e4cafc05a980878d10d73a1be480ff0e"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-2",
+      "teacher": "v116",
+      "moves": 420,
+      "logSHA256": "8b8c68e82433bbecbcab7d72f3576e8b79fa63f868fdd5ad57417d05f81c2a87"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-2",
+      "teacher": "stable",
+      "moves": 4132,
+      "logSHA256": "8879ea681e54a2cb80bea6114f1f6ce7e6dee757707483625d4c6a5f4db7cb5c"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-3",
+      "teacher": "stable",
+      "moves": 398,
+      "logSHA256": "1ccc45f22384563c716f15154c47343ad4e021fb7485dba9d0ed29638698fdd4"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-3",
+      "teacher": "v116",
+      "moves": 7168,
+      "logSHA256": "bd232d1250f4f2dce0683f154988af5d6bef134e304ea86d7f180bc9b8ce6dd0"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-4",
+      "teacher": "v116",
+      "moves": 3238,
+      "logSHA256": "bb0babb97a309e5812b54589a5b841399d16c24306301c7ce6f65d89485fc4a0"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-4",
+      "teacher": "stable",
+      "moves": 7425,
+      "logSHA256": "7d0b321ce21bed5e58803b07b65c781dd1ce791ecb0dba0fe810e20ee9df2759"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-5",
+      "teacher": "stable",
+      "moves": 5589,
+      "logSHA256": "aea70503725f3ee636587ef3458e3699190e4fba7dfdabb29abe05e1b132811e"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-5",
+      "teacher": "v116",
+      "moves": 4154,
+      "logSHA256": "e433faba3be93f84e4decff68fce008ff13266e7f810dc6cb66a38394eaf6fd7"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-101",
+      "teacher": "v116",
+      "moves": 468,
+      "logSHA256": "a1487b531ae7e2d9391917f7a1d550a568b39a916b62b779231f8b30969d2013"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-101",
+      "teacher": "stable",
+      "moves": 468,
+      "logSHA256": "8f175b6a7bf68e8652e4ca8b90c521be1cfeea80600a4e447c7704289c1cda28"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-102",
+      "teacher": "stable",
+      "moves": 467,
+      "logSHA256": "95c811357efbbf02698688431deabee98fa5f57e94e026d29f4ac9b2fbcf59f3"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-102",
+      "teacher": "v116",
+      "moves": 5428,
+      "logSHA256": "7ec33162f2003d8a4568c80f63a61c29603f7b2e9593c9d6b97f1486e78b01e2"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-103",
+      "teacher": "v116",
+      "moves": 3739,
+      "logSHA256": "55dd02311956dcb18e2756800a00aeb947ec7680a5216ccb96a65ec4654a304c"
+    },
+    {
+      "report": "V11_7_DEVELOPMENT.json",
+      "checkpoint": "seed-103",
+      "teacher": "stable",
+      "moves": 7879,
+      "logSHA256": "e2687dd037f017f9eee277c6aad9b0fbdd0184608806e420f262349f429ab2ed"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-601",
+      "teacher": "stable",
+      "moves": 6932,
+      "logSHA256": "c745cde042a2f40723d61641292f67cc9b091a2d0f26199464229450572b3321"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-601",
+      "teacher": "v116",
+      "moves": 6995,
+      "logSHA256": "ff5a312f12385123596a0b4eb95a3ee00c93cd7bdc36417a330af6aa05eb761a"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-602",
+      "teacher": "v116",
+      "moves": 426,
+      "logSHA256": "3bdbaac10d63119c0085c78ca9c981de232b7ae02811f5d02c67be9eaee5df4f"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-602",
+      "teacher": "stable",
+      "moves": 426,
+      "logSHA256": "690ab02d4280789eaecd993a1cf1dfeec893d52744c179f02f701a84a265a7a9"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-603",
+      "teacher": "stable",
+      "moves": 6147,
+      "logSHA256": "154444fa0fce650a5a7fb2a3a8487581ec2be0bd62ec6a19f60e7ade826ab2cc"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-603",
+      "teacher": "v116",
+      "moves": 4118,
+      "logSHA256": "01a2ae1a838bb629c0e83a5b274e09ddb103908307f59daf366481d45db33a49"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-604",
+      "teacher": "v116",
+      "moves": 6053,
+      "logSHA256": "b6935f90ceca99fc4119277681355bb12fe9dbc72854d750ad1f262ac734252e"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-604",
+      "teacher": "stable",
+      "moves": 7786,
+      "logSHA256": "1296917e5e0ff89d0c3bdc148a08c1f3e0c14fa8e73b5a2cb3074f2e71714878"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-605",
+      "teacher": "stable",
+      "moves": 6903,
+      "logSHA256": "bc278d1b430aeceea7399f902621110cf604b838c3ead687a1de7d8b763cb642"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-605",
+      "teacher": "v116",
+      "moves": 3885,
+      "logSHA256": "9dde16f9978b05be39cfde6331d0eb21e9cf5e76269011661c6a0c7fae27a16f"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-606",
+      "teacher": "v116",
+      "moves": 7809,
+      "logSHA256": "638efb1e73c0ee113991157a4de9d088c7ef006f08dee35d6682ef6af91ed1b9"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-606",
+      "teacher": "stable",
+      "moves": 6033,
+      "logSHA256": "e4f47230ece819070d4640467aee183cc6b77638f497607c71ea6250a0f0ab55"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-608",
+      "teacher": "stable",
+      "moves": 3917,
+      "logSHA256": "0d8fe529564ed9f94bee123aee109b56282c81eccce2fbe115d0cdc2613b5554"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-608",
+      "teacher": "v116",
+      "moves": 316,
+      "logSHA256": "aee19b69cdd1cdf3fe84882a55c06645f2f53910e0229374ca84d85f89419dbb"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-610",
+      "teacher": "v116",
+      "moves": 220,
+      "logSHA256": "36b94f72420a28212742128a5bd5f6dd6ccdcfc5e255c248d8a0a35866f634fb"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-610",
+      "teacher": "stable",
+      "moves": 227,
+      "logSHA256": "9b9d06e0ea7bb6ebd90d44dc738cff1ee608991b074a06c158be946e82d9c328"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-612",
+      "teacher": "stable",
+      "moves": 406,
+      "logSHA256": "b310a8150e9409b0919d12689880da9934078ac758c03957bfd159c27f3e435a"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-612",
+      "teacher": "v116",
+      "moves": 6948,
+      "logSHA256": "40ae10a5f9b174f1ca1cfe120f8ad5ff7eb45f9897a87f5a0e46589856bc2d7b"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-614",
+      "teacher": "v116",
+      "moves": 4071,
+      "logSHA256": "511c67e92669b6e510407c3d9e405013c63eb85d8fa1a8073de39a0686e27e75"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-614",
+      "teacher": "stable",
+      "moves": 443,
+      "logSHA256": "99a14ec846f97a427a90db24f87f9718158354521ba4681d8e1766a43cb8fe48"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-615",
+      "teacher": "stable",
+      "moves": 4136,
+      "logSHA256": "362c5b62022368ecdb5971433b98736cd822ef515424b00d59e0d56f99abdd5e"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-615",
+      "teacher": "v116",
+      "moves": 5935,
+      "logSHA256": "fc5881769148a99fa23787c106c8d91dcfd760d415bc07d8874ec6dc90519233"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-616",
+      "teacher": "v116",
+      "moves": 4199,
+      "logSHA256": "5763bf6b17899f2cf4c8c08b9a2a32ea3492d0ebd1364b589844c50816988900"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-616",
+      "teacher": "stable",
+      "moves": 6004,
+      "logSHA256": "a26f5e0faee9a4bec2254ba0eae2d3061e42c4506acbb186f48331cffffe976d"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-617",
+      "teacher": "stable",
+      "moves": 449,
+      "logSHA256": "07cd988dac59a280a5dd4f824a5dc005c403ca6e02d91a0b792c79a234068e8a"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-617",
+      "teacher": "v116",
+      "moves": 7847,
+      "logSHA256": "3b01174f15d1ff26186f176333477d64d151c59f8725880ff963e53118740d83"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-618",
+      "teacher": "v116",
+      "moves": 5822,
+      "logSHA256": "adb0288735ce4c14a6308d6bd8c90eec63cb6415e70a26115e258034d25c6c20"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-618",
+      "teacher": "stable",
+      "moves": 6919,
+      "logSHA256": "ec0af749a086ee478df30e92091042cf24084dc772bbbb2e5f4f450f746cd17f"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-619",
+      "teacher": "stable",
+      "moves": 4044,
+      "logSHA256": "72283a9bd11c1171bfbc6144402d9192ca8340c48d76c4f16b8eac7575f285d8"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-619",
+      "teacher": "v116",
+      "moves": 3945,
+      "logSHA256": "ba1c8106f9c47dc76f8867e57e508fbfc85fb6a6e58b477ad66288891e002d00"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-621",
+      "teacher": "v116",
+      "moves": 3931,
+      "logSHA256": "2aacdf6ff748ccf00b3df37fa7bc1c733eb214a4725e074ee46f2d477b46c7b5"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-621",
+      "teacher": "stable",
+      "moves": 2579,
+      "logSHA256": "7d50cb14e43339c55d5dbea5b6863ad73c57a70ff82e77d58fab3ec9d1dba082"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-622",
+      "teacher": "stable",
+      "moves": 2375,
+      "logSHA256": "98e030fabdf0ad11e4512d5614d6dfd327d6305e03d9829e3398e3f58b67a1e2"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-622",
+      "teacher": "v116",
+      "moves": 6212,
+      "logSHA256": "80d4001f359ee1ff66923f834b47cd6e82f201bf5cf5bc1d757724c445f07b12"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-623",
+      "teacher": "v116",
+      "moves": 2666,
+      "logSHA256": "e729cfa819eca6aaeb9bdfd594f05ca1e12373e128c502fc5f873cab53382cb7"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-623",
+      "teacher": "stable",
+      "moves": 6295,
+      "logSHA256": "926aa168bcaf27cf339a1fbb412e33da78530751b560c57138a2364a87144984"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-624",
+      "teacher": "stable",
+      "moves": 5593,
+      "logSHA256": "a627ad895f21178544c63072839c1fbca1fe0a8dd5b4b8a29701e7d15a1e6f08"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-624",
+      "teacher": "v116",
+      "moves": 4628,
+      "logSHA256": "6c19f63e3e19daf6fd9f5f4b5262924c9ed941225465f863c226221a6eb0fe9b"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-625",
+      "teacher": "v116",
+      "moves": 5528,
+      "logSHA256": "7441ae4d24ba112f258d7517c9a96a5f8dc6317f3d6f072516c71d539da2957b"
+    },
+    {
+      "report": "V11_7_VALIDATION.json",
+      "checkpoint": "seed-625",
+      "teacher": "stable",
+      "moves": 6456,
+      "logSHA256": "169f2a004b4e77606a28ec4681b623a19e0400851e81fdb9cf2649c208651de0"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-1",
+      "teacher": "cf",
+      "moves": 4473,
+      "logSHA256": "d19ff23b7f6f1e8e64a0c818c0e00d072c9f94823dcc5a0f85434201c09faf01"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-2",
+      "teacher": "cf",
+      "moves": 6923,
+      "logSHA256": "fda28cc3f63d7c848729b1e4a03befc6387ba94432f3e05d91639fec2c574097"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-3",
+      "teacher": "cf",
+      "moves": 6026,
+      "logSHA256": "90815336bf67477a4748c17614dbf22ed96e33a52f4fabb9dab5bcb9563f3a52"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-4",
+      "teacher": "cf",
+      "moves": 2766,
+      "logSHA256": "8aa5e9b02141038608c715e42108964eb4de6ebbf3fa5a4fb79d8ff5fb5cdf62"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-5",
+      "teacher": "cf",
+      "moves": 4192,
+      "logSHA256": "e5a3b5b158b45bfdcb8db8d55e85876ba2620431c6bba1ba278f0d272407b89d"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-101",
+      "teacher": "cf",
+      "moves": 5147,
+      "logSHA256": "3d33d2d1946a684b836b47c38ebc5cf40d215322a416d314d7820a7c8a9ab007"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-102",
+      "teacher": "cf",
+      "moves": 7377,
+      "logSHA256": "11adfc5de7758cae2ae9c1cb9d1cde62b41674eac42ad6391d2b4aec91b062a6"
+    },
+    {
+      "report": "docs/V11_8_DEVELOPMENT.json",
+      "checkpoint": "seed-103",
+      "teacher": "cf",
+      "moves": 3739,
+      "logSHA256": "f9764c69ac64fdb77e8cef8c3e9faf0db875f5dcfdcc29a23aaf22883c88644f"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-1",
+      "teacher": "learned",
+      "moves": 7655,
+      "logSHA256": "0c61e735b0a3ac58bb680d5d0d7d11ccf38bae3e58fb8806416a95c1f33078e1"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-2",
+      "teacher": "learned",
+      "moves": 350,
+      "logSHA256": "cb2256c20a8fa1f9e541151b08e96930c68b346f6d5ba97356f8bfaa4296129c"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-3",
+      "teacher": "learned",
+      "moves": 7631,
+      "logSHA256": "4956f4ed5a375e64945622f1e942469d9bf6fae4b0271f4656aeba54d730b406"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-4",
+      "teacher": "learned",
+      "moves": 4152,
+      "logSHA256": "07ce72397ff20fc86a59fb9a554a13664ae831189380c732833241ffb2e2d074"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-5",
+      "teacher": "learned",
+      "moves": 4149,
+      "logSHA256": "9473606565408687c0b50f29e1905d7054fc9cd17de5967d8c3d34631f98c710"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-101",
+      "teacher": "learned",
+      "moves": 487,
+      "logSHA256": "3aa6cf6f256441efe00a6422891748449471bb09c317095bcd273f163012604d"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-102",
+      "teacher": "learned",
+      "moves": 4156,
+      "logSHA256": "5ab0bd31a7ce9573465921a5c05ac6f19cabff55c9b05599e89d443fb01b5acc"
+    },
+    {
+      "report": "docs/V11_8_LEARNED_DEVELOPMENT.json",
+      "checkpoint": "seed-103",
+      "teacher": "learned",
+      "moves": 231,
+      "logSHA256": "9d19ecc377848c37a71f8fbd178c6b0cf9f892616cc79c5d5555ec7a850fe4d6"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-1",
+      "teacher": "guarded",
+      "moves": 15373,
+      "logSHA256": "0488f827003e3fd304f9f9f978a6701d00d1b706a0652ff63a0f874abc6b50d8"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-2",
+      "teacher": "guarded",
+      "moves": 420,
+      "logSHA256": "222123d425c33ebc311c6c474d1e52c30ff9436caf95607e277e54dc5f21a124"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-3",
+      "teacher": "guarded",
+      "moves": 7168,
+      "logSHA256": "20b30bf6804e959a2f039b0109d10921bb4950c23ab2dc8ac3dfe0e7c33a63b4"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-4",
+      "teacher": "guarded",
+      "moves": 3238,
+      "logSHA256": "80ab97531f76abc87421846148a4087e7cfaec8b95f18023fe4a2466b0b99c18"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-5",
+      "teacher": "guarded",
+      "moves": 4154,
+      "logSHA256": "be07a0519539d4f2eb90f6ba02c8e53d387415c800a7c699be0bb50a5669e731"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-101",
+      "teacher": "guarded",
+      "moves": 468,
+      "logSHA256": "91bab765fa9e68e27145ff6099a67b1b40be469c5f509fbfa932f2c9918f023b"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-102",
+      "teacher": "guarded",
+      "moves": 5428,
+      "logSHA256": "51ac7286754f53389f83c0408771c88d406df6c97775049d56ff554c3eceb31d"
+    },
+    {
+      "report": "docs/V11_8_GUARDED_DEVELOPMENT.json",
+      "checkpoint": "seed-103",
+      "teacher": "guarded",
+      "moves": 3739,
+      "logSHA256": "3d760d1d7803fd45f84935c53d6f007c94e655fb74d2263ce580308c7eb0db7c"
+    }
+  ],
+  "moves": 358154,
+  "examples": 20827,
+  "seedClusters": 28,
+  "split": "held-out seed clusters where seed modulo 5 = 0; fresh 18001+ excluded",
+  "labels": "remaining legal actions to actual terminal; per-seed canonical duplicates keep maximum demonstrated remaining lifetime",
+  "dataSHA256": "e39d3179f3656ff8753c11ac4fffca1f29a6faedb5513551d3da6545182dde9b",
+  "rawSHA256": "3b2c772579511cee1b32bbf88359b5bc18785c4f6d35517aa16a9eea3d2fa954"
+}

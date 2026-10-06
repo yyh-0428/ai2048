@@ -1,0 +1,369 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> 2048-ai-local@11.8.0 test
+> node tools/test.mjs
+
+
+=== tests/regression.cjs ===
+✔ rules: one merge per tile, score gain, all four directions and large tiles (1.811608ms)
+✔ D4 rule equivalence and detailed/plain parity on 500 seeded states (23.53575ms)
+✔ WASM instantiation, exports and embedded survival bytes (14.622739ms)
+✔ Survival trap, node-limit abort and H7→H6 recovery (25.409532ms)
+✔ JS fallback: terminal before depth/probability cutoff, symmetric duplicate maxima, 65536 merges (8.92203ms)
+✔ UI: manual move cancels outstanding hint; old result cannot affect new state (17.668493ms)
+✔ UI: undo while hint computes resets busy state and move count (2.982487ms)
+✔ UI: new game cancels animation frames/timers and restores visible tiles (2.233766ms)
+✔ UI: stop invalidates scheduled autoplay callback and does not cold-restart workers (4.97563ms)
+✔ UI: autoplay overlaps next search with the configured move interval (3.457746ms)
+✔ UI: reduced motion, accessible hidden overlay, progress restore, safe corrupt storage (7.090085ms)
+✔ UI: game over stops autoplay and exposes restart (3.291595ms)
+✔ UI: background visibility cannot trap autoplay behind a suspended animation frame (4.044783ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 213.093604
+
+=== tests/coordinator.cjs ===
+✔ allocation-free mobility matches real moves over 1000 seeded boards (10.088137ms)
+✔ canonical ties use direction order, never message arrival order (1.133423ms)
+✔ Survival cannot override without a successful, supporting verifier (6.286691ms)
+✔ H7 abort retries H6 once; second abort safely keeps baseline (1.176538ms)
+✔ partial refinement discarded; never compare roots from different depths (1.689003ms)
+✔ message latency does not consume the compute budget (0.910607ms)
+✔ cold JS failure retries all roots at the same attainable depth (0.801131ms)
+✔ real MessagePorts: full decision, cached result, cancellation, and large-tile fallback (176.238133ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 276.289184
+
+=== tests/upgrades-v9.3.cjs ===
+✔ production WASM and ordinary rule body retain V9.2 semantics (2.838129ms)
+✔ exact leaf memo withstands eviction, changed budgets and ranks above 31 (270.508467ms)
+✔ reversible spawn restores input after success and a nested deadline exception (31.341687ms)
+✔ real workers: exact scores and logical nodes match at d1–d5 across all modes (2291.462858ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2693.794262
+
+=== tests/upgrades-v9.4.cjs ===
+✔ 9.4 preserves both WASMs, original scoring engine, and ordinary policy (1.755193ms)
+✔ entry projection validates representation and matches researched transform (24.467908ms)
+✔ real wide-tile worker probabilities agree with independent uncompressed JS oracle (2079.517491ms)
+✔ coordinator clears partial risk probabilities before fallback or policy decisions (3.40797ms)
+✔ wide risk uses spare budget; missing survival engine and exhausted budget keep baseline (3.047876ms)
+✔ projected risk verifier uses original tile values, same depth and capped spare time (3.968277ms)
+✔ wide H7 fallback stops when its remaining budget is exhausted (1.062245ms)
+✔ full real coordinator completes certified wide risk at maximum main depth (125.738111ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2321.75167
+
+=== tests/proof-v10.cjs ===
+✔ proof bitboards: 20000 moves match independent rules, including rank-15 saturation (97.551918ms)
+✔ certificates are one-sided: match independent full Survival, including horizon and warm-cache reuse (394.099815ms)
+✔ proof budget exhaustion, terminal and illegal directions can never certify (7.891656ms)
+✔ production worker: successful proof skips risk; unknown or tiny gap uses unchanged WASM (80.873538ms)
+✔ empty-space bound counts all 65536 occupancy masks exactly (139.503818ms)
+✔ invalid horizons and 32768+ merges cannot create a certificate (10.064921ms)
+✔ forced certificate-table collisions are checked against the full board (6.685003ms)
+✔ production WASM and rule body remain frozen apart from optional root reuse (0.920061ms)
+✔ proof initialization failure falls back to the original risk engine (62.408476ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 880.346088
+
+=== tests/proof-tristate-v10.cjs ===
+✔ three-state facts agree with an independent complete AND/OR solver, including horizon reuse (1850.753341ms)
+ℹ {"positive":2203,"negative":469,"shortSafeLongUnsafe":101}
+✔ an unfinished proof never poisons a later complete proof (27.627894ms)
+✔ new cache facts remain correct when every key hashes to the same slot (80.782635ms)
+✔ V9.3 reproduction: background turbo progress depends on a paint (19.95005ms)
+✔ background turbo progress saves without an animation frame (6.02824ms)
+✔ pagehide cancels AI and releases workers; restored page can start a new pool (3.33162ms)
+✔ 120 continuous real-Worker moves obey the rules; pause and undo remain stable (267.609693ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2358.475577
+
+=== tests/session-proof-v10.cjs ===
+✔ portable save roundtrip, strict format, safe powers and corrupt input (2.198603ms)
+✔ UI import cancels old hints, persists new board, and can undo the replacement (19.017451ms)
+✔ bad file, read failure or over-size file preserves the active game (2.77247ms)
+✔ late file read cannot overwrite a newer game or a newer import (4.27486ms)
+✔ reopening the file picker cancels a pending read even if no new file is selected (2.443983ms)
+✔ local restore rejects an integer falsely rounded to a power of two by log2 (5.400051ms)
+✔ import picker pauses autoplay; export preserves play and limits retained download URLs (3.50015ms)
+✔ importing terminal and 32768+ boards preserves overlay and compatibility search (3.140666ms)
+✔ bit-scan proof visits exactly the same nodes and returns the same facts as V9.4 (1240.290256ms)
+ℹ {"decisions":1052,"identicalVisitedNodes":822948}
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1368.298146
+
+=== tests/integration-v10.cjs ===
+✔ V10 preserves Q9.5 numeric mover semantics on 50,248 boundary-heavy moves (248.837533ms)
+✔ V10 keeps Q9.5 exact JS search semantics at d1-d5 across large-rank boundaries (6883.822379ms)
+✔ V10 safety prover preserves P9.5 facts and visited-node counts (1269.139958ms)
+✔ V10 Horizon Quotient projection is byte-for-byte policy-equivalent to Q9.5 projection (18.319766ms)
+✔ combined V10 path: wide board is projected, then certified, so full Survival is skipped (63.413146ms)
+✔ when certificate is disabled, V10 projected/normal Survival probabilities remain unchanged (203.423183ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8770.836753
+
+=== tests/v102.cjs ===
+✔ V10.3 active scorer bytes, exports and deterministic d3/d4 evaluation (8.018428ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 84.948841
+
+=== tests/v103.cjs ===
+✔ V10.3 optimized spawn enumeration is score/node/cache equivalent to archived V10.2 core (259.512404ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 348.456995
+
+=== tests/v104.cjs ===
+✔ V10.4 near-tie policy is deterministic and merge-aware (3.055267ms)
+✔ native selection fulfills strong/extreme d5 and preserves compatibility fallbacks (0.847881ms)
+✔ V10.4 repaired verifier is independent for strong/extreme but preserves fast d3->d4 (0.908262ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.719616
+
+=== tests/v105.cjs ===
+✔ extended WASM matches independent native C scores, nodes and TT hits at d3–d6 (401.412621ms)
+✔ d5 is real deeper work; separate requests do not reuse approximate TT history (46.135093ms)
+✔ extreme keeps d4 above two empties; every crowded root receives d5 (128.287624ms)
+✔ fast/strong native floors and unavailable/wide-board fallbacks remain intact (5.119567ms)
+✔ one/four compute workers agree on complete d5 root scores (234.260072ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 893.324842
+
+=== tests/v106.cjs ===
+✔ rank-15 value entry requires a strict mass/horizon certificate; legacy packing unchanged (6.741689ms)
+✔ safe 32768 uses value WASM while 65536 and possible overflow stay on exact JS (258.868243ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 351.162115
+
+=== tests/v107.cjs ===
+✔ V10.7 leaves the ordinary V10.6 extreme decision path numerically unchanged (184.409786ms)
+✔ an ambiguous 16384 transition may accept a deeper consensus choice (178.197291ms)
+✔ d4/d5/d6 ranking oscillation is rejected and restores the complete d4 result (168.172952ms)
+✔ ceiling refinement is extreme-only (79.276318ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 691.476085
+
+=== tests/v113.cjs ===
+✔ V11.3 God preserves V11.2 decisions and numeric V102 scores below rank 15 (188.009726ms)
+✔ V11.3 God restores the certified rank-15 value core and keeps unsafe overflow on JS (143.638093ms)
+✔ God uses full d6 directly; V10.7 ceiling refinement remains isolated to extreme (140.005898ms)
+✔ built V11.3 UI exposes four profiles and defaults new installs to God (0.908974ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 550.839884
+
+=== tests/v114.cjs ===
+✔ V11.4 leaves fast/strong/extreme decisions and numeric scores identical to V11.3 (292.510245ms)
+✔ God gives completed d6 score authority outside the new 0.005% true-tie gate (178.617972ms)
+✔ God still stabilizes genuine numerical near-ties with immediate merge value (181.956788ms)
+✔ built V11.4 UI and package metadata identify the new release (0.882293ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 746.934162
+
+=== tests/v115.cjs ===
+✔ V11.5 God aliases the survival-first extreme policy exactly (168.636858ms)
+✔ V11.5 extends guarded d4/d5/d6 ceiling consensus to 8192 (179.542579ms)
+✔ archived V11.5 UI identifies the survival-first release (1.144209ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 429.65209
+
+=== tests/v116.cjs ===
+✔ late corpus contains eight distinct reachable ~170k games and exact RNG states (2.684437ms)
+✔ RNG checkpoints resume the original stream rather than restarting its seed (0.829504ms)
+✔ allocation-light canonical roots and mobility preserve transforms, ties and wide values (47.716002ms)
+✔ reusing legal branches preserves the frozen rule configuration, including overflow boundaries (9.495421ms)
+✔ raw d4/d5 agreement cannot hide a different final merge-stabilized choice (1.610184ms)
+✔ an additional d6 confirmation retains the original complete d5 score and verifier depth (0.714559ms)
+✔ the new guard never skips a d6 round required by the original raw-score consensus (0.708852ms)
+✔ terminal floor ties use completed positive survival differences even below the ordinary risk gate (1.698166ms)
+✔ partial, non-floor, wide and invalid survival results cannot bypass the normal verifier (3.058352ms)
+✔ short value-worker messages retain identical fast/extreme root scores to V11.5 (309.835228ms)
+✔ V11.6 metadata and portable save export agree on the release version (16.746308ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 479.540906
+
+=== tests/v117.cjs ===
+✔ explicit rollback retains stable complete scores, depth and actual direction at four regressions (265.574658ms)
+✔ fallback candidate repairs four first choices using full d5 without a false consensus certificate (289.560953ms)
+✔ supported d4 fallback remains intact at winning seed-3 first difference (187.144704ms)
+✔ experiment flags isolate result cache and reject unrecognized or non-boolean overrides (146.300086ms)
+✔ merge-preference ablation preserves complete scores and depth but exposes a different raw choice (117.765968ms)
+✔ allocation reductions preserve all spawn probabilities and never mutate reused root boards (48.482099ms)
+✔ integer power validation and clz packing match frozen implementation across limits and invalid tiles (44.67729ms)
+✔ dual-agreement fallback keeps evidence status distinct from consensus (1.220174ms)
+✔ a genuinely supported full d4 fallback is restored with matching depth (0.765137ms)
+✔ original raw disagreement remains governed by original consensus (0.666978ms)
+✔ precommitted gates reject mean-only improvement, early deaths, known starts and repeat-count inflation (2.432707ms)
+✔ offline release embeds final coordinator, rules, worker and both external WASM modules (3.812231ms)
+✔ V11.7 portable export retains legacy save format and persistent storage key (17.106944ms)
+✔ new independent corpus contains twenty distinct reachable nonterminal starts and complete RNG states (1.834722ms)
+✔ packed root transport exactly preserves core score, depth, nodes and search-cache hits (35998.153669ms)
+✔ packed transport retains worker unsigned-word, horizon and total-mass rejection (70.539487ms)
+✔ retain-d5 promotion experiment uses every complete d5 root value and reports the restored depth (166.273996ms)
+✔ final default God preserves input V11.6 decisions rather than imposing an unvalidated rollback (384.333569ms)
+✔ final God-only default correction preserves the complete other-mode engine and root configurations (139.531034ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38002.152479
+
+=== tests/v118.cjs ===
+✔ counterfactual moves preserve real rules including nonchain merges and rank 15 (22.316527ms)
+✔ counterfactual horizon mass certificate rejects saturation and malformed tiles (0.260263ms)
+✔ independent confirmation rejects discovery-only win; disabled switch isolates its effect (0.826068ms)
+✔ all legal root samples must finish; a partial trajectory cannot choose a move (0.342107ms)
+✔ simulation uses reproducible public-state counter streams and no game RNG (1.298453ms)
+✔ trajectory endpoints are complete pre-action birth states and do not change simulated lifetimes (0.818667ms)
+✔ planner disabled retains V11.7 complete scores, depth and actual direction (349.362472ms)
+✔ worker native continuations finish a complete reproducible sample bank (270.494644ms)
+✔ private exact simulation memo preserves every lifetime, gain, endpoint and final value score (279.122153ms)
+✔ final HTML embeds exact new planner source in both decision and compute workers (1.722123ms)
+✔ a complete baseline at the sample ceiling cannot meet any positive-improvement gate (28.166673ms)
+✔ planner candidate safety proof resets its own facts and has a deterministic node bound (86.387968ms)
+✔ visible planner switch persists only its setting and sends the selected policy to the coordinator (18.8255ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1161.667747
+
+=== tests/learned-v118.cjs ===
+✔ learned geometry features are exactly D4 invariant and contain no random state (29.143594ms)
+✔ learned critic enumerates every 2/4 birth cell and weights the lower quarter (3.729196ms)
+✔ one disagreeing learned member rejects a proposal that the mean alone accepts (0.842474ms)
+✔ incomplete model roots, wrong shapes, nonfinite weights and unsupported directions cannot select (0.203157ms)
+✔ trained JavaScript predictions match the independent Python golden vectors (3.56631ms)
+✔ long-route guard vetoes a long-horizon regression and rejects incomplete evidence (0.325832ms)
+✔ endpoint guard protects joint surviving routes even when more short trajectories survive (0.937857ms)
+✔ nonfinite primary scores cannot enter either novel decision selector (0.188816ms)
+✔ long spectrum separates capped survivors and confirmation cannot nominate the second-best discovery (2.454389ms)
+✔ visible endpoint switch stores only its setting and isolates its policy from the immediate guard (19.931733ms)
+✔ published native coordinator executes the trained critic on all legal roots without changing main scores or depth (290.141651ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 441.187502
+
+V11.8 test groups passed: 21/21.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

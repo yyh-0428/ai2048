@@ -1,0 +1,6 @@
+{"progress":"seed-2","variant":"cf","moves":4000,"score":288308,"counts":{"plannerChecked":2767,"plannerChanged":2,"plannerConfirmed":2,"riskAborted":22,"verified":0}}
+{"completed":1,"expected":4,"id":"seed-2","variant":"cf","moves":6923,"score":366940,"maxTile":16384,"counts":{"plannerChecked":4812,"plannerChanged":5,"plannerConfirmed":5,"riskAborted":45,"verified":1},"wallMs":207918}
+{"completed":2,"expected":4,"id":"seed-4","variant":"cf","moves":2766,"score":255336,"maxTile":16384,"counts":{"plannerChecked":1636,"plannerChanged":5,"plannerConfirmed":5,"riskAborted":29,"verified":2},"wallMs":82298}
+{"progress":"seed-5","variant":"cf","moves":4000,"score":287812,"counts":{"plannerChecked":2709,"plannerChanged":3,"plannerConfirmed":3,"riskAborted":17,"verified":0}}
+{"completed":3,"expected":4,"id":"seed-5","variant":"cf","moves":4178,"score":290424,"maxTile":16384,"counts":{"plannerChecked":2819,"plannerChanged":5,"plannerConfirmed":5,"riskAborted":19,"verified":0},"wallMs":134456}
+{"completed":4,"expected":4,"id":"seed-103","variant":"cf","moves":3739,"score":281656,"maxTile":16384,"counts":{"plannerChecked":2412,"plannerChanged":3,"plannerConfirmed":3,"riskAborted":8,"verified":1},"wallMs":118446}

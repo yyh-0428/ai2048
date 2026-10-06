@@ -1,0 +1,1029 @@
+{
+  "date": "2026-10-05T13:36:53.961Z",
+  "format": "2048-late-corpus",
+  "version": 1,
+  "source": "V11.5 god",
+  "sourceHash": "ba76e40f4d240991923c85acd088d69bf4d5e57e3f022cca2bb2323a4d395bb1",
+  "protocol": {
+    "date": "2026-10-05",
+    "status": "precommitted before fresh corpus generation or candidate validation",
+    "recovery": "The previous transient run was lost after environment restart. Its unpreserved measurements are excluded. Seeds 401..460 from that attempt are not reused.",
+    "seedFirst": 601,
+    "seedLast": 680,
+    "selection": "First 16 distinct nonterminal games reaching 170000, then first 4 reaching 230000, ascending seeds, frozen V11.5 god source; preserve every rejected game",
+    "development": "All eight original starts, including formerly labeled holdout, are known development samples",
+    "validation": "20 new real reachable starts, no candidate tuning using them; if tuning resumes they become development and another set is required",
+    "paired": "Restore board, score, total move count, Mulberry32 seed, current uint32 state and draw count; run until no legal actions",
+    "earlyDeath": "additionalMoves < 1000",
+    "lowerQuartile": "mean of worst ceil(n/4) additionalMoves",
+    "godAcceptanceAgainstEachOfStableAndV116": {
+      "meanAdditionalMovesRatioMin": 1.05,
+      "medianAdditionalMovesRatioMin": 0.98,
+      "bottomQuartileMeanRatioMin": 0.98,
+      "earlyDeathRateIncreaseMax": 0,
+      "meanFinalScoreRatioMin": 1,
+      "reached16384RateDecreaseMax": 0,
+      "reached32768RateDecreaseMax": 0,
+      "allMustPass": true
+    },
+    "repetitions": "Two complete God validation runs per start and strategy; three complete paired runs for other modes. Repeats are not extra independent starts. All retained.",
+    "default": "Stable V11.5 policy unless frozen candidate passes every criterion against both baselines; no claim of universal per-game improvement",
+    "performance": "Same boards, four computing workers, warmup, five alternating A/B passes, separate pure compute/coordinator/caller latency medians and P95; no overlapping CPU benchmark",
+    "performanceClaimGate": "At least 5% reduction of both median coordinator and end-to-end latency with P95 no more than 5% worse; identical scores/depth/moves required for decision-preserving claims"
+  },
+  "checkpoints": [
+    {
+      "id": "seed-601",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          16,
+          512,
+          8192,
+          0,
+          2,
+          128,
+          4096,
+          0,
+          2,
+          4,
+          2048,
+          0,
+          0,
+          2,
+          512
+        ],
+        "score": 170012,
+        "moveCount": 7045
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 601,
+        "state": 1335120063,
+        "draws": 14094
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15514,
+        "spawnPotential": 18354,
+        "terminal": false,
+        "decisionsSHA256": "322a6fdad46d12e339f4848ac3421b4ad28b3ce89e168c55fc01dc513b0d8327"
+      }
+    },
+    {
+      "id": "seed-602",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          2,
+          4,
+          2,
+          2,
+          2,
+          8,
+          4,
+          0,
+          4,
+          8,
+          1024,
+          16,
+          2048,
+          4096,
+          8192
+        ],
+        "score": 170468,
+        "moveCount": 7034
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 602,
+        "state": 3990345138,
+        "draws": 14072
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15412,
+        "spawnPotential": 18092,
+        "terminal": false,
+        "decisionsSHA256": "bb2cd31d2fcbef724a309668d184582971fba140bd99622cf735728541cd8b99"
+      }
+    },
+    {
+      "id": "seed-603",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          4,
+          0,
+          4,
+          2,
+          2,
+          8,
+          8,
+          0,
+          2048,
+          1024,
+          4,
+          4,
+          8192,
+          4096,
+          2,
+          4
+        ],
+        "score": 170320,
+        "moveCount": 7002
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 603,
+        "state": 2734250099,
+        "draws": 14008
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15402,
+        "spawnPotential": 18190,
+        "terminal": false,
+        "decisionsSHA256": "8b3026c4793523dbc19695d06b077faa8b57c141ca3e66c1a4ddccecfadc46ee"
+      }
+    },
+    {
+      "id": "seed-604",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          4,
+          2,
+          4,
+          2,
+          2,
+          8,
+          2,
+          4,
+          0,
+          2,
+          1024,
+          2048,
+          8,
+          2,
+          4096,
+          8192
+        ],
+        "score": 170336,
+        "moveCount": 7007
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 604,
+        "state": 3870039046,
+        "draws": 14018
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15400,
+        "spawnPotential": 18164,
+        "terminal": false,
+        "decisionsSHA256": "6f7161f039aff73ee5235a3d8d3e1fea0d5fed9c3119e61817b402528bc79c4e"
+      }
+    },
+    {
+      "id": "seed-605",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          4,
+          4,
+          4,
+          0,
+          32,
+          16,
+          4,
+          2,
+          4096,
+          1024,
+          0,
+          0,
+          8192,
+          2048,
+          2,
+          0
+        ],
+        "score": 170496,
+        "moveCount": 7024
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 605,
+        "state": 1718767249,
+        "draws": 14052
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15428,
+        "spawnPotential": 18180,
+        "terminal": false,
+        "decisionsSHA256": "7d7d0ef5d8bd4a581c528b92b3ff211a61968b53bd7dd1a597e6217cbe10e6b2"
+      }
+    },
+    {
+      "id": "seed-606",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          2,
+          4,
+          2,
+          2,
+          2,
+          4,
+          16,
+          2,
+          1024,
+          64,
+          0,
+          0,
+          8192,
+          4096,
+          2048,
+          2
+        ],
+        "score": 170700,
+        "moveCount": 7045
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 606,
+        "state": 1335120068,
+        "draws": 14094
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15460,
+        "spawnPotential": 18192,
+        "terminal": false,
+        "decisionsSHA256": "2070bfa2565ef04e2481ebde6e4aa836f076db103c0e86d1dd4f163e1217e378"
+      }
+    },
+    {
+      "id": "seed-608",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          8192,
+          4096,
+          2048,
+          4,
+          1024,
+          64,
+          32,
+          2,
+          2,
+          4,
+          8,
+          0,
+          4,
+          2,
+          4,
+          0
+        ],
+        "score": 170772,
+        "moveCount": 7050
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 608,
+        "state": 2470909016,
+        "draws": 14104
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15486,
+        "spawnPotential": 18250,
+        "terminal": false,
+        "decisionsSHA256": "9f49c097d9a2f4bd6052f2ee2f2756904c3e4534cf544ece8a55e11f7044f59f"
+      }
+    },
+    {
+      "id": "seed-610",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          0,
+          0,
+          2,
+          2,
+          4,
+          8,
+          2,
+          128,
+          512,
+          32,
+          16,
+          512,
+          2048,
+          4096,
+          8192
+        ],
+        "score": 170008,
+        "moveCount": 7028
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 610,
+        "state": 3486391870,
+        "draws": 14060
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15554,
+        "spawnPotential": 18542,
+        "terminal": false,
+        "decisionsSHA256": "e50913eb79155d90e8535d79215c2a80fe27f86f5ea9a5b637edd6434483e209"
+      }
+    },
+    {
+      "id": "seed-612",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          16,
+          2,
+          4096,
+          8192,
+          2,
+          4,
+          1024,
+          2048,
+          0,
+          0,
+          2,
+          2,
+          0,
+          0,
+          2,
+          4
+        ],
+        "score": 170444,
+        "moveCount": 7028
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 612,
+        "state": 3486391872,
+        "draws": 14060
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15394,
+        "spawnPotential": 18062,
+        "terminal": false,
+        "decisionsSHA256": "5b1cb57d7c7d42a8e2df923315c7414112b79fe90d35f41b8729b554b1c4681d"
+      }
+    },
+    {
+      "id": "seed-614",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          2,
+          8,
+          0,
+          2,
+          4,
+          2,
+          8,
+          4,
+          2048,
+          1024,
+          2,
+          0,
+          8192,
+          4096,
+          2,
+          8
+        ],
+        "score": 170384,
+        "moveCount": 7017
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 614,
+        "state": 1846649652,
+        "draws": 14038
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15402,
+        "spawnPotential": 18130,
+        "terminal": false,
+        "decisionsSHA256": "09ce35eb89ce16bed6c0e53207bd652db9222d768d9818c7c3e260f64ec59b82"
+      }
+    },
+    {
+      "id": "seed-615",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          8,
+          2,
+          4,
+          0,
+          2,
+          16,
+          8,
+          4,
+          8192,
+          512,
+          512,
+          2,
+          2,
+          4096,
+          2048,
+          128
+        ],
+        "score": 170108,
+        "moveCount": 7071
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 615,
+        "state": 2087261841,
+        "draws": 14146
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15536,
+        "spawnPotential": 18316,
+        "terminal": false,
+        "decisionsSHA256": "882a81be4e63e3a638e7e9beae17257b6d351318439c14d552f9d154a53fdebd"
+      }
+    },
+    {
+      "id": "seed-616",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          4,
+          0,
+          2,
+          0,
+          16,
+          8,
+          8,
+          2,
+          4,
+          1024,
+          4096,
+          4,
+          2,
+          2048,
+          8192
+        ],
+        "score": 170308,
+        "moveCount": 6993
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 616,
+        "state": 4125803846,
+        "draws": 13990
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15410,
+        "spawnPotential": 18250,
+        "terminal": false,
+        "decisionsSHA256": "e03277d1f115dae4a884429bd2e4f1ed42c9948be70e5d9ee9fd8c70260f852a"
+      }
+    },
+    {
+      "id": "seed-617",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          4,
+          2,
+          1024,
+          8192,
+          2,
+          8,
+          2,
+          4096,
+          4,
+          2,
+          2,
+          2048,
+          8,
+          0,
+          0,
+          4
+        ],
+        "score": 170148,
+        "moveCount": 6959
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 617,
+        "state": 4133380147,
+        "draws": 13922
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15398,
+        "spawnPotential": 18350,
+        "terminal": false,
+        "decisionsSHA256": "600f3b3a9c4754652df249b2bcb370ab3a7eee84725aad2e37886da49d47a72e"
+      }
+    },
+    {
+      "id": "seed-618",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          4,
+          8,
+          4096,
+          8192,
+          4,
+          8,
+          1024,
+          2048,
+          0,
+          8,
+          2,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        "score": 170244,
+        "moveCount": 6979
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 618,
+        "state": 86601340,
+        "draws": 13962
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15396,
+        "spawnPotential": 18264,
+        "terminal": false,
+        "decisionsSHA256": "ed40b7c8cbfdc26a559006eb30993f4f405d4b26410a8effa4ed2603853d5dee"
+      }
+    },
+    {
+      "id": "seed-619",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          2,
+          2,
+          8,
+          8,
+          2,
+          4,
+          8,
+          4,
+          0,
+          0,
+          16,
+          1024,
+          2,
+          2048,
+          4096,
+          8192
+        ],
+        "score": 170248,
+        "moveCount": 6978
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 619,
+        "state": 718437011,
+        "draws": 13960
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15416,
+        "spawnPotential": 18328,
+        "terminal": false,
+        "decisionsSHA256": "07271e1e6fd0f5ba1db907f8226831296636d26599ed5c02b9255a21d62c98b5"
+      }
+    },
+    {
+      "id": "seed-621",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          8,
+          8,
+          2048,
+          8192,
+          4,
+          16,
+          1024,
+          4096,
+          0,
+          32,
+          8,
+          2,
+          0,
+          4,
+          2,
+          0
+        ],
+        "score": 170536,
+        "moveCount": 7032
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 621,
+        "state": 959049201,
+        "draws": 14068
+      },
+      "targetScore": 170000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 15444,
+        "spawnPotential": 18196,
+        "terminal": false,
+        "decisionsSHA256": "72adf71e88ab41772590ff653ee985a9b8c666878e028b2653cd7a16b661044c"
+      }
+    },
+    {
+      "id": "seed-622",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          32,
+          2048,
+          16384,
+          0,
+          0,
+          16,
+          8,
+          0,
+          0,
+          2,
+          4,
+          0,
+          0,
+          4,
+          2
+        ],
+        "score": 230276,
+        "moveCount": 8399
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 622,
+        "state": 528114808,
+        "draws": 16802
+      },
+      "targetScore": 230000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 18500,
+        "spawnPotential": 21896,
+        "terminal": false,
+        "decisionsSHA256": "cfbc3dcbd94948792fe1ce1977cec65a4b7f72cff077852677022ca4f2e9f33b"
+      }
+    },
+    {
+      "id": "seed-623",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          0,
+          0,
+          4,
+          0,
+          2,
+          8,
+          4,
+          0,
+          4,
+          32,
+          8,
+          16384,
+          2048,
+          16,
+          4
+        ],
+        "score": 230348,
+        "moveCount": 8418
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 623,
+        "state": 1408138967,
+        "draws": 16840
+      },
+      "targetScore": 230000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 18514,
+        "spawnPotential": 21862,
+        "terminal": false,
+        "decisionsSHA256": "f719474db3e58466f8648840e06e80febc0b98ac3dc5d116f85a5ec45484117d"
+      }
+    },
+    {
+      "id": "seed-624",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          2,
+          0,
+          2,
+          4,
+          8,
+          4,
+          8,
+          2,
+          2048,
+          16384
+        ],
+        "score": 230192,
+        "moveCount": 8400
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 624,
+        "state": 4191246436,
+        "draws": 16804
+      },
+      "targetScore": 230000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 18464,
+        "spawnPotential": 21784,
+        "terminal": false,
+        "decisionsSHA256": "2e8b71bb3b19e9403e30703ddc2bc0ca518f04578aa67407f405cb6f04300ba3"
+      }
+    },
+    {
+      "id": "seed-625",
+      "split": "independent-v117",
+      "format": "2048-ai-save",
+      "version": 1,
+      "game": {
+        "board": [
+          16384,
+          2048,
+          128,
+          2,
+          2,
+          8,
+          4,
+          0,
+          8,
+          4,
+          8,
+          4,
+          2,
+          0,
+          0,
+          0
+        ],
+        "score": 231024,
+        "moveCount": 8480
+      },
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 625,
+        "state": 889033093,
+        "draws": 16964
+      },
+      "targetScore": 230000,
+      "reachability": {
+        "source": "V11.5 god",
+        "spawnMass": 18602,
+        "spawnPotential": 21878,
+        "terminal": false,
+        "decisionsSHA256": "158fecaa957bb6c40f9593d539fb0d3598f7545f249be2589dbfe3936cdc0220"
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "seed": 607,
+      "score": 137084,
+      "moveCount": 5849,
+      "reason": "terminal before target",
+      "board": [
+        512,
+        1024,
+        2048,
+        8192,
+        32,
+        128,
+        256,
+        512,
+        2,
+        16,
+        64,
+        16,
+        4,
+        2,
+        8,
+        2
+      ],
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 607,
+        "state": 1096337293,
+        "draws": 11702
+      }
+    },
+    {
+      "seed": 609,
+      "score": 157064,
+      "moveCount": 6529,
+      "reason": "terminal before target",
+      "board": [
+        4,
+        2,
+        8,
+        2,
+        256,
+        32,
+        16,
+        4,
+        4096,
+        512,
+        32,
+        8,
+        8192,
+        1024,
+        128,
+        2
+      ],
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 609,
+        "state": 944811295,
+        "draws": 13062
+      }
+    },
+    {
+      "seed": 611,
+      "score": 164496,
+      "moveCount": 6799,
+      "reason": "terminal before target",
+      "board": [
+        2,
+        4,
+        2048,
+        4,
+        4,
+        128,
+        32,
+        8192,
+        16,
+        256,
+        16,
+        2,
+        32,
+        4096,
+        64,
+        8
+      ],
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 611,
+        "state": 2147872237,
+        "draws": 13602
+      }
+    },
+    {
+      "seed": 613,
+      "score": 143444,
+      "moveCount": 5778,
+      "reason": "terminal before target",
+      "board": [
+        2,
+        32,
+        64,
+        8192,
+        16,
+        8,
+        16,
+        4096,
+        4,
+        2,
+        4,
+        256,
+        2,
+        8,
+        2,
+        4
+      ],
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 613,
+        "state": 3006996909,
+        "draws": 11560
+      }
+    },
+    {
+      "seed": 620,
+      "score": 56500,
+      "moveCount": 2568,
+      "reason": "terminal before target",
+      "board": [
+        4,
+        16,
+        32,
+        4096,
+        2,
+        128,
+        64,
+        16,
+        32,
+        256,
+        32,
+        4,
+        4,
+        1024,
+        8,
+        2
+      ],
+      "random": {
+        "algorithm": "mulberry32",
+        "seed": 620,
+        "state": 3974933904,
+        "draws": 5140
+      }
+    }
+  ],
+  "complete": true
+}

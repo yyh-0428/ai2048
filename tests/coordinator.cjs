@@ -54,9 +54,9 @@ test('real MessagePorts: full decision, cached result, cancellation, and large-t
  h.hook.listen(r=>{pending?.(r);pending=null;});
  const ask=(board)=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error('worker timeout')),10000);pending=r=>{clearTimeout(timer);resolve(r)};h.hook.set({board},'fast');h.hook.askAI();});
  try{
-  const b=[1024,512,128,4,256,64,32,8,16,8,2,0,4,2,0,0],r=await ask(b);assert.ok(r.depth>=4);assert.ok(rules.moveBoardPlain(b,r.best).moved);
+  const b=[1024,512,128,4,256,64,32,8,16,8,2,0,4,2,0,0],r=await ask(b);assert.equal(r.depth,3);assert.equal(r.engine,'v10.5-wasm-expectimax');assert.ok(rules.moveBoardPlain(b,r.best).moved);
   const cached=await ask(b);assert.equal(cached.cached,true);assert.equal(cached.best,r.best);assert.equal(cached.time,0);
   h.hook.set({board:b},'extreme');h.hook.askAI();h.hook.newGame(true);
-  const large=[32768,16,8,4,2048,64,4,2,128,16,8,0,32,8,4,0],fallback=await ask(large);assert.ok(fallback.engine.startsWith('js'));assert.ok(fallback.depth>=1);assert.ok(rules.moveBoardPlain(large,fallback.best).moved);assert.ok(Object.values(fallback.scores).every(Number.isFinite));
+  const large=[65536,16,8,4,2048,64,4,2,128,16,8,0,32,8,4,0],fallback=await ask(large);assert.ok(fallback.engine.startsWith('js'));assert.ok(fallback.depth>=1);assert.ok(rules.moveBoardPlain(large,fallback.best).moved);assert.ok(Object.values(fallback.scores).every(Number.isFinite));
  }finally{await h.close();}
 });

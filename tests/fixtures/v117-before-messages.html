@@ -1,0 +1,1471 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f3f0e9" />
+  <meta name="color-scheme" content="light" />
+  <title>2048 · AI V11.7</title>
+  <style>
+    :root{
+      --paper:#f3f0e9;
+      --paper-2:#ebe7de;
+      --ink:#24231f;
+      --muted:#6c665d;
+      --hair:#d7d1c6;
+      --surface:#fbfaf6;
+      --board:#a99e90;
+      --slot:rgba(255,255,255,.22);
+      --accent:#25241f;
+      --gold:#bd8f35;
+      --danger:#9b4d3f;
+      --gap:11px;
+      --radius:22px;
+      --move-ms:145ms;
+      --ease:cubic-bezier(.22,.78,.22,1);
+    }
+    *{box-sizing:border-box}
+    html{min-height:100%;background:var(--paper);-webkit-text-size-adjust:100%}
+    body{margin:0;min-height:100vh;color:var(--ink);background:var(--paper);font-family:"Avenir Next",Avenir,"SF Pro Display","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+    button,input,select{font:inherit;color:inherit}
+    button{border:0}
+    button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+    .page{width:min(1048px,calc(100% - 36px));margin:0 auto;padding:32px 0 max(28px,env(safe-area-inset-bottom))}
+
+    .masthead{display:grid;grid-template-columns:1fr auto;gap:28px;align-items:end;margin:0 0 25px}
+    .title-row{display:flex;align-items:flex-end;gap:14px;min-width:0}
+    h1{margin:0;font-size:clamp(58px,8.2vw,92px);line-height:.78;letter-spacing:-.075em;font-weight:850;font-variant-numeric:tabular-nums}
+    .intro{max-width:250px;margin:0 0 2px;color:var(--muted);font-size:13px;line-height:1.5;letter-spacing:.01em}
+    .score-strip{display:flex;align-items:flex-end;gap:24px;padding-bottom:2px}
+    .score{min-width:70px;text-align:right}
+    .score span{display:block;margin-bottom:3px;color:var(--muted);font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase}
+    .score strong{display:block;font-size:24px;line-height:1;font-weight:730;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:34px;align-items:start}
+    .play-column{min-width:0}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px}
+    .tool-left,.tool-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+    .quiet-label{color:var(--muted);font-size:12px;line-height:1.3}
+    .icon-btn,.text-btn{min-height:36px;border:1px solid var(--hair);background:rgba(255,255,255,.34);border-radius:999px;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+    .icon-btn{width:36px;padding:0}.text-btn{padding:0 13px;font-size:12px;font-weight:690}
+    .icon-btn:hover,.text-btn:hover{background:rgba(255,255,255,.72);border-color:#c7c0b5}
+    .icon-btn:active,.text-btn:active{transform:scale(.96)}
+    .icon-btn[disabled],.text-btn[disabled]{opacity:.34;cursor:not-allowed;transform:none}
+    .icon-btn svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+    .board-wrap{position:relative;width:min(100%,620px);aspect-ratio:1;margin:0 auto;touch-action:none;user-select:none;-webkit-user-select:none}
+    .board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:var(--gap);padding:var(--gap);overflow:hidden;border-radius:var(--radius);background:var(--board);box-shadow:0 1px 0 rgba(255,255,255,.45) inset,0 22px 60px rgba(50,44,35,.10);isolation:isolate}
+    .cell{border-radius:14px;background:var(--slot);box-shadow:0 1px 0 rgba(255,255,255,.10) inset}
+    .tiles,.motion-layer{position:absolute;inset:var(--gap);pointer-events:none}
+    .tiles.is-moving{opacity:0}
+    .tile,.motion-tile{position:absolute;width:calc((100% - 3 * var(--gap))/4);height:calc((100% - 3 * var(--gap))/4);display:grid;place-items:center;border-radius:14px;font-weight:780;letter-spacing:-.055em;font-variant-numeric:tabular-nums;box-shadow:0 2px 0 rgba(67,58,45,.06);will-change:transform}
+    .motion-tile{z-index:6;transition:transform var(--move-ms) var(--ease)}
+    .tile.spawn{animation:tileIn 165ms var(--ease) both}
+    .tile.merged{animation:tileMerge 210ms var(--ease) both}
+    @keyframes tileIn{0%{transform:var(--pos) scale(.72);opacity:.08}100%{transform:var(--pos) scale(1);opacity:1}}
+    @keyframes tileMerge{0%,100%{transform:var(--pos) scale(1)}52%{transform:var(--pos) scale(1.085)}}
+
+    .v2{background:#e8e2d8;color:#524d45}.v4{background:#ded4c4;color:#514b42}.v8{background:#d7a56f;color:#fffaf1}.v16{background:#cf875a;color:#fffaf3}.v32{background:#c86b52;color:#fffaf5}.v64{background:#b94d3f;color:#fffaf6}.v128{background:#d1ab59;color:#fffaf0}.v256{background:#c9a04a;color:#fffaf0}.v512{background:#bd9137;color:#fffaf0}.v1024{background:#ad7e2b;color:#fffaf0}.v2048{background:#24231f;color:#f6d88f;box-shadow:0 2px 0 rgba(0,0,0,.08),0 0 0 1px rgba(246,216,143,.16) inset}.super{background:#191814;color:#f0c96c;box-shadow:0 2px 0 rgba(0,0,0,.10),0 0 0 1px rgba(240,201,108,.18) inset}
+
+    .hint{position:absolute;z-index:12;left:50%;top:50%;width:62px;height:62px;margin:-31px 0 0 -31px;border:1px solid rgba(255,255,255,.18);border-radius:50%;display:grid;place-items:center;background:rgba(35,34,30,.82);color:#fff;font-size:27px;box-shadow:0 12px 30px rgba(35,31,25,.15);backdrop-filter:blur(10px);opacity:0;transform:scale(.86);transition:opacity .16s ease,transform .22s var(--ease);pointer-events:none}
+    .hint.show{opacity:1;transform:scale(1)}
+    .overlay{position:absolute;inset:0;z-index:18;display:grid;place-items:center;padding:24px;border-radius:var(--radius);background:rgba(243,240,233,.91);backdrop-filter:blur(7px);opacity:0;pointer-events:none;transition:opacity .2s ease;text-align:center}
+    .overlay.show{opacity:1;pointer-events:auto}
+    .overlay h2{margin:0 0 6px;font-size:34px;letter-spacing:-.045em}.overlay p{margin:0 0 18px;color:var(--muted);font-size:13px}
+    .primary{border-radius:999px;background:var(--ink);color:#fff;padding:10px 17px;font-size:12px;font-weight:720;cursor:pointer;transition:transform .16s ease,opacity .16s ease}.primary:hover{opacity:.88}.primary:active{transform:scale(.97)}
+    .under-board{display:flex;justify-content:space-between;gap:16px;width:min(100%,620px);margin:12px auto 0;color:var(--muted);font-size:11px;line-height:1.45}
+    .under-board kbd{padding:2px 5px;border:1px solid var(--hair);border-bottom-width:2px;border-radius:5px;background:rgba(255,255,255,.42);font:inherit;color:#5e5951}
+
+    .aside{position:sticky;top:22px;display:flex;flex-direction:column;gap:12px}
+    .assist{border-top:1px solid var(--hair);padding-top:17px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+    .section-head h2{margin:0;font-size:14px;font-weight:760;letter-spacing:-.015em}
+    .status-dot{width:8px;height:8px;border-radius:50%;background:#aaa399;box-shadow:0 0 0 4px rgba(170,163,153,.10)}
+    .status-dot.think{background:#b48735;box-shadow:0 0 0 4px rgba(180,135,53,.12);animation:softPulse .85s ease-in-out infinite alternate}
+    .status-dot.active{background:#537761;box-shadow:0 0 0 4px rgba(83,119,97,.11)}
+    @keyframes softPulse{to{transform:scale(.78);opacity:.7}}
+    .status{min-height:47px;margin-bottom:12px}
+    .status strong{display:block;font-size:17px;letter-spacing:-.025em;margin-bottom:3px}.status span{display:block;color:var(--muted);font-size:11px;line-height:1.45}
+    .assist-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 15px}
+    .assist-btn{height:42px;border-radius:12px;border:1px solid var(--hair);background:rgba(255,255,255,.42);font-size:12px;font-weight:720;cursor:pointer;transition:.16s ease}.assist-btn:hover{background:#fff;border-color:#c6bfb4}.assist-btn:active{transform:scale(.985)}.assist-btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}.assist-btn.dark.on{background:#537761;border-color:#537761}.assist-btn[disabled]{opacity:.38;cursor:not-allowed;transform:none}
+    .label-row{display:flex;align-items:center;justify-content:space-between;margin:0 0 7px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+    .segments{display:grid;grid-template-columns:repeat(4,1fr);padding:3px;border:1px solid var(--hair);border-radius:12px;background:rgba(255,255,255,.30);margin-bottom:13px}
+    .seg{height:31px;border-radius:8px;background:transparent;color:var(--muted);font-size:11px;font-weight:720;cursor:pointer}.seg.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(52,45,35,.08)}.seg[data-strength="god"].on{color:#8a6410;box-shadow:0 1px 4px rgba(189,143,53,.26)}
+    .range-row{margin:0 0 15px}.range-row input{width:100%;accent-color:var(--ink)}
+    .metrics{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:3px}
+    .metric{padding:12px 0}.metric:nth-child(odd){padding-right:10px}.metric:nth-child(even){padding-left:13px;border-left:1px solid var(--hair)}.metric:nth-child(n+3){border-top:1px solid var(--hair)}
+    .metric span{display:block;color:var(--muted);font-size:9px;font-weight:720;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}.metric b{display:block;font-size:14px;font-weight:730;font-variant-numeric:tabular-nums}
+    details{border-bottom:1px solid var(--hair)}
+    summary{list-style:none;cursor:pointer;padding:13px 0;color:#5e5951;font-size:11px;font-weight:690;display:flex;align-items:center;justify-content:space-between}summary::-webkit-details-marker{display:none}summary::after{content:"＋";font-size:14px;font-weight:400;color:var(--muted)}details[open] summary::after{content:"−"}
+    .move-bars{padding:1px 0 13px;display:flex;flex-direction:column;gap:7px}.move-row{display:grid;grid-template-columns:21px 1fr 39px;gap:8px;align-items:center;color:var(--muted);font-size:9px}.move-row b{font-size:12px;color:var(--ink)}.bar{height:4px;border-radius:999px;background:#ddd8ce;overflow:hidden}.bar i{display:block;width:0;height:100%;background:#4d4a43;border-radius:inherit;transition:width .24s var(--ease)}.move-row span{text-align:right;font-variant-numeric:tabular-nums}
+    .tech-note{padding:2px 0 0;color:var(--muted);font-size:10.5px;line-height:1.55}.tech-note strong{color:#504b44;font-weight:720}
+    .tiny-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:9px}.tiny-tag{padding:4px 7px;border-radius:999px;border:1px solid var(--hair);font-size:9px;color:#6b665e;background:rgba(255,255,255,.25)}
+    .toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));z-index:40;transform:translate(-50%,10px);padding:9px 12px;border-radius:999px;background:#24231f;color:#fff;font-size:11px;box-shadow:0 8px 26px rgba(0,0,0,.14);opacity:0;pointer-events:none;transition:.18s ease}.toast.show{opacity:1;transform:translate(-50%,0)}
+
+    @media (max-width:900px){
+      .page{width:min(680px,calc(100% - 28px));padding-top:24px}.masthead{margin-bottom:19px}.layout{grid-template-columns:1fr;gap:27px}.aside{position:static;width:min(100%,620px);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:22px}.assist{grid-column:1/-1}.tech-note{padding-top:18px;border-top:1px solid var(--hair)}
+    }
+    @media (max-width:620px){
+      :root{--gap:8px;--radius:18px;--move-ms:135ms}.page{width:calc(100% - 20px);padding-top:max(14px,env(safe-area-inset-top))}.masthead{grid-template-columns:1fr;margin-bottom:16px;gap:16px}.title-row{align-items:flex-end}h1{font-size:60px}.intro{font-size:11px;max-width:185px;margin-bottom:0}.score-strip{justify-content:space-between;gap:8px;border-top:1px solid var(--hair);padding-top:11px}.score{min-width:0;flex:1;text-align:left}.score:last-child{text-align:right}.score:nth-child(2){text-align:center}.score strong{font-size:20px}.toolbar{margin-bottom:9px}.quiet-label{display:none}.text-btn{padding:0 11px}.board{border-radius:18px}.cell,.tile,.motion-tile{border-radius:10px}.under-board{font-size:10px}.under-board span:last-child{display:none}.aside{grid-template-columns:1fr;gap:16px}.assist{grid-column:auto}.tech-note{padding-top:16px}.status strong{font-size:16px}
+    }
+    @media (max-height:760px) and (min-width:901px){.page{padding-top:20px}.masthead{margin-bottom:16px}.board-wrap{width:min(100%,560px)}.under-board{width:min(100%,560px)}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.motion-tile{transition:none!important}}
+
+    /* V9.2: accessible controls, calm information hierarchy, stable paint cost. */
+    [hidden]{display:none!important}
+    .cell-row{display:contents}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+    .tile{will-change:auto}
+    .v8{color:#493421}.v16{color:#4c2c1a}
+    .v128,.v256,.v512{color:#3f3018}
+    .tiles,.motion-layer{contain:layout style}
+    .control-help{margin:5px 0 12px;color:#6b655b;font-size:11px;line-height:1.6;letter-spacing:0;text-transform:none}
+    .status{min-height:64px}.status span{font-size:12px;line-height:1.55}
+    .status-dot.think{animation:none}
+    .range-row input{min-height:28px;cursor:pointer}
+    .label-row{font-size:11px;letter-spacing:0;gap:8px}
+    .assist-btn{height:46px;font-size:13px}
+    .seg{height:38px;font-size:12px}.seg:disabled{cursor:not-allowed;opacity:.6}
+    .metric span{font-size:10px;letter-spacing:0}.metric b{font-size:16px}
+    summary{font-size:12px;min-height:44px}
+    .move-row{font-size:11px;grid-template-columns:24px 1fr 48px}
+    .move-row.best b,.move-row.best span{color:#315c40;font-weight:750}.move-row.best .bar i{background:#537761}
+    .bar i{transition:none}
+    .playing-note{color:#6b655b;font-size:12px;line-height:1.7;padding:9px 0}
+    .playing-note strong{color:#47433b;font-size:13px}.playing-note p{margin:6px 0 10px}
+    .version{font-size:10px;color:#6c665d;letter-spacing:.04em}
+    .save-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+    .save-actions .assist-btn{flex:1;min-width:100px;min-height:44px}
+    .engine-details .tech-note{border:0;padding:0 0 12px;font-size:11px;line-height:1.75}
+    .board:focus-visible{outline:3px solid #537761;outline-offset:4px}
+    @media (max-width:900px){.aside{display:flex;gap:8px}.playing-note{padding-top:8px}}
+    @media (max-width:620px){
+      .page{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+      .icon-btn{width:44px;height:44px}.text-btn{min-height:44px}
+      .intro{max-width:180px}.title-row{gap:18px}
+      .assist-actions{position:fixed;left:0;right:0;bottom:0;z-index:30;margin:0;padding:10px max(12px,env(safe-area-inset-left)) calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--hair);background:#f3f0e9;box-shadow:0 -5px 22px rgba(50,44,35,.05);gap:10px}
+      .assist-btn{height:48px}.seg{height:42px}
+      .status{min-height:58px;margin-bottom:14px}.section-head{margin-bottom:10px}
+      .under-board{font-size:11px}.assist{padding-top:14px}
+      .toast{bottom:calc(84px + env(safe-area-inset-bottom));max-width:calc(100% - 24px)}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="masthead">
+      <div class="title-row">
+        <h1>2048</h1>
+        <p class="intro">合并相同数字，留出空间。<br>你来玩，或让智能辅助接手。</p>
+      </div>
+      <div class="score-strip" aria-label="分数">
+        <div class="score"><span>本局得分</span><strong id="score">0</strong></div>
+        <div class="score"><span>历史最高</span><strong id="best">0</strong></div>
+        <div class="score"><span>最大数字</span><strong id="maxTile">2</strong></div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="play-column">
+        <div class="toolbar">
+          <div class="tool-left"><span class="quiet-label">方向键 / WASD / 滑动</span></div>
+          <div class="tool-right">
+            <button class="icon-btn" id="soundBtn" aria-label="声音开关" title="声音开关">
+              <svg id="soundIcon" viewBox="0 0 24 24"><path d="M11 5 6.8 8.5H3.5v7h3.3L11 19z"/><path d="M15 9.2a4.2 4.2 0 0 1 0 5.6"/><path d="M17.8 6.5a8 8 0 0 1 0 11"/></svg>
+            </button>
+            <button class="text-btn" id="undoBtn">撤销</button>
+            <button class="text-btn" id="newBtn">新游戏</button>
+          </div>
+        </div>
+
+        <div class="board-wrap" id="boardWrap">
+          <div class="board" id="board" role="grid" aria-rowcount="4" aria-colcount="4" tabindex="0" aria-label="2048 游戏棋盘，使用方向键移动" aria-describedby="boardHelp">
+            <div class="cell-row" role="row"><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div></div>
+            <div class="cell-row" role="row"><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div></div>
+            <div class="cell-row" role="row"><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div></div>
+            <div class="cell-row" role="row"><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div><div class="cell" role="gridcell"></div></div>
+            <div class="tiles" id="tiles" aria-hidden="true"></div>
+            <div class="motion-layer" id="motionLayer" aria-hidden="true"></div>
+          </div>
+          <div class="hint" id="hintArrow" aria-hidden="true">↑</div>
+          <div class="overlay" id="gameOverlay" hidden><div><h2>本局结束</h2><p id="gameOverText">棋盘已经没有可移动的位置。</p><button class="primary" id="overlayNew">再来一局</button></div></div>
+        </div>
+        <div class="under-board" id="boardHelp"><span><kbd>Space</kbd> 自动玩 · <kbd>H</kbd> 提示</span><span>本地运行 · 自动保存进度</span></div>
+      </section>
+
+      <aside class="aside">
+        <section class="assist" aria-label="智能辅助">
+          <div class="section-head"><h2>智能辅助</h2><i class="status-dot" id="aiDot"></i></div>
+          <div class="status"><strong id="aiStatusText">随时可以接手</strong><span id="aiSubText">自己玩，也可以让 AI 帮你想下一步。</span></div>
+          <div class="assist-actions">
+            <button class="assist-btn" id="hintBtn">提示一步</button>
+            <button class="assist-btn dark" id="autoplayBtn" aria-pressed="false">自动玩</button>
+          </div>
+
+          <div class="label-row"><span>思考强度</span><span id="strengthCaption">神级 · 稳定高分残局策略</span></div>
+          <div class="segments" id="strengthSegments" role="group" aria-label="AI 强度">
+            <button class="seg" data-strength="fast" aria-pressed="false">轻快</button>
+            <button class="seg" data-strength="strong" aria-pressed="false">深入</button>
+            <button class="seg" data-strength="extreme" aria-pressed="false">极致</button>
+            <button class="seg on" data-strength="god" aria-pressed="true">神级</button>
+          </div>
+
+          <div class="range-row" id="speedRow">
+            <div class="label-row"><span>走棋间隔</span><span id="speedText">极速</span></div>
+            <input id="speed" type="range" min="0" max="520" value="0" step="10" aria-label="自动走棋间隔" aria-describedby="speedHelp" />
+          <p class="control-help" id="speedHelp">只调整观看节奏；非极速时 AI 会在动画/等待期间提前思考，预算保持不变。</p>
+          </div>
+
+          <div class="metrics">
+            <div class="metric"><span>选择方向</span><b id="mMove">—</b></div>
+            <div class="metric"><span>完成深度</span><b id="mDepth">—</b></div>
+            <div class="metric"><span>搜索节点</span><b id="mNodes">—</b></div>
+            <div class="metric"><span>搜索耗时</span><b id="mTime">—</b></div>
+          </div>
+
+          <details>
+            <summary id="analysisCaption">方向评估</summary>
+            <div class="move-bars">
+              <div class="move-row" data-dir="up"><b>↑</b><div class="bar"><i></i></div><span>—</span></div>
+              <div class="move-row" data-dir="left"><b>←</b><div class="bar"><i></i></div><span>—</span></div>
+              <div class="move-row" data-dir="right"><b>→</b><div class="bar"><i></i></div><span>—</span></div>
+              <div class="move-row" data-dir="down"><b>↓</b><div class="bar"><i></i></div><span>—</span></div>
+            </div>
+            <p class="control-help" id="analysisNote">相对评分用于比较方向，不代表获胜概率。</p>
+          </details>
+        </section>
+
+        <div class="playing-note"><strong>留一点空间，走得更远。</strong><p>轻快适合快速体验；深入用高速搜索处理拥挤棋盘；极致增加残局复核。神级采用稳定的高分残局策略，并保留完整搜索与风险复核。合并到 2048 后，还可以继续挑战。</p><span class="version">V11.7 · 全程本地计算</span></div>
+        <details class="save-details"><summary>棋局存档</summary>
+          <p class="control-help">升级或换设备前，先导出存档。导入后可撤销一步，返回之前的棋局。</p>
+          <div class="save-actions"><button class="assist-btn" id="exportBtn" type="button">导出存档</button><button class="assist-btn" id="importBtn" type="button">导入存档</button></div>
+          <input id="saveFile" type="file" accept=".json,application/json" hidden aria-label="选择 2048 存档文件" />
+        </details>
+        <details class="engine-details"><summary>操作与 AI 说明</summary><p class="tech-note">方向键、WASD 或滑动移动数字。空格切换自动玩，H 查看提示，Esc 暂停，M 切换声音。<br><br>V11.7 从多组约 17 万分的真实局面继续测试到终局。神级使用经过配对终局比较的稳定策略；实验候选需同时通过新增存活步数的均值、中位数、较差样本和早死指标，才能成为默认策略。它不会保证整局不失败。<br><br>深入模式在极拥挤棋盘使用高速价值核心完成原有搜索深度；轻快和极致保留原有主策略。自动玩会提前计算下一步，让搜索与动画、走棋间隔重叠。速度设置只调整走棋节奏，不降低搜索深度。<br><br>大数字局面继续遵守价值核心的总量证书与兼容回退规则。短期安全证明和常规风险复核保留原有保护；方向条显示相对评分，不代表获胜概率。搜索耗时不包含引擎首次启动、结果送达页面和走棋间隔；浏览器后台限速和设备资源竞争仍会影响实际速度。</p></details>
+      </aside>
+    </div>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="sr-only" id="liveStatus" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script id="ai-worker-source" type="text/plain">
+'use strict';
+const WASM_B64='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cXIiBEHrlK+veGxzIA5zIgFBEHYgAXNBreqs/wdsIgFBD3YgAXNBi82yo3hsIgFBEHYgAXNBACgCqIiAgABxIgFBsIiIggBqQQE6AAAgAUEDdCIFQdCJmIIAaiAANwMAIAFBAXRB0ImYgwBqIAQ7AQAgBUHQibiDAGogDDkDACAMDwsgDAsLNwEAQYAICzAEAAAAAQAAAAMAAAAAAAAAYTJVMCqpMz8CAAAAAAAAAAAAAACAhD5B//8AAAEAAAAA1gEEbmFtZQAQD2VuZ2luZV92N2Uud2FzbQGeAQ4ABm5vd19tcwENYW5hbHl6ZV9leGFjdAIIZXZhbHVhdGUDC2NoYW5jZV9ub2RlBAxhbmFseXplX3Jvb3QFCGNsZWFyX3R0BgZtZW1zZXQHCmV2YWxfYm9hcmQICWdldF9kZXB0aAkJZ2V0X2xldmVsCglnZXRfbm9kZXMLC2luaXRfdGFibGVzDAltb3ZlX3Rlc3QNCG1heF9ub2RlBxIBAA9fX3N0YWNrX3BvaW50ZXIJCAEABS5kYXRhAH8JcHJvZHVjZXJzAQxwcm9jZXNzZWQtYnkBBWNsYW5nXzE3LjAuMCAoaHR0cHM6Ly9naXRodWIuY29tL3N3aWZ0bGFuZy9sbHZtLXByb2plY3QuZ2l0IDEwOTk5YjZkMDM0ZmUzMThmM2Q1NmM4M2JkZGI2NTcyNTkzYThiYjApAEkPdGFyZ2V0X2ZlYXR1cmVzBCsKbXVsdGl2YWx1ZSsPbXV0YWJsZS1nbG9iYWxzKw9yZWZlcmVuY2UtdHlwZXMrCHNpZ24tZXh0';
+const SURVIVAL_WASM_B64='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';
+const V102_WASM_B64='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AABDFsGLQ79FBESI32JE8wS1RACwCEVxpEVFbPOJRb4Pu0Uri/dFbmwgRkY9TEYAAAAAAACAPwAAgEEAAKJCAACAQwBAHEQAAKJEABAWRQAAgEUACM1FAEAcRgDEZEYAAKJGACLfRgAQFkcAwUVHAEGACQsCAQAAlAEEbmFtZQAQD3YxMDJfZW1wdHkud2FzbQFUBgAJdjEwMl9pbml0ARB2MTAyX3Njb3JlX2RlcHRoAgtjaGFuY2Vfbm9kZQMKdjEwMl9zY29yZQQKdjEwMl9ub2RlcwUPdjEwMl9jYWNoZV9oaXRzBxIBAA9fX3N0YWNrX3BvaW50ZXIJEQIABy5yb2RhdGEBBS5kYXRhAH8JcHJvZHVjZXJzAQxwcm9jZXNzZWQtYnkBBWNsYW5nXzE3LjAuMCAoaHR0cHM6Ly9naXRodWIuY29tL3N3aWZ0bGFuZy9sbHZtLXByb2plY3QuZ2l0IDEwOTk5YjZkMDM0ZmUzMThmM2Q1NmM4M2JkZGI2NTcyNTkzYThiYjApAEkPdGFyZ2V0X2ZlYXR1cmVzBCsKbXVsdGl2YWx1ZSsPbXV0YWJsZS1nbG9iYWxzKw9yZWZlcmVuY2UtdHlwZXMrCHNpZ24tZXh0';
+let WASM=null,WASM_FAILED=false,SURVIVAL_WASM=null,V102_WASM=null;
+const SURVIVAL_READY=(async()=>{try{const bin=atob(SURVIVAL_WASM_B64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const mod=await WebAssembly.instantiate(bytes,{});SURVIVAL_WASM=mod.instance.exports;SURVIVAL_WASM.init_tables();return SURVIVAL_WASM}catch(e){return null}})();
+const V102_READY=(async()=>{try{const bin=atob(V102_WASM_B64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);const mod=await WebAssembly.instantiate(bytes,{});V102_WASM=mod.instance.exports;V102_WASM.v102_init();return V102_WASM}catch(e){return null}})();
+const WASM_READY=(async()=>{
+  try{
+    const bin=atob(WASM_B64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);
+    const mod=await WebAssembly.instantiate(bytes,{env:{now_ms:()=>performance.now()}});WASM=mod.instance.exports;WASM.init_tables();return WASM;
+  }catch(e){WASM_FAILED=true;return null;}
+})();
+function pack4(board){let lo=0,hi=0,n15=0;for(let i=0;i<16;i++){let v=board[i],r=0;while(v>1){v=Math.floor(v/2);r++}if(r>=15)return null;if(i<8)lo=(lo|(r<<(i*4)))>>>0;else hi=(hi|(r<<((i-8)*4)))>>>0}return[lo>>>0,hi>>>0]}
+// The value core can represent rank 15 exactly, provided no rank-16 merge
+// is reachable within its entire horizon. Each spawn adds at most four mass.
+function packValue4(board,depth){
+  if(!Array.isArray(board)||board.length!==16||!Number.isInteger(depth)||depth<2||depth>6)return null;
+  let lo=0,hi=0,mass=0;
+  for(let i=0;i<16;i++){
+    const v=board[i];
+    if(v!==0&&!(Number.isInteger(v)&&v>=2&&v<=32768&&(v&(v-1))===0))return null;
+    const r=v===0?0:31-Math.clz32(v);
+    mass+=v;if(i<8)lo|=r<<(i*4);else hi|=r<<((i-8)*4);
+  }
+  return mass+4*depth<65536?[lo>>>0,hi>>>0]:null;
+}
+async function v102Exact(board,depth=3){
+  const w=await V102_READY;if(!w)return null;const p=packValue4(board,depth);if(!p)return null;const start=performance.now();
+  try{const score=depth===3?w.v102_score(p[0],p[1]):w.v102_score_depth(p[0],p[1],depth|0);return{ok:true,depth:depth|0,score,nodes:w.v102_nodes()>>>0,time:performance.now()-start,engine:'v10.3-wasm-expectimax',cacheHits:w.v102_cache_hits()>>>0};}
+  catch(e){return{ok:false,depth:depth|0,score:NaN,nodes:0,time:performance.now()-start,engine:'v10.3-wasm-expectimax'};}
+}
+async function wasmRoot(board,gain,cfg){
+  const w=await WASM_READY;if(!w)return null;const p=pack4(board);if(!p)return null;const start=performance.now();
+  try{w.analyze_root(p[0],p[1],gain>>>0,Math.max(1,Math.ceil(cfg.budget)),cfg.maxDepth,cfg.minDepth||0,cfg.sampleCap,cfg.exactPlies,cfg.exactWhenEmpty,cfg.probCut,cfg.phase||0,cfg.ttBits,cfg.cacheMinDepth,cfg.overflowBonus||2000000)}catch(e){if(!(e instanceof WebAssembly.RuntimeError)){WASM_FAILED=true;return null}}
+  const depth=w.get_depth()|0,levels=new Array(depth+1);for(let i=0;i<=depth;i++)levels[i]=w.get_level(i);return{depth,levels,nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'wasm64'};
+}
+async function wasmExact(board,gain,depth,cfg,hardBudget=0){
+  if(cfg.forceJS)return null;
+  const w=await WASM_READY;if(!w)return null;const p=pack4(board);if(!p)return null;const start=performance.now();
+  try{
+    w.clear_tt();
+    w.analyze_exact(p[0],p[1],gain>>>0,depth|0,Math.max(0,Math.ceil(hardBudget||0)),cfg.sampleCap,cfg.exactPlies,cfg.exactWhenEmpty,cfg.probCut,cfg.phase||0,cfg.ttBits,cfg.cacheMinDepth,cfg.overflowBonus||2000000);
+  }catch(e){
+    if(e instanceof WebAssembly.RuntimeError)return{ok:false,depth:depth|0,score:NaN,nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'wasm64'};
+    WASM_FAILED=true;return null;
+  }
+  return{ok:true,depth:depth|0,score:w.get_level(depth|0),nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'wasm64'};
+}
+async function wasmRiskAll(board,horizon,nodeLimit){
+  const w=await SURVIVAL_READY;if(!w)return null;const p=pack4(board);if(!p)return null;const start=performance.now();
+  try{const code=w.analyze_survival(p[0],p[1],horizon|0,nodeLimit>>>0),aborted=w.get_aborted?!!w.get_aborted():code<0,dirs=['up','left','right','down'],survivals={};for(let i=0;i<4;i++)survivals[dirs[i]]=w.get_survival(i);return{ok:!aborted,best:code>=0?dirs[code]:null,survivals,nodes:w.get_nodes()>>>0,time:performance.now()-start,engine:'survival-v9.1'}}catch(e){return null}
+}
+// One-sided certificate: true means the chosen root survives every spawn for H.
+// The internal three-state result distinguishes a counterexample from unfinished work.
+// Neither a counterexample nor unknown is a death prediction or a move score.
+function createSafetyProof(){
+  const left=new Uint16Array(65536),known=new Uint8Array(65536);
+  const keysLo=new Uint32Array(16384),keysHi=new Uint32Array(16384),heights=new Uint8Array(16384),failures=new Uint8Array(16384);
+  const spawnLo=new Uint32Array(8192),spawnHi=new Uint32Array(8192),spawnHeights=new Uint8Array(8192),spawnFailures=new Uint8Array(8192);
+  const movesLo=new Uint32Array(32),movesHi=new Uint32Array(32),spaces=new Int8Array(32);
+  let outLo=0,outHi=0,nodes=0,limit=0,deadline=0,expired=false,wideMove=false;
+  function row(x){
+    if(known[x]){if(known[x]===2)wideMove=true;return left[x];}
+    let out=0,shift=0,previous=0,wide=false;
+    for(let i=0;i<16;i+=4){const v=(x>>>i)&15;if(!v)continue;
+      if(v===previous){if(v===15)wide=true;out|=Math.min(15,v+1)<<shift;shift+=4;previous=0;}
+      else {if(previous){out|=previous<<shift;shift+=4;}previous=v;}
+    }
+    if(previous)out|=previous<<shift;known[x]=wide?2:1;if(wide)wideMove=true;return left[x]=out;
+  }
+  const reverse=x=>((x&15)<<12)|((x&240)<<4)|((x&3840)>>>4)|(x>>>12);
+  function move(lo,hi,d){
+    wideMove=false;
+    // Columns become rows for vertical moves; all shifts stay inside 32 bits.
+    const vertical=d===0||d===3;
+    if(vertical){
+      const a=lo&65535,b=lo>>>16,c=hi&65535,e=hi>>>16;
+      lo=((a&15)|((b&15)<<4)|((c&15)<<8)|((e&15)<<12)|
+        ((a&240)<<12)|((b&240)<<16)|((c&240)<<20)|((e&240)<<24))>>>0;
+      hi=(((a>>>8)&15)|((b>>>4)&240)|(c&3840)|((e<<4)&61440)|
+        ((a&61440)<<4)|((b&61440)<<8)|((c&61440)<<12)|((e&61440)<<16))>>>0;
+    }
+    const right=d===2||d===3;
+    let a=lo&65535,b=lo>>>16,c=hi&65535,e=hi>>>16;
+    if(right){a=reverse(row(reverse(a)));b=reverse(row(reverse(b)));c=reverse(row(reverse(c)));e=reverse(row(reverse(e)));}
+    else {a=row(a);b=row(b);c=row(c);e=row(e);}
+    if(vertical){
+      outLo=((a&15)|((b&15)<<4)|((c&15)<<8)|((e&15)<<12)|
+        ((a&240)<<12)|((b&240)<<16)|((c&240)<<20)|((e&240)<<24))>>>0;
+      outHi=(((a>>>8)&15)|((b>>>4)&240)|(c&3840)|((e<<4)&61440)|
+        ((a&61440)<<4)|((b&61440)<<8)|((c&61440)<<12)|((e&61440)<<16))>>>0;
+    }else {outLo=(a|(b<<16))>>>0;outHi=(c|(e<<16))>>>0;}
+  }
+  function emptyBits(x){x|=x>>>2;x|=x>>>1;return (~x)&0x11111111;}
+  function zeroNibbles(x){x|=x>>>2;x|=x>>>1;x=(~x)&0x11111111;x+=x>>>16;x+=x>>>8;x+=x>>>4;return x&15;}
+  function empties(lo,hi){return zeroNibbles(lo)+zeroNibbles(hi);}
+  // Only resolved facts are stored. Unknown is -1 and must never enter this table.
+  function remember(lo,hi,h,index,value){
+    if(keysLo[index]!==lo||keysHi[index]!==hi){keysLo[index]=lo;keysHi[index]=hi;heights[index]=0;failures[index]=0;}
+    if(value===1)heights[index]=Math.max(heights[index],h+1);
+    else failures[index]=failures[index]?Math.min(failures[index],h+1):h+1;
+    return value;
+  }
+  function spawnFact(lo,hi,h,index,value){
+    if(spawnLo[index]!==lo||spawnHi[index]!==hi){spawnLo[index]=lo;spawnHi[index]=hi;spawnHeights[index]=0;spawnFailures[index]=0;}
+    if(value===1)spawnHeights[index]=Math.max(spawnHeights[index],h+1);
+    else spawnFailures[index]=spawnFailures[index]?Math.min(spawnFailures[index],h+1):h+1;
+    return value;
+  }
+  function allSpawns(lo,hi,h){
+    if(expired||nodes>=limit)return -1;
+    const index=(Math.imul(lo^lo>>>16,0x45d9f3b)^Math.imul(hi^hi>>>16,0x119de1f3))&8191;
+    if(spawnLo[index]===lo&&spawnHi[index]===hi){
+      if(spawnHeights[index]>h)return 1;
+      if(spawnFailures[index]&&spawnFailures[index]<=h+1)return 0;
+    }
+    // Set bits identify empty nibbles. Visiting low bits first preserves V9.4's
+    // exact square order and 4-before-2 order while skipping occupied squares.
+    let mask=emptyBits(lo);
+    while(mask){
+      const bit=mask&-mask;mask^=bit;
+      let result=prove((lo|(bit<<1))>>>0,hi,h);
+      if(result!==1)return result===0?spawnFact(lo,hi,h,index,0):-1;
+      result=prove((lo|bit)>>>0,hi,h);
+      if(result!==1)return result===0?spawnFact(lo,hi,h,index,0):-1;
+    }
+    mask=emptyBits(hi);
+    while(mask){
+      const bit=mask&-mask;mask^=bit;
+      let result=prove(lo,(hi|(bit<<1))>>>0,h);
+      if(result!==1)return result===0?spawnFact(lo,hi,h,index,0):-1;
+      result=prove(lo,(hi|bit)>>>0,h);
+      if(result!==1)return result===0?spawnFact(lo,hi,h,index,0):-1;
+    }
+    return spawnFact(lo,hi,h,index,1);
+  }
+  function prove(lo,hi,h){
+    if(expired||nodes>=limit)return -1;
+    nodes++;
+    if(deadline&&!(nodes&31)&&performance.now()>=deadline){expired=true;return -1;}
+    const e=empties(lo,hi);if((lo||hi)&&e>h)return 1;
+    const index=(Math.imul(lo^lo>>>16,0x45d9f3b)^Math.imul(hi^hi>>>16,0x119de1f3))&16383;
+    if(keysLo[index]===lo&&keysHi[index]===hi){
+      if(heights[index]>h)return 1;
+      // Failure of certainty at h also rules out certainty at any longer horizon.
+      if(failures[index]&&failures[index]<=h+1)return 0;
+    }
+    const offset=h*4;let unknown=false;
+    for(let d=0;d<4;d++){
+      move(lo,hi,d);const i=offset+d;spaces[i]=-1;
+      if(outLo!==lo||outHi!==hi){
+        if(h<=0)return 1;
+        // Overflow actions are unknown, never evidence of unavoidable failure.
+        if(wideMove){unknown=true;continue;}
+        const n=empties(outLo,outHi);if(n>h)return remember(lo,hi,h,index,1);
+        movesLo[i]=outLo;movesHi[i]=outHi;spaces[i]=n;
+      }
+    }
+    for(let k=0;k<4;k++){
+      let pick=-1,best=-1;for(let d=0;d<4;d++)if(spaces[offset+d]>best){pick=offset+d;best=spaces[pick];}
+      if(pick<0)break;spaces[pick]=-1;
+      const result=allSpawns(movesLo[pick],movesHi[pick],h-1);
+      if(result===1)return remember(lo,hi,h,index,1);
+      if(result===-1)unknown=true;
+      if(expired||nodes>=limit)return -1;
+    }
+    return unknown?-1:remember(lo,hi,h,index,0);
+  }
+  function certify(lo,hi,dir,h,maxNodes=512,maxMs=.5){
+    const start=performance.now();nodes=0;limit=maxNodes;deadline=maxMs?start+maxMs:0;expired=false;
+    if(!Number.isInteger(h)||h<1||h>7||!Number.isInteger(dir)||dir<0||dir>3)return {certified:false,status:'unknown',nodes:0,time:0,exhausted:false};
+    move(lo,hi,dir);const a=outLo,b=outHi;
+    const result=wideMove||a===lo&&b===hi?-1:allSpawns(a,b,h-1);
+    return {certified:result===1,status:result===1?'safe':result===0?'not-certain':'unknown',nodes,time:performance.now()-start,exhausted:expired||nodes>=limit};
+  }
+  return {certify,empties,move(lo,hi,d){move(lo,hi,d);return [outLo,outHi];},row};
+}
+
+let SAFETY=null,SAFETY_FAILED=false;
+function getSafety(){return SAFETY_FAILED?null:SAFETY||(SAFETY=createSafetyProof());}
+
+let LEGACY=null;
+function getLegacy(){return LEGACY||(LEGACY=createLegacy());}
+function createLegacy(){
+'use strict';
+const DIRS=['up','left','right','down'];
+const LINESETS={
+  left:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]],
+  right:[[3,2,1,0],[7,6,5,4],[11,10,9,8],[15,14,13,12]],
+  up:[[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]],
+  down:[[12,8,4,0],[13,9,5,1],[14,10,6,2],[15,11,7,3]]
+};
+const ROW_OUT=new Uint32Array(1<<20), ROW_GAIN=new Float64Array(1<<20);
+let DEADLINE=0,NODES=0,CFG=null,EPOCH=1,TT=null,TTMASK=0;
+function ensureTT(bits){
+  const size=1<<bits;
+  if(TT&&TT.size===size)return;
+  TT={size,k1:new Uint32Array(size),k2:new Uint32Array(size),epoch:new Uint16Array(size),val:new Float64Array(size)};
+  TTMASK=size-1;EPOCH=1;
+}
+function clearTT(){if(!TT)return;EPOCH=(EPOCH+1)&65535;if(EPOCH===0){TT.epoch.fill(0);EPOCH=1}}
+function rowMoveCode(code){
+  let packed=ROW_OUT[code];if(packed)return packed-1;
+  const a=code&31,b=(code>>>5)&31,c=(code>>>10)&31,d=(code>>>15)&31;
+  const src=[a,b,c,d],v=[];for(let i=0;i<4;i++)if(src[i])v.push(src[i]);
+  const out=[];let gain=0;
+  for(let i=0;i<v.length;i++){
+    if(i+1<v.length&&v[i]===v[i+1]){const r=Math.min(31,v[i]+1);out.push(r);gain+=2**r;i++}else out.push(v[i]);
+  }
+  while(out.length<4)out.push(0);
+  const outCode=(out[0]|(out[1]<<5)|(out[2]<<10)|(out[3]<<15))>>>0;
+  ROW_OUT[code]=outCode+1;ROW_GAIN[code]=gain;return outCode;
+}
+function rowMove(code){const out=rowMoveCode(code);return [out,ROW_GAIN[code]];}
+function moveBoard(board,dir){
+  const out=new Uint8Array(16),lines=LINESETS[dir];let moved=false,gain=0,wideArithmetic=false;
+  // Decide representability per line. A rank-31 tile must not send the other
+  // three lines through allocating map/filter movers. Scoring uses real ranks.
+  for(let k=0;k<4;k++){
+    const ids=lines[k],a=board[ids[0]],b=board[ids[1]],c=board[ids[2]],d=board[ids[3]];
+    // Preserve the original per-merge addition order after extremely large
+    // ranks: grouping two small rewards could otherwise round differently.
+    if(a>=49||b>=49||c>=49||d>=49)wideArithmetic=true;
+    if(!wideArithmetic&&a<31&&b<31&&c<31&&d<31){
+      const code=(a|(b<<5)|(c<<10)|(d<<15))>>>0,oc=rowMoveCode(code);gain+=ROW_GAIN[code];
+      const v0=oc&31,v1=(oc>>>5)&31,v2=(oc>>>10)&31,v3=(oc>>>15)&31;
+      out[ids[0]]=v0;out[ids[1]]=v1;out[ids[2]]=v2;out[ids[3]]=v3;
+      if(v0!==a||v1!==b||v2!==c||v3!==d)moved=true;
+    }else{
+      // Streaming compaction: a pending tile is emitted or merged exactly
+      // once, in the same order as the original unsaturated numeric mover.
+      let pending=0,slot=0;
+      for(let j=0;j<4;j++){
+        const r=board[ids[j]];if(!r)continue;
+        if(!pending){pending=r;continue;}
+        if(pending===r){out[ids[slot++]]=r+1;gain+=2**(r+1);pending=0;}
+        else{out[ids[slot++]]=pending;pending=r;}
+      }
+      if(pending)out[ids[slot]]=pending;
+      if(out[ids[0]]!==a||out[ids[1]]!==b||out[ids[2]]!==c||out[ids[3]]!==d)moved=true;
+    }
+  }
+  return [out,moved,gain];
+}
+function legalMoves(board){const out=[];for(const d of DIRS){const m=moveBoard(board,d);if(m[1])out.push([d,m[0],m[2]])}return out}
+function toRanks(board){const a=new Uint8Array(16);for(let i=0;i<16;i++)a[i]=board[i]?Math.log2(board[i]):0;return a}
+const SNAKES=[
+  [15,14,13,12,8,9,10,11,7,6,5,4,0,1,2,3],[12,13,14,15,11,10,9,8,4,5,6,7,3,2,1,0],
+  [3,2,1,0,4,5,6,7,11,10,9,8,12,13,14,15],[0,1,2,3,7,6,5,4,8,9,10,11,15,14,13,12],
+  [15,11,7,3,2,6,10,14,13,9,5,1,0,4,8,12],[12,8,4,0,1,5,9,13,14,10,6,2,3,7,11,15],
+  [3,7,11,15,14,10,6,2,1,5,9,13,12,8,4,0],[0,4,8,12,13,9,5,1,2,6,10,14,15,11,7,3]
+];
+const SW=SNAKES.map(()=>{const w=new Float64Array(16);let x=1;for(let i=0;i<16;i++){w[i]=x;x*=1.38}return w});
+// Exact leaf memo: four complete 32-bit words, NOT a probabilistic fingerprint.
+// The evaluator depends only on ranks, so these entries can survive TT epochs.
+// Keep NODES/deadline checks on hits too: budgets retain the original semantics.
+const LEAF_SIZE=8192, LEAF_MASK=LEAF_SIZE-1;
+const LEAF_KEYS=new Uint32Array(LEAF_SIZE*4),LEAF_VALUES=new Float64Array(LEAF_SIZE),LEAF_USED=new Uint8Array(LEAF_SIZE);
+let LEAF_HITS=0,LEAF_MISSES=0;
+function evaluate(a){
+  NODES++;if((NODES&2047)===0&&performance.now()>DEADLINE)throw 1;
+  const k0=(a[0]|a[1]<<8|a[2]<<16|a[3]<<24)>>>0,k1=(a[4]|a[5]<<8|a[6]<<16|a[7]<<24)>>>0;
+  const k2=(a[8]|a[9]<<8|a[10]<<16|a[11]<<24)>>>0,k3=(a[12]|a[13]<<8|a[14]<<16|a[15]<<24)>>>0;
+  let hash=Math.imul(k0^Math.imul(k1,0x9e3779b1)^Math.imul(k2,0x85ebca6b)^Math.imul(k3,0xc2b2ae35),0x27d4eb2d);
+  const slot=(hash^(hash>>>16))&LEAF_MASK,i=slot*4;
+  if(LEAF_USED[slot]&&LEAF_KEYS[i]===k0&&LEAF_KEYS[i+1]===k1&&LEAF_KEYS[i+2]===k2&&LEAF_KEYS[i+3]===k3){LEAF_HITS++;return LEAF_VALUES[slot];}
+  LEAF_MISSES++;const value=evaluateUncached(a);
+  LEAF_KEYS[i]=k0;LEAF_KEYS[i+1]=k1;LEAF_KEYS[i+2]=k2;LEAF_KEYS[i+3]=k3;LEAF_VALUES[slot]=value;LEAF_USED[slot]=1;
+  return value;
+}
+function evaluateUncached(a){
+  let empties=0,maxR=0,maxI=0,merge=0,smooth=0,islands=0;
+  for(let i=0;i<16;i++){const v=a[i];if(!v){empties++;continue}if(v>maxR){maxR=v;maxI=i}}
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    const i=r*4+c,v=a[i];if(!v)continue;let near=0;
+    if(c<3&&a[i+1]){smooth-=Math.abs(v-a[i+1]);near++;if(v===a[i+1])merge+=1+v*.12}
+    if(c>0&&a[i-1])near++;
+    if(r<3&&a[i+4]){smooth-=Math.abs(v-a[i+4]);near++;if(v===a[i+4])merge+=1+v*.12}
+    if(r>0&&a[i-4])near++;
+    if(near===4&&v<=3)islands++;
+  }
+  let mono=0;
+  for(let r=0;r<4;r++){const o=r*4;let up=0,down=0;for(let c=0;c<3;c++){const d=a[o+c]-a[o+c+1];if(d>0)down+=d;else up-=d}mono-=Math.min(up,down)}
+  for(let c=0;c<4;c++){let up=0,down=0;for(let r=0;r<3;r++){const d=a[r*4+c]-a[(r+1)*4+c];if(d>0)down+=d;else up-=d}mono-=Math.min(up,down)}
+  let snakeBest=-1e18;
+  for(let s=0;s<8;s++){const order=SNAKES[s],w=SW[s];let x=0;for(let p=0;p<16;p++)x+=a[order[p]]*w[p];if(x>snakeBest)snakeBest=x}
+  let corner=false,edge=false;for(let i=0;i<16;i++)if(a[i]===maxR){corner ||= i===0||i===3||i===12||i===15;edge ||= i<4||i>11||i%4===0||i%4===3;}
+  const late=empties<=4,critical=empties<=2;
+  let score=empties*(late?3000:2050)+mono*(late?330:270)+smooth*52+merge*520+snakeBest*(late?1.42:1.08)-islands*180;
+  score+=maxR*(corner?(late?1550:1180):edge?280:-360);if(critical)score+=empties*1600;return score;
+}
+function probClass(p){return p>.08?0:p>.018?1:p>.004?2:3}
+let PROBE_K1=0,PROBE_K2=0;
+function hash(board,meta){
+  let h1=(0x811c9dc5^meta)>>>0,h2=(0x9e3779b9+Math.imul(meta,0x85ebca6b))>>>0;
+  for(let i=0;i<16;i++){const x=board[i]+i*37;h1=Math.imul(h1^x,0x01000193)>>>0;h2=Math.imul(h2^(x+0x9e37),0x27d4eb2d)>>>0}
+  h1^=h1>>>16;h2^=h2>>>15;PROBE_K2=h2>>>0;return h1>>>0;
+}
+// Probe once. Callers snapshot both keys before descending recursively.
+// Reusing these exact keys on insert removes a second 16-cell hash pass
+// without changing slots, collision checks, epochs or replacement order.
+function cacheGet(board,type,depth,pathP){
+  if(depth<CFG.cacheMinDepth)return NaN;
+  const meta=(depth&31)|((type&1)<<5)|(probClass(pathP)<<6)|((CFG.phase||0)<<8);
+  const k1=PROBE_K1=hash(board,meta),i=k1&TTMASK;
+  return TT.epoch[i]===EPOCH&&TT.k1[i]===k1&&TT.k2[i]===PROBE_K2?TT.val[i]:NaN;
+}
+function cachePut(depth,k1,k2,v){
+  if(depth<CFG.cacheMinDepth)return v;
+  const i=k1&TTMASK;TT.k1[i]=k1;TT.k2[i]=k2;TT.val[i]=v;TT.epoch[i]=EPOCH;return v;
+}
+function collectEmpties(board){const e=[];for(let i=0;i<16;i++)if(board[i]===0)e.push(i);return e}
+function sampledEmpties(e,cap,ply){if(e.length<=cap)return e;const out=[],step=e.length/cap,offset=((ply*0.61803398875)%1);for(let k=0;k<cap;k++)out.push(e[Math.floor((k+offset)*step)%e.length]);return out}
+function hasMove(a){for(let i=0;i<16;i++){if(!a[i])return true;if((i&3)<3&&a[i]===a[i+1])return true;if(i<12&&a[i]===a[i+4])return true;}return false;}
+function maxNode(board,depth,pathP,ply){
+  if(!hasMove(board))return -1e15;
+  if(depth<=0||pathP<CFG.probCut)return evaluate(board);
+  const hit=cacheGet(board,0,depth,pathP);if(hit===hit)return hit;
+  const k1=PROBE_K1,k2=PROBE_K2;
+  let best=-1e18;
+  for(const dir of DIRS){const m=moveBoard(board,dir);if(!m[1])continue;const v=m[2]*2.55+chanceNode(m[0],depth-1,pathP,ply);if(v>best)best=v;}
+  if(best===-1e18)return -1e15;
+  return cachePut(depth,k1,k2,best);
+}
+function chanceNode(board,depth,pathP,ply){
+  const hit=cacheGet(board,1,depth,pathP);if(hit===hit)return hit;
+  const k1=PROBE_K1,k2=PROBE_K2;
+  const all=collectEmpties(board);if(!all.length)return maxNode(board,depth,pathP,ply+1);
+  const exact=ply<CFG.exactPlies||all.length<=CFG.exactWhenEmpty;
+  const cap=Math.max(2,CFG.sampleCap-(ply>2?1:0)-(ply>4?1:0));
+  const empt=exact?all:sampledEmpties(all,cap,ply);let sum=0;
+  const inv=1/all.length;
+  for(let j=0;j<empt.length;j++){
+    // Each recursive call owns its move output. Restore even when a deadline
+    // throws, and retain spawn order and floating-point addition order exactly.
+    const p=empt[j];
+    try{board[p]=1;const s2=maxNode(board,depth,pathP*.9*inv,ply+1);
+      board[p]=2;sum+=.9*s2+.1*maxNode(board,depth,pathP*.1*inv,ply+1);
+    }finally{board[p]=0;}
+  }
+  const v=sum/empt.length;return cachePut(depth,k1,k2,v);
+}
+function begin(cfg){CFG=cfg;ensureTT(cfg.ttBits);DEADLINE=performance.now()+cfg.budget;NODES=0;LEAF_HITS=0;LEAF_MISSES=0;}
+function analyze(board,cfg){
+  begin(cfg);const root=toRanks(board),legal=legalMoves(root),start=performance.now();if(!legal.length)return{best:null,depth:0,nodes:0,scores:{},time:0};
+  let scores={},best=legal[0][0],doneDepth=0;
+  for(const m of legal)scores[m[0]]=evaluate(m[1])+m[2]*2.55;
+  for(let depth=1;depth<=cfg.maxDepth;depth++){
+    const next={};try{for(const m of legal){if(performance.now()>DEADLINE)throw 1;next[m[0]]=m[2]*2.55+chanceNode(m[1],depth-1,1,0)}}catch(_){break}
+    scores=next;doneDepth=depth;best=Object.entries(scores).reduce((a,b)=>b[1]>a[1]?b:a)[0];if(performance.now()>DEADLINE)break;
+  }
+  best=Object.entries(scores).reduce((a,b)=>b[1]>a[1]?b:a)[0];return{best,depth:doneDepth,nodes:NODES,scores,time:performance.now()-start};
+}
+function analyzeRoot(board,gain,cfg){
+  begin(cfg);const root=toRanks(board),start=performance.now(),levels=[evaluate(root)+gain*2.55];let doneDepth=0;
+  for(let depth=1;depth<=cfg.maxDepth;depth++){
+    try{if(performance.now()>DEADLINE)throw 1;levels[depth]=gain*2.55+chanceNode(root,depth-1,1,0)}catch(_){break}
+    doneDepth=depth;if(performance.now()>DEADLINE)break;
+  }
+  return{depth:doneDepth,levels,nodes:NODES,time:performance.now()-start};
+}
+function analyzeExact(board,gain,depth,cfg,hardBudget){
+  begin({...cfg,budget:hardBudget>0?hardBudget:cfg.fallbackBudget});clearTT();
+  const root=toRanks(board),start=performance.now();
+  try{
+    const score=gain*2.55+chanceNode(root,depth-1,1,0);
+    return {ok:true,depth,score,nodes:NODES,time:performance.now()-start,engine:'js-v9.3',leafHits:LEAF_HITS,leafMisses:LEAF_MISSES};
+  }catch(e){if(e!==1)throw e;return {ok:false,depth,score:NaN,nodes:NODES,time:performance.now()-start,engine:'js-v9.3',leafHits:LEAF_HITS,leafMisses:LEAF_MISSES};}
+}
+return {analyze,analyzeRoot,analyzeExact,clearTT};
+}
+
+let resultPort=null;
+const reply=r=>resultPort?resultPort.postMessage(r):postMessage(r);
+async function handle(e){
+  const m=e.data;
+  try{
+    if(m.type==='connect'){
+      resultPort=m.port;resultPort.onmessage=handle;
+      await Promise.all([WASM_READY,SURVIVAL_READY,V102_READY]);reply({type:'ready',wasm:!!WASM,v102:!!V102_WASM});return;
+    }
+    if(m.type==='clear'){if(WASM)WASM.clear_tt();if(LEGACY)LEGACY.clearTT();return;}
+    if(m.type==='v102'){
+      const r=await v102Exact(m.board,m.depth||3);
+      if(!r){reply({id:m.id,round:m.round,dir:m.dir,ok:false,depth:m.depth||3,score:NaN,nodes:0,time:0,engine:'v10.3-unavailable'});return;}
+      reply({id:m.id,round:m.round,dir:m.dir,...r});return;
+    }
+    if(m.type==='exact'){
+      let r=await wasmExact(m.board,m.gain,m.depth,m.cfg,m.hardBudget||0);
+      if(!r)r=getLegacy().analyzeExact(m.board,m.gain,m.depth,m.cfg,m.hardBudget||0);
+      reply({id:m.id,round:m.round,dir:m.dir,...r});return;
+    }
+    if(m.type==='riskall'){
+      const start=performance.now(),dirs=['up','left','right','down'],d=dirs.indexOf(m.baseline);
+      let proof=null;const packed=d>=0&&m.minGap>1e-6&&m.horizon>=1&&m.horizon<=7?pack4(m.board):null;
+      // A certainty certificate implies every alternative's survival advantage
+      // is below the existing gate. Unknown/timeout always uses the old engine.
+      if(packed){try{proof=getSafety()?.certify(packed[0],packed[1],d,m.horizon,m.proofNodes||4096,m.proofMs||.75);}catch{SAFETY_FAILED=true;SAFETY=null;}}
+      const r=proof?.certified?{ok:true,best:m.baseline,survivals:{[m.baseline]:1},nodes:0,engine:'survival-certificate-v10'}:
+        await wasmRiskAll(m.board,m.horizon,m.nodeLimit)||{ok:false,best:null,survivals:{},nodes:0,time:0,engine:'risk-unavailable'};
+      reply({id:m.id,round:m.round,...r,nodes:r.nodes+(proof?.nodes||0),time:performance.now()-start,
+        proofCertified:!!proof?.certified,proofNodes:proof?.nodes||0,proofMs:proof?.time||0});return;
+    }
+  }catch(error){reply({id:m.id,round:m.round,dir:m.dir,error:String(error.message||error)});}
+}
+onmessage=handle;
+
+</script>
+<script id="ai-coordinator-source" type="text/plain">
+// Shared, DOM-free game rules and search policy. Values are tile values, not ranks.
+'use strict';
+const Game2048=(()=>{
+    const LINES={
+      left:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]],right:[[3,2,1,0],[7,6,5,4],[11,10,9,8],[15,14,13,12]],
+      up:[[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]],down:[[12,8,4,0],[13,9,5,1],[14,10,6,2],[15,11,7,3]]
+    };
+    function moveBoardDetailed(src,dir){
+      const out=Array(16).fill(0),motions=[],merged=[],lines=LINES[dir],vals=new Array(4),from=new Int8Array(4);let moved=false,gain=0;
+      for(let k=0;k<4;k++){
+        const ids=lines[k];let n=0;for(let j=0;j<4;j++){const idx=ids[j],v=src[idx];if(v){vals[n]=v;from[n++]=idx}}let slot=0;
+        for(let i=0;i<n;i++){const dest=ids[slot],v=vals[i];if(i+1<n&&v===vals[i+1]){const value=v*2;out[dest]=value;gain+=value;merged.push(dest);motions.push({from:from[i],to:dest,value:v},{from:from[i+1],to:dest,value:v});i++;slot++}else{out[dest]=v;motions.push({from:from[i],to:dest,value:v});slot++}}
+      }
+      for(let i=0;i<16;i++)if(out[i]!==src[i]){moved=true;break}
+      return{board:out,moved,gain,merged,motions};
+    }
+    function moveBoardPlain(src,dir){
+      const out=Array(16).fill(0),lines=LINES[dir],vals=new Array(4);let moved=false,gain=0;
+      for(let k=0;k<4;k++){const ids=lines[k];let n=0;for(let j=0;j<4;j++){const v=src[ids[j]];if(v)vals[n++]=v}let slot=0;for(let i=0;i<n;i++){const dest=ids[slot],v=vals[i];if(i+1<n&&v===vals[i+1]){const nv=v*2;out[dest]=nv;gain+=nv;i++;slot++}else{out[dest]=v;slot++}}}
+      for(let i=0;i<16;i++)if(out[i]!==src[i]){moved=true;break}return{board:out,moved,gain};
+    }
+    function transformCoord(i,t){const r=(i/4)|0,c=i&3;let rr=r,cc=c;switch(t){case 1:rr=c;cc=3-r;break;case 2:rr=3-r;cc=3-c;break;case 3:rr=3-c;cc=r;break;case 4:rr=r;cc=3-c;break;case 5:rr=3-c;cc=3-r;break;case 6:rr=3-r;cc=c;break;case 7:rr=c;cc=r;break}return rr*4+cc}
+    function transformBoard(src,t){const out=Array(16);for(let i=0;i<16;i++)out[transformCoord(i,t)]=src[i];return out}
+    function transformDir(dir,t){const vec={up:[-1,0],down:[1,0],left:[0,-1],right:[0,1]}[dir],a=transformCoord(5,t),b=transformCoord((1+vec[0])*4+(1+vec[1]),t),dr=((b/4)|0)-((a/4)|0),dc=(b&3)-(a&3);return dr<0?'up':dr>0?'down':dc<0?'left':'right'}
+    function inverseTransformDir(dir,t){for(const d of ['up','left','right','down'])if(transformDir(d,t)===dir)return d;return dir}
+    function canonicalAI(src){let best=null,bestT=0;for(let t=0;t<8;t++){const b=transformBoard(src,t);if(!best){best=b;bestT=t;continue}let better=false;for(let i=0;i<16;i++){if(b[i]===best[i])continue;better=b[i]>best[i];break}if(better){best=b;bestT=t}}return{board:best,t:bestT}}
+    function countEmpties(src){let n=0;for(let i=0;i<16;i++)if(!src[i])n++;return n}
+    function config(board,strength,branches=null){
+      const empties=countEmpties(board),late=empties<=5;
+      // V9.1 keeps V9's proven fast search semantics. The new change is compute
+      // reallocation: cap low-value early/mid refinements, then spend a little more
+      // only after the board becomes genuinely crowded.
+      const common={forceJS:board.some(v=>v>=32768)||(branches||legalRootBranches(board)).some(b=>b.board.some(v=>v>=32768)),sampleCap:4,exactPlies:1,exactWhenEmpty:3,probCut:late?1.8e-4:3e-4,phase:late?1:0,ttBits:15,cacheMinDepth:1,overflowBonus:2000000};
+      const stageCap=empties>=7?5:empties===6?6:empties===5?7:null;
+      if(strength==='fast'){
+        // Fast keeps the V9 main line. Only true late game gets a small budget bump;
+        // the rejected global "<=7 empties => d4" rule stays rejected.
+        const baseDepth=empties<=2?5:empties<=5?4:3;
+        const budget=empties<=1?10:empties<=3?8:6;
+        return{...common,baseDepth,budget,fallbackBudget:48,maxDepth:8,riskH:6,riskNodes:120000,riskGap:.018,verifyBudget:20};
+      }
+      if(strength==='extreme'){
+        const baseDepth=empties<=2?5:4,modeMax=11,maxDepth=stageCap?Math.min(modeMax,stageCap):modeMax;
+        return{...common,baseDepth,budget:58,fallbackBudget:480,maxDepth,riskH:7,riskNodes:300000,riskGap:.012,verifyBudget:72};
+      }
+      // Strong keeps d4 as its quality floor, but no longer burns the whole 22ms
+      // budget chasing d8/d9/d10 while the board is still open. The saved average
+      // compute is re-invested once empties <= 4, where deeper horizon matters more.
+      const modeMax=10,maxDepth=stageCap?Math.min(modeMax,stageCap):modeMax;
+      const budget=empties<=2?32:empties<=4?28:22;
+      return{...common,baseDepth:empties<=2?5:4,budget,fallbackBudget:180,maxDepth,riskH:6,riskNodes:180000,riskGap:.015,verifyBudget:36};
+    }
+    function legalRootBranches(src){
+      const out=[];for(const d of ['up','left','right','down']){const m=moveBoardPlain(src,d);if(m.moved)out.push({dir:d,board:m.board,gain:m.gain})}return out;
+    }
+
+return {LINES,moveBoardPlain,moveBoardDetailed,transformCoord,transformBoard,transformDir,inverseTransformDir,canonicalAI,countEmpties,config,legalRootBranches};
+})();
+if(typeof module!=='undefined')module.exports=Game2048;
+
+// V9.4: entry-only finite-horizon survival projection. Never used by scoring.
+// Proof scope and prior art: docs/research/THEORY.md and PRIOR_ART.md.
+function survivalRanks(board,h){
+  const counts=new Uint8Array(32),map=new Uint8Array(32);map[1]=1;map[2]=2;
+  for(const r of board)counts[r]++;
+  let previous=2,mapped=2,prefix=counts[1]*2+counts[2]*4,mappedPrefix=prefix;
+  for(let r=3;r<32;r++)if(counts[r]){
+    const massBound=Math.floor(Math.log2(prefix+4*h));
+    const bound=Math.min(previous+h,massBound);
+    let next;
+    if(r>bound){
+      const mappedBound=Math.min(mapped+h,Math.floor(Math.log2(mappedPrefix+4*h)));
+      next=Math.max(mapped+1,mappedBound+1);
+    }else next=mapped+(r-previous);
+    map[r]=next;prefix+=counts[r]*2**r;mappedPrefix+=counts[r]*2**next;previous=r;mapped=next;
+  }
+  return Array.from(board,r=>map[r]);
+}
+function projectSurvival(board,h){
+  if(!Array.isArray(board)||board.length!==16)throw new Error('Expected 16 tile values');
+  if(!Number.isInteger(h)||h<1||h>12)throw new RangeError('WASM horizon must be 1..12');
+  const ranks=board.map(v=>{
+    if(v===0)return 0;const r=Math.log2(v);
+    if(!Number.isInteger(r)||r<1||r>31)throw new RangeError('Tiles must be 0 or powers of two from 2 to 2^31');return r;
+  });
+  const compact=survivalRanks(ranks,h);
+  const mass=compact.reduce((s,r)=>s+(r?2**r:0),0)+4*h;
+  // Guard BOTH the entry representation and the inherited saturation boundary.
+  if(compact.some(r=>r>=15)||mass>=65536)return {eligible:false,reason:'No certified safe 4-bit projection'};
+  let lo=0,hi=0;for(let i=0;i<8;i++){lo|=compact[i]<<(4*i);hi|=compact[i+8]<<(4*i);}
+  return {eligible:true,lo:lo>>>0,hi:hi>>>0,ranks:compact,changed:compact.some((r,i)=>r!==ranks[i]),maxRank:Math.max(...compact),massBound:mass};
+}
+
+// Owns the complete decision. Root workers speak directly through MessagePorts;
+// no search round, risk check, or verifier waits for a DOM paint or animation.
+(()=>{
+  'use strict';
+  const {legalRootBranches,inverseTransformDir,countEmpties,moveBoardPlain,config}=Game2048;
+  const DIRS=['up','left','right','down'];
+  const INVERSE_DIRS=Array.from({length:8},(_,t)=>Object.fromEntries(DIRS.map(d=>[d,inverseTransformDir(d,t)])));
+  // Compare transformed views first; allocate only the winning root board.
+  // Inverse index maps preserve the original transform order and tie handling.
+  const ROOT_MAPS=Array.from({length:8},(_,t)=>{
+    const map=new Uint8Array(16);for(let i=0;i<16;i++)map[Game2048.transformCoord(i,t)]=i;return map;
+  });
+  function canonicalRoot(src){
+    let best=0;
+    for(let t=1;t<8;t++)for(let i=0;i<16;i++){
+      const a=src[ROOT_MAPS[t][i]],b=src[ROOT_MAPS[best][i]];
+      if(a===b)continue;if(a>b)best=t;break;
+    }
+    const board=new Array(16);for(let i=0;i<16;i++)board[i]=src[ROOT_MAPS[best][i]];
+    return {board,t:best};
+  }
+  let slots=[],job=null,pending=null,cache=null;
+  const send=x=>postMessage(x);
+  const scoresFor=j=>Object.fromEntries(j.branches.map(b=>[b.dir,j.lastComplete.find(r=>r.dir===b.dir).score]));
+  // Stable canonical order: ties must never depend on worker arrival order.
+  const bestOf=s=>DIRS.filter(d=>Number.isFinite(s[d])).reduce((a,d)=>a===null||s[d]>s[a]?d:a,null);
+  const orderedScores=s=>DIRS.filter(d=>Number.isFinite(s[d])).sort((a,b)=>s[b]-s[a]||DIRS.indexOf(a)-DIRS.indexOf(b));
+  const relativeGap=s=>{const o=orderedScores(s);if(o.length<2)return Infinity;const top=s[o[0]];return Math.max(0,(top-s[o[1]])/Math.max(1,Math.abs(top)));};
+  function policyChoice(j,scores){
+    const order=orderedScores(scores);if(!order.length)return null;
+    if(j.cfg?.mergePreference===false)return order[0];
+    const top=scores[order[0]],den=Math.max(1,Math.abs(top)),limit=j.cfg?.profile==='god'?GOD_TIE_GAP:0.0005;
+    let pick=j.branches.find(b=>b.dir===order[0]);
+    for(const d of order){const gap=(top-scores[d])/den,br=j.branches.find(b=>b.dir===d);if(gap>=0&&gap<=limit&&br&&br.gain>pick.gain)pick=br;}
+    return pick?.dir||order[0];
+  }
+  const GOD_MAX_DEPTH=6,GOD_CROWD_EMPTIES=7,GOD_BASE_DEPTH=5,GOD_TIE_GAP=0.00005;
+  const useV102Core=(strength,baseDepth,forceJS,allV102)=>!forceJS&&allV102&&(strength==='fast'||strength==='strong'||strength==='extreme'||strength==='god'||baseDepth<=4);
+  const verifierSpec=(cfg,lastDepth)=>cfg.v102&&cfg.profile==='fast'?{type:'v102',depth:4}
+    :cfg.v102&&cfg.profile==='god'?{type:'exact',depth:Math.min(6,Math.max(5,(cfg.coreDepth||4)+2))}
+    :{type:'exact',depth:cfg.v102?Math.max(5,(cfg.coreDepth??(cfg.baseDepth-1))+1):lastDepth+1};
+  // Use a conservative six-spawn bound for every value-core profile.
+  // Never use this eligibility check for the older risk/compatibility kernels.
+  function valueCoreEligible(board){
+    if(board.length!==16)return false;let mass=0;
+    for(const v of board){if(v!==0&&!(Number.isInteger(v)&&v>=2&&v<=32768&&(v&(v-1))===0))return false;mass+=v;}
+    return mass+24<65536;
+  }
+  function begin(){
+    if(job||!pending||!slots.length||slots.some(s=>!s.ready||s.busy))return;
+    const m=pending;pending=null;
+    const canon=canonicalRoot(m.board);
+    // V11.7: known boolean experiment options are isolated in the cache.
+    // Default God restores the stable V11.5 policy pending independent gates.
+    const policy={policyConsensus:false,terminalRescue:false,actualConsensusPromotion:false,mergePreference:true,fallbackConsensus:false};
+    if(m.strength==='god'&&m.policyOptions)for(const k of Object.keys(policy))if(typeof m.policyOptions[k]==='boolean')policy[k]=m.policyOptions[k];
+    const key=m.strength+':'+Object.values(policy).map(Number).join('')+':'+canon.board.join(',');
+    if(cache&&cache.key===key){const r={...cache.value,id:m.id,revision:m.revision,cached:true,time:0,nodes:0};return deliver(r,canon.t);}
+    const rootEmpties=countEmpties(canon.board),rootMax=Math.max(...canon.board);
+    const branches=legalRootBranches(canon.board);
+    // Reuse the already enumerated roots without changing config outputs.
+    // God keeps the extreme risk budget and adds its late-game policy here.
+    const c=config(canon.board,m.strength==='god'?'extreme':m.strength,branches);
+    // V11.5: God is survival-first. It intentionally inherits the proven
+    // extreme budget/risk profile instead of forcing d5/d6 on nearly every move.
+    c.rootEmpties=rootEmpties;c.rootMax=rootMax;
+    Object.assign(c,policy);
+    // V10.1 fast late-game refinement lives above the frozen rule policy.
+    // The light profile's inherited search and risk policy is unchanged.
+    if(m.strength==='fast'){
+      const e=rootEmpties;
+      if(e<=1){c.budget=18;c.maxDepth=Math.max(c.maxDepth,9);c.riskNodes=140000;c.verifyBudget=24;}
+      else if(e<=3){c.budget=14;c.maxDepth=Math.max(c.maxDepth,9);c.riskNodes=140000;c.verifyBudget=24;}
+      else if(e<=5){c.budget=10;c.maxDepth=Math.max(c.maxDepth,9);c.riskNodes=140000;}
+    }
+    const eligible=valueCoreEligible(canon.board);
+    c.wideValue=c.forceJS&&eligible&&slots.every(s=>s.wasm)&&useV102Core(m.strength,c.baseDepth,false,slots.every(s=>s.v102));
+    if(c.wideValue)c.forceJS=false;
+    if(!eligible||slots.some(s=>!s.wasm))c.forceJS=true;
+    // Strong now also completes native d5 at <=2 empty cells. Its independent
+    // survival/verifier layer remains in place, as do unavailable/wide fallbacks.
+    c.v102=useV102Core(m.strength,c.baseDepth,c.forceJS,slots.every(s=>s.v102));
+    c.profile=m.strength==='god'?'extreme':m.strength;
+    c.coreDepth=c.wideValue&&(m.strength==='extreme'||m.strength==='god')?6
+      :m.strength==='god'?(rootEmpties<=2?5:4)
+      :m.strength==='fast'?3:(m.strength==='strong'||m.strength==='extreme')&&rootEmpties<=2?5:4;
+    // JS is a slower compatibility engine: secure a complete result before
+    // spending its existing fallback allowance on progressively deeper rounds.
+    // The ordinary WASM quality floor and budget are unchanged.
+    if(c.forceJS){c.baseDepth=2;c.budget=c.fallbackBudget;c.maxDepth=Math.min(c.maxDepth,6);}
+    if(branches.length<2){return deliver({id:m.id,revision:m.revision,best:branches[0]?.dir||null,scores:branches.length?{[branches[0].dir]:0}:{},depth:0,nodes:0,time:0,parallel:0,engine:'forced'},canon.t);}
+    job={id:m.id,revision:m.revision,key,transform:canon.t,cfg:c,branches,rootBoard:canon.board,depth:c.baseDepth,
+      phase:'search',started:performance.now(),nodes:0,riskNodes:0,verifyNodes:0,cacheHits:0,discardedNodes:0,discardedRounds:0,
+      lastComplete:null,riskResult:null,riskFallback:false,verified:false,overrideBest:null,tieBest:null,tieAdjusted:false,tieGap:0,riskGap:0,recovery:false,spentBudget:0,
+      ceilingStage:0,ceilingBase:null,ceilingBest5:null,ceilingRefined:false,ceilingConsensus:false,ceilingRejected:false,ceilingGap:0};
+    searchRound();
+  }
+  function round(phase,tasks){job.phase=phase;job.results={};job.queue=tasks;job.expected=tasks.length;dispatch();}
+  function searchRound(){
+    const j=job;
+    j.roundCosts=slots.map(()=>0);
+    j.roundBudget=j.lastComplete?Math.max(1,j.cfg.budget-j.spentBudget):0;
+    round('search',j.branches.map(b=>({...b,type:j.cfg.v102?'v102':'exact',round:j.cfg.v102?'v102d'+j.cfg.coreDepth:'d'+j.depth,depth:j.cfg.v102?j.cfg.coreDepth:j.depth,cfg:j.cfg})));
+  }
+  function dispatch(){
+    if(!job)return begin();
+    const j=job;
+    for(const slot of slots){
+      if(!j.queue.length)break;
+      if(!slot.ready||slot.busy)continue;
+      const task=j.queue.shift();
+      task.hardBudget=task.type==='riskall'?0:j.phase==='verify'?(j.projectedRisk?j.projectVerifyBudget:j.cfg.verifyBudget):j.roundBudget;
+      slot.busy=true;slot.id=j.id;
+      // Value tasks do not use the legacy search configuration or merge gain.
+      // Avoid cloning the entire config into every native root request.
+      const message=task.type==='v102'?{type:task.type,id:j.id,round:task.round,dir:task.dir,board:task.board,depth:task.depth,hardBudget:task.hardBudget}:{...task,id:j.id};
+      slot.port.postMessage(message);
+    }
+  }
+  function receive(slot,r){
+    if(r.type==='ready'){slot.ready=true;slot.wasm=r.wasm;slot.v102=!!r.v102;return begin();}
+    slot.busy=false;
+    if(!job||r.id!==job.id){dispatch();begin();return;}
+    if(r.error){send({type:'error',id:job.id,message:r.error});job=null;return;}
+    const j=job;
+    if(j.phase==='risk'){riskComplete(r);return;}
+    if(r.round!==(j.phase==='verify'?'verify':j.cfg.v102?'v102d'+j.cfg.coreDepth:'d'+j.depth))return;
+    if(j.phase==='search')j.roundCosts[slots.indexOf(slot)]+=r.time||0;
+    j.results[r.dir]=r;dispatch();
+    if(Object.keys(j.results).length!==j.expected)return;
+    const rs=j.branches.map(b=>j.results[b.dir]).filter(Boolean),n=rs.reduce((s,x)=>s+(x.nodes||0),0);
+    j.cacheHits=(j.cacheHits||0)+rs.reduce((s,x)=>s+(x.cacheHits||0),0);
+    if(j.phase==='verify'){
+      j.verifyNodes+=n;
+      if(rs.every(x=>x.ok&&Number.isFinite(x.score))){
+        const base=rs.find(r=>r.dir===j.verifyBase),safe=rs.find(r=>r.dir===j.verifySafe);
+        if(base&&safe&&safe.score>base.score){
+          j.verifiedScores=Object.fromEntries(rs.map(x=>[x.dir,x.score]));
+          j.overrideBest=j.verifySafe;j.verified=true;
+        }
+      }
+      finish();return;
+    }
+    j.nodes+=n;
+    // Charge the longest compute lane, including sequential tasks on small
+    // pools. Message delivery and coordinator scheduling consume no chess budget.
+    j.spentBudget+=Math.max(...j.roundCosts);
+    if(rs.some(x=>!x.ok||!Number.isFinite(x.score))){
+      j.discardedNodes+=n;j.discardedRounds++;
+      if(j.ceilingStage&&j.ceilingBase){restoreCeilingBase();tieBreak();riskStart();return;}
+      if(j.lastComplete){riskStart();return;}
+      // Large tiles / unavailable WASM: restart every root at the same attainable
+      // depth. Never compare mixed scales or silently leave autoplay stuck.
+      if(!j.recovery){j.recovery=true;j.depth=1;searchRound();return;}
+      send({type:'error',id:j.id,message:'搜索未能完成，请切换模式后重试。'});job=null;return;
+    }
+    j.lastComplete=rs;
+    if(j.cfg.v102){
+      j.depth=j.cfg.coreDepth;
+      if(ceilingRefine())return;
+      tieBreak();riskStart();return;
+    }
+    if(j.recovery||j.depth>=j.cfg.maxDepth||j.spentBudget>=j.cfg.budget-1){riskStart();return;}
+    j.depth++;searchRound();
+  }
+
+  // V11.5 survival refinement: keep ordinary play unchanged. Only an 8192 or
+  // 16384 board with 3-4 empty cells and a genuinely
+  // ambiguous d4 ranking may spend extra work. A changed d5 choice must also
+  // win at d6; disagreement restores the complete d4 result. This avoids the
+  // known A->B->A depth oscillation without taxing the common path.
+  function restoreCeilingBase(){
+    const j=job,b=j.ceilingBase;if(!b)return;
+    j.lastComplete=b.complete;j.cfg.coreDepth=b.depth;j.depth=b.depth;j.ceilingStage=0;j.ceilingRejected=true;
+  }
+  function ceilingRefine(){
+    const j=job;
+    if(j.ceilingStage===5){
+      const scores=scoresFor(j),pick=bestOf(scores);j.ceilingBest5=pick;
+      j.ceilingPolicy5=(j.cfg.policyConsensus||j.cfg.actualConsensusPromotion)?policyChoice(j,scores):undefined;
+      const scoreAgrees=pick===j.ceilingBase.best,policyAgrees=!j.cfg.policyConsensus||j.ceilingPolicy5===j.ceilingBase.policyBest;
+      if(scoreAgrees&&policyAgrees){j.ceilingConsensus=true;j.ceilingStage=0;return false;}
+      // Preserve the original score-consensus requirement. The new guard only
+      // adds checks; it never skips a d6 round the old policy would require.
+      j.policyOnlyCheck=scoreAgrees&&j.cfg.policyConsensus;j.policyRound5=j.lastComplete;
+      j.ceilingStage=6;j.cfg.coreDepth=6;searchRound();return true;
+    }
+    if(j.ceilingStage===6){
+      const scores=scoresFor(j),pick=bestOf(scores),policy=(j.policyOnlyCheck||j.cfg.actualConsensusPromotion||j.cfg.fallbackConsensus)?policyChoice(j,scores):undefined;
+      // Ablation candidate: full d5/d6 actual-policy agreement. Disabled by default.
+      if(j.cfg.actualConsensusPromotion&&!j.policyOnlyCheck&&policy===j.ceilingPolicy5){
+        j.actualConsensusPromoted=true;j.ceilingStage=0;return false;
+      }
+      if(pick===j.ceilingBest5&&(!j.policyOnlyCheck||policy===j.ceilingPolicy5)){
+        // For the additional policy check, retain the old complete d5 values
+        // and verifier depth. d6 is evidence, not a new scoring scale.
+        if(j.policyOnlyCheck){j.lastComplete=j.policyRound5;j.cfg.coreDepth=5;j.depth=5;j.policyConfirmed=true;}
+        j.ceilingConsensus=true;j.ceilingStage=0;return false;
+      }
+      // A policy-only d6 rejection cannot justify d4 unless d4/d6 raw AND
+      // merge-stabilized choices agree. Otherwise retain the old complete d5.
+      // This is inconclusive evidence, never a positive consensus certificate.
+      if(j.cfg.fallbackConsensus&&j.policyOnlyCheck&&
+        !(pick===j.ceilingBase.best&&policy===j.ceilingBase.policyBest)){
+        j.lastComplete=j.policyRound5;j.cfg.coreDepth=5;j.depth=5;j.ceilingStage=0;
+        j.policyFallbackRetained=true;j.ceilingEvidenceRejected=true;return false;
+      }
+      restoreCeilingBase();return false;
+    }
+    if(j.cfg.profile!=='extreme'||j.cfg.wideValue||j.cfg.forceJS||j.cfg.coreDepth!==4)return false;
+    const e=j.cfg.rootEmpties,max=j.cfg.rootMax;if((max!==8192&&max!==16384)||e<3||e>4)return false;
+    const scores=scoresFor(j),gap=relativeGap(scores);if(!(gap<=0.0005))return false;
+    j.ceilingBase={complete:j.lastComplete,depth:j.cfg.coreDepth,best:bestOf(scores),policyBest:j.cfg.policyConsensus?policyChoice(j,scores):undefined};j.ceilingGap=gap;j.ceilingRefined=true;
+    j.ceilingStage=5;j.cfg.coreDepth=5;searchRound();return true;
+  }
+  function mobility(b){
+    // A move is possible iff a neighboring pair can slide or merge. A merge
+    // separated by zeros already has a sliding pair, so no compression is needed.
+    let mask=0;
+    for(let row=0;row<16&&(mask&3)!==3;row+=4)for(let col=0;col<3;col++){
+      const a=b[row+col],z=b[row+col+1];
+      if(a){if(!z)mask|=2;else if(a===z)mask|=3;}else if(z)mask|=1;
+    }
+    for(let i=0;i<12&&(mask&12)!==12;i++){
+      const a=b[i],z=b[i+4];
+      if(a){if(!z)mask|=8;else if(a===z)mask|=12;}else if(z)mask|=4;
+    }
+    return (mask&1)+((mask>>1)&1)+((mask>>2)&1)+((mask>>3)&1);
+  }
+  function fragility(src,dir,branches){
+    const reused=branches?.find(b=>b.dir===dir);
+    const b=reused?reused.board.slice():moveBoardPlain(src,dir).board,empty=[];for(let i=0;i<16;i++)if(!b[i])empty.push(i);
+    let dead=0,forced=0,tight=0,minMoves=4;
+    for(const i of empty)for(let kind=0;kind<2;kind++){const v=kind?4:2,p=kind?.1:.9;b[i]=v;const n=mobility(b),q=p/empty.length;b[i]=0;minMoves=Math.min(minMoves,n);if(!n)dead+=q;if(n<=1)forced+=q;if(n<=2)tight+=q;}
+    return {dead,forced,tight,minMoves};
+  }
+  // When the high-speed core sees an almost exact tie, prefer the move that
+  // creates more immediate merge value. The 0.05% gate keeps this a stability
+  // rule rather than a short-sighted score bonus.
+  function tieBreak(){
+    const j=job,scores=scoresFor(j),order=orderedScores(scores);if(j.cfg?.mergePreference===false||order.length<2)return;
+    const top=scores[order[0]],den=Math.max(1,Math.abs(top));
+    // V11.4: God already owns the deepest effective complete value result. The
+    // legacy 0.05% merge preference was designed to stabilize shallower modes,
+    // but on God it can overwrite d6 hundreds of score points for a one-ply gain.
+    // Keep that stabilizer only for true numerical near-ties; legacy profiles
+    // retain their historical 0.05% gate byte-for-policy.
+    const limit=j.cfg?.profile==='god'?GOD_TIE_GAP:0.0005;
+    const near=order.filter(d=>{const g=(top-scores[d])/den;return g>=0&&g<=limit;});if(near.length<2)return;
+    const base=j.branches.find(x=>x.dir===order[0]);let pick=base;
+    for(const d of near){const br=j.branches.find(x=>x.dir===d);if(br&&(!pick||br.gain>pick.gain))pick=br;}
+    if(base&&pick&&pick.dir!==base.dir){j.tieBest=pick.dir;j.tieAdjusted=true;j.tieGap=(top-scores[pick.dir])/den;}
+  }
+  function riskStart(){
+    const j=job,e=j.cfg.rootEmpties??countEmpties(j.rootBoard),base=j.tieBest||bestOf(scoresFor(j));
+    if(j.cfg.forceJS||j.cfg.wideValue){
+      // Preserve every normal search round. Only spend unused compatibility time.
+      const wide=j.rootBoard.some(v=>v>=32768)||j.branches.some(b=>b.board.some(v=>v>=32768));
+      if(!wide||!slots.every(s=>s.wasm)){finish();return;}
+      j.projectedRisk=true;
+      if(j.cfg.budget-j.spentBudget<8){j.riskSkipped='budget';finish();return;}
+    }
+    const f=fragility(j.rootBoard,base,j.branches);
+    const god=j.cfg.profile==='god';
+    if(!(e<=1||(e<=3&&j.branches.length<=2)||f.dead>0||(god?f.forced>=.03:f.forced>=.06)||(god?f.tight>=.30:f.tight>=.45)||(god?f.minMoves<=2:f.minMoves<=1))){finish();return;}
+    riskRound(j.cfg.riskH);
+  }
+  function riskRound(h){
+    const j=job,remaining=j.cfg.budget-j.spentBudget;
+    j.activeRiskH=h;
+    if(j.projectedRisk&&remaining<8){j.riskSkipped='budget';finish();return;}
+    // Survival WASM has a node cap, not a wall-clock interrupt. Keep this new
+    // optional phase small; the existing budget remains a soft compute budget.
+    const nodeLimit=j.projectedRisk?Math.min(j.cfg.riskNodes,120000,Math.floor(remaining*4000)):j.cfg.riskNodes;
+    let board=j.rootBoard;
+    if(j.projectedRisk){
+      const start=performance.now();
+      try{j.activeProjection=projectSurvival(board,h);}catch(e){j.activeProjection={eligible:false};}
+      j.spentBudget+=performance.now()-start;
+      if(!j.activeProjection.eligible){riskComplete({ok:false,best:null,survivals:null,nodes:0,time:0,projectionRejected:true});return;}
+      board=j.activeProjection.ranks.map(r=>r?2**r:0);
+    }
+    round('risk',[{type:'riskall',round:'risk',board,horizon:h,nodeLimit,baseline:j.tieBest||bestOf(scoresFor(j)),minGap:j.cfg.riskGap,proofNodes:j.cfg.proofNodes,proofMs:j.cfg.proofMs}]);
+  }
+  function riskComplete(r){
+    const j=job;j.riskNodes+=r.nodes||0;
+    if(j.projectedRisk){
+      // Inherited workers may return partial probabilities after abort. Discard
+      // them at the coordinator boundary before making any policy decision.
+      r={...r,projected:!!j.activeProjection?.changed,maxProjectedRank:j.activeProjection?.maxRank};
+      if(!r.ok){r.best=null;r.survivals=null;}
+      j.spentBudget+=r.time||0;j.riskResult=r;
+    }
+    if((!r.ok||!r.best||!r.survivals)&&j.cfg.riskH>6&&!j.riskFallback){j.riskFallback=true;riskRound(6);return;}
+    j.riskResult=r;
+    if(!r.ok||!r.best||!r.survivals){finish();return;}
+    const base=j.tieBest||bestOf(scoresFor(j)),cur=r.survivals[base],alt=r.survivals[r.best];
+    if(!Number.isFinite(cur)||!Number.isFinite(alt)||base===r.best){finish();return;}
+    j.riskGap=alt-cur;
+    const valueTie=j.cfg.terminalRescue&&j.cfg.v102&&!j.cfg.forceJS&&!j.cfg.wideValue&&!j.projectedRisk
+      &&j.lastComplete.length===j.branches.length&&j.lastComplete.every(x=>x.score===Math.fround(0.000001))
+      &&j.branches.some(b=>b.dir===r.best)&&j.branches.every(b=>Number.isFinite(r.survivals[b.dir])&&r.survivals[b.dir]>=0&&r.survivals[b.dir]<=1+1e-9)
+      &&j.rootBoard.reduce((s,v)=>s+v,0)+4*(j.activeRiskH||j.cfg.riskH)<65536;
+    if(valueTie&&j.riskGap>1e-12){
+      // The value engine has returned its terminal floor for EVERY legal root.
+      // It provides no ranking evidence here. A fully completed survival round
+      // can still distinguish nonzero chances of living through H more moves.
+      // Preserve all normal verifier rules outside this terminal-floor tie.
+      j.overrideBest=r.best;j.terminalRescued=true;finish();return;
+    }
+    if(j.riskGap<j.cfg.riskGap){finish();return;}
+    if(j.projectedRisk){
+      const remaining=j.cfg.budget-j.spentBudget;
+      if(remaining<4){j.riskSkipped='verifier-budget';finish();return;}
+      j.projectVerifyBudget=Math.min(j.cfg.verifyBudget,remaining/Math.ceil(2/slots.length));
+    }
+    j.verifyBase=base;j.verifySafe=r.best;
+    const c=j.cfg,late=countEmpties(j.rootBoard)<=5;
+    const vc={...c,sampleCap:Math.max(5,c.sampleCap),exactPlies:Math.max(2,c.exactPlies),exactWhenEmpty:Math.max(5,c.exactWhenEmpty),probCut:Math.min(c.probCut,late?2e-5:5e-5),ttBits:Math.max(15,c.ttBits)};
+    // Risk overrides still require an independent, deeper legacy verifier.
+    // Extreme d5 therefore receives a d6 check; fast retains d3 -> d4.
+    const vs=verifierSpec(j.cfg,j.lastComplete[0].depth);
+    round('verify',j.branches.filter(b=>b.dir===base||b.dir===r.best).map(b=>({...b,type:vs.type,round:'verify',depth:vs.depth,cfg:vc})));
+  }
+  function finish(){
+    const j=job,scores=scoresFor(j),result={id:j.id,revision:j.revision,best:j.overrideBest||j.tieBest||bestOf(scores),scores,
+      depth:j.lastComplete.reduce((a,x)=>Math.max(a,x.depth||0),0),nodes:j.nodes+j.riskNodes+j.verifyNodes,time:performance.now()-j.started,
+      mainNodes:j.nodes,riskNodes:j.riskNodes,verifyNodes:j.verifyNodes,cacheHits:j.cacheHits||0,
+      parallel:Math.min(slots.length,j.branches.length),engine:j.cfg.v102?'v10.5-wasm-expectimax':j.lastComplete.every(x=>x.engine==='wasm64')?'wasm64-v10':'js-v10',
+      riskChecked:!!j.riskResult?.ok,riskAborted:!!j.riskResult&&!j.riskResult.ok,riskFallback:j.riskFallback,
+      wideValueCore:!!j.cfg.wideValue,projectedRisk:!!j.projectedRisk,projectionApplied:!!j.riskResult?.projected,projectionRejected:!!j.riskResult?.projectionRejected,
+      maxProjectedRank:j.riskResult?.maxProjectedRank,riskSkipped:j.riskSkipped,proofCertified:!!j.riskResult?.proofCertified,
+      proofNodes:j.riskResult?.proofNodes||0,proofMs:j.riskResult?.proofMs||0,
+      verified:j.verified,verifiedScores:j.verifiedScores,tieAdjusted:j.tieAdjusted,tieGap:j.tieGap,tieLimit:j.cfg?.profile==='god'?GOD_TIE_GAP:0.0005,riskGap:j.riskGap,discardedNodes:j.discardedNodes,discardedRounds:j.discardedRounds,recovered:j.recovery,
+      ceilingRefined:j.ceilingRefined,ceilingConsensus:j.ceilingConsensus,ceilingRejected:j.ceilingRejected,ceilingGap:j.ceilingGap,
+      terminalRescued:!!j.terminalRescued,rescueHorizon:j.terminalRescued?(j.activeRiskH||j.cfg.riskH):undefined,
+      policyConsensusGuard:!!j.cfg.policyConsensus,policyConfirmed:!!j.policyConfirmed,
+      actualConsensusPromoted:!!j.actualConsensusPromoted,policyFallbackRetained:!!j.policyFallbackRetained,ceilingEvidenceRejected:!!j.ceilingEvidenceRejected};
+    cache={key:j.key,value:result};job=null;deliver(result,j.transform);begin();
+  }
+  function deliver(r,t){
+    const map=s=>s&&Object.fromEntries(Object.entries(s).map(([d,v])=>[INVERSE_DIRS[t][d],v]));
+    send({type:'result',...r,best:r.best?INVERSE_DIRS[t][r.best]:null,scores:map(r.scores),verifiedScores:map(r.verifiedScores)});
+  }
+  onmessage=e=>{
+    const m=e.data;
+    if(m.type==='init'){
+      slots=m.ports.map(port=>{const slot={port,busy:false,ready:false};port.onmessage=e=>receive(slot,e.data);return slot;});return;
+    }
+    if(m.type==='cancel'){pending=null;job=null;return;}
+    if(m.type==='analyze'){pending=m;job=null;begin();}
+  };
+})();
+
+</script>
+
+  <script>
+// Shared, DOM-free game rules and search policy. Values are tile values, not ranks.
+'use strict';
+const Game2048=(()=>{
+    const LINES={
+      left:[[0,1,2,3],[4,5,6,7],[8,9,10,11],[12,13,14,15]],right:[[3,2,1,0],[7,6,5,4],[11,10,9,8],[15,14,13,12]],
+      up:[[0,4,8,12],[1,5,9,13],[2,6,10,14],[3,7,11,15]],down:[[12,8,4,0],[13,9,5,1],[14,10,6,2],[15,11,7,3]]
+    };
+    function moveBoardDetailed(src,dir){
+      const out=Array(16).fill(0),motions=[],merged=[],lines=LINES[dir],vals=new Array(4),from=new Int8Array(4);let moved=false,gain=0;
+      for(let k=0;k<4;k++){
+        const ids=lines[k];let n=0;for(let j=0;j<4;j++){const idx=ids[j],v=src[idx];if(v){vals[n]=v;from[n++]=idx}}let slot=0;
+        for(let i=0;i<n;i++){const dest=ids[slot],v=vals[i];if(i+1<n&&v===vals[i+1]){const value=v*2;out[dest]=value;gain+=value;merged.push(dest);motions.push({from:from[i],to:dest,value:v},{from:from[i+1],to:dest,value:v});i++;slot++}else{out[dest]=v;motions.push({from:from[i],to:dest,value:v});slot++}}
+      }
+      for(let i=0;i<16;i++)if(out[i]!==src[i]){moved=true;break}
+      return{board:out,moved,gain,merged,motions};
+    }
+    function moveBoardPlain(src,dir){
+      const out=Array(16).fill(0),lines=LINES[dir],vals=new Array(4);let moved=false,gain=0;
+      for(let k=0;k<4;k++){const ids=lines[k];let n=0;for(let j=0;j<4;j++){const v=src[ids[j]];if(v)vals[n++]=v}let slot=0;for(let i=0;i<n;i++){const dest=ids[slot],v=vals[i];if(i+1<n&&v===vals[i+1]){const nv=v*2;out[dest]=nv;gain+=nv;i++;slot++}else{out[dest]=v;slot++}}}
+      for(let i=0;i<16;i++)if(out[i]!==src[i]){moved=true;break}return{board:out,moved,gain};
+    }
+    function transformCoord(i,t){const r=(i/4)|0,c=i&3;let rr=r,cc=c;switch(t){case 1:rr=c;cc=3-r;break;case 2:rr=3-r;cc=3-c;break;case 3:rr=3-c;cc=r;break;case 4:rr=r;cc=3-c;break;case 5:rr=3-c;cc=3-r;break;case 6:rr=3-r;cc=c;break;case 7:rr=c;cc=r;break}return rr*4+cc}
+    function transformBoard(src,t){const out=Array(16);for(let i=0;i<16;i++)out[transformCoord(i,t)]=src[i];return out}
+    function transformDir(dir,t){const vec={up:[-1,0],down:[1,0],left:[0,-1],right:[0,1]}[dir],a=transformCoord(5,t),b=transformCoord((1+vec[0])*4+(1+vec[1]),t),dr=((b/4)|0)-((a/4)|0),dc=(b&3)-(a&3);return dr<0?'up':dr>0?'down':dc<0?'left':'right'}
+    function inverseTransformDir(dir,t){for(const d of ['up','left','right','down'])if(transformDir(d,t)===dir)return d;return dir}
+    function canonicalAI(src){let best=null,bestT=0;for(let t=0;t<8;t++){const b=transformBoard(src,t);if(!best){best=b;bestT=t;continue}let better=false;for(let i=0;i<16;i++){if(b[i]===best[i])continue;better=b[i]>best[i];break}if(better){best=b;bestT=t}}return{board:best,t:bestT}}
+    function countEmpties(src){let n=0;for(let i=0;i<16;i++)if(!src[i])n++;return n}
+    function config(board,strength,branches=null){
+      const empties=countEmpties(board),late=empties<=5;
+      // V9.1 keeps V9's proven fast search semantics. The new change is compute
+      // reallocation: cap low-value early/mid refinements, then spend a little more
+      // only after the board becomes genuinely crowded.
+      const common={forceJS:board.some(v=>v>=32768)||(branches||legalRootBranches(board)).some(b=>b.board.some(v=>v>=32768)),sampleCap:4,exactPlies:1,exactWhenEmpty:3,probCut:late?1.8e-4:3e-4,phase:late?1:0,ttBits:15,cacheMinDepth:1,overflowBonus:2000000};
+      const stageCap=empties>=7?5:empties===6?6:empties===5?7:null;
+      if(strength==='fast'){
+        // Fast keeps the V9 main line. Only true late game gets a small budget bump;
+        // the rejected global "<=7 empties => d4" rule stays rejected.
+        const baseDepth=empties<=2?5:empties<=5?4:3;
+        const budget=empties<=1?10:empties<=3?8:6;
+        return{...common,baseDepth,budget,fallbackBudget:48,maxDepth:8,riskH:6,riskNodes:120000,riskGap:.018,verifyBudget:20};
+      }
+      if(strength==='extreme'){
+        const baseDepth=empties<=2?5:4,modeMax=11,maxDepth=stageCap?Math.min(modeMax,stageCap):modeMax;
+        return{...common,baseDepth,budget:58,fallbackBudget:480,maxDepth,riskH:7,riskNodes:300000,riskGap:.012,verifyBudget:72};
+      }
+      // Strong keeps d4 as its quality floor, but no longer burns the whole 22ms
+      // budget chasing d8/d9/d10 while the board is still open. The saved average
+      // compute is re-invested once empties <= 4, where deeper horizon matters more.
+      const modeMax=10,maxDepth=stageCap?Math.min(modeMax,stageCap):modeMax;
+      const budget=empties<=2?32:empties<=4?28:22;
+      return{...common,baseDepth:empties<=2?5:4,budget,fallbackBudget:180,maxDepth,riskH:6,riskNodes:180000,riskGap:.015,verifyBudget:36};
+    }
+    function legalRootBranches(src){
+      const out=[];for(const d of ['up','left','right','down']){const m=moveBoardPlain(src,d);if(m.moved)out.push({dir:d,board:m.board,gain:m.gain})}return out;
+    }
+
+return {LINES,moveBoardPlain,moveBoardDetailed,transformCoord,transformBoard,transformDir,inverseTransformDir,canonicalAI,countEmpties,config,legalRootBranches};
+})();
+if(typeof module!=='undefined')module.exports=Game2048;
+
+// Portable game saves. Validation is shared by local restore and file import.
+const Game2048Save=(()=>{
+  'use strict';
+  const MAX_BYTES=65536;
+  function validateGame(s,legacy=false){
+    if(!s||!Array.isArray(s.board)||s.board.length!==16||!s.board.some(Boolean))return null;
+    if(!s.board.every(v=>Number.isSafeInteger(v)&&v>=0&&(v===0||(v>=2&&2**Math.round(Math.log2(v))===v))))return null;
+    if(!Number.isSafeInteger(s.score)||s.score<0)return null;
+    const moves=legacy&&(!Number.isSafeInteger(s.moveCount)||s.moveCount<0)?0:s.moveCount;
+    if(!Number.isSafeInteger(moves)||moves<0)return null;
+    return {board:s.board.slice(),score:s.score,moveCount:moves};
+  }
+  function encode(game){
+    const clean=validateGame(game);if(!clean)throw new Error('当前棋局无法导出。');
+    return JSON.stringify({format:'2048-ai-save',version:1,createdAt:new Date().toISOString(),game:clean},null,2)+'\n';
+  }
+  function decode(text){
+    if(typeof text!=='string'||text.length>MAX_BYTES)throw new Error('存档过大，未替换当前棋局。');
+    let s;try{s=JSON.parse(text);}catch{throw new Error('这不是有效的 JSON 存档。');}
+    if(s?.format!=='2048-ai-save'||s.version!==1)throw new Error('不支持这个存档格式或版本。');
+    const clean=validateGame(s.game);if(!clean)throw new Error('存档中的棋盘、分数或步数不合法。');
+    return clean;
+  }
+  return {MAX_BYTES,validateGame,encode,decode};
+})();
+if(typeof module!=='undefined'&&module.exports)module.exports=Game2048Save;
+
+(()=>{
+  'use strict';
+  const $=s=>document.querySelector(s),$$=s=>Array.from(document.querySelectorAll(s));
+  const {moveBoardPlain,moveBoardDetailed,legalRootBranches}=Game2048;
+  const els={score:$('#score'),best:$('#best'),maxTile:$('#maxTile'),tiles:$('#tiles'),motion:$('#motionLayer'),wrap:$('#boardWrap'),undo:$('#undoBtn'),newBtn:$('#newBtn'),overlay:$('#gameOverlay'),overlayNew:$('#overlayNew'),gameOverText:$('#gameOverText'),hint:$('#hintArrow'),hintBtn:$('#hintBtn'),autoBtn:$('#autoplayBtn'),speed:$('#speed'),speedText:$('#speedText'),dot:$('#aiDot'),status:$('#aiStatusText'),sub:$('#aiSubText'),mMove:$('#mMove'),mDepth:$('#mDepth'),mNodes:$('#mNodes'),mTime:$('#mTime'),strengthCaption:$('#strengthCaption'),soundBtn:$('#soundBtn'),soundIcon:$('#soundIcon'),toast:$('#toast'),live:$('#liveStatus'),analysisCaption:$('#analysisCaption'),analysisNote:$('#analysisNote'),exportBtn:$('#exportBtn'),importBtn:$('#importBtn'),saveFile:$('#saveFile')};
+  const arrows={up:'↑',down:'↓',left:'←',right:'→'},names={up:'上',down:'下',left:'左',right:'右'};
+  const captions={fast:'轻快 · 优先速度',strong:'深入 · 高速拥挤盘精算',extreme:'极致 · 高速残局深搜',god:'神级 · 稳定高分残局策略'};
+  const motionPreference=matchMedia('(prefers-reduced-motion: reduce)');
+  function storageGet(k,fallback=null){try{return localStorage.getItem(k)??fallback;}catch(_){return fallback;}}
+  function storageSet(k,v){try{localStorage.setItem(k,v);return true;}catch(_){return false;}}
+  let board=Array(16).fill(0),score=0,history=[],moveCount=0,revision=0;
+  let best=Number(storageGet('refined2048-best',storageGet('ai2048-best','0')))||0;
+  if(!Number.isFinite(best)||best<0)best=0;
+  let gameOver=false,animating=false,autoplay=false,aiBusy=false,queuedAutoResult=null;
+  let strength=storageGet('refined2048-strength','god');if(!captions[strength])strength='god';
+  let soundOn=storageGet('refined2048-sound','on')!=='off',audioCtx=null;
+  let reqId=0,activeReq=0,coordinator=null,workers=[],workerURLs=[],watchdog=0,autoTimer=0,autoReadyAt=0;
+  let animationTimer=0,animationFrame=0,visualEpoch=0,paintTimer=0,paintFrame=0,lastPaint=0;
+  let hintTimer=0,toastTimer=0,lastSaved=0,lastStatsPaint=0,lastStatusPaint=0,lastSound=0,wakeLock=null,wakePending=false;
+  let newIndex=-1,mergedIndices=[],exportURL=null,importToken=0;
+  const nodes=Array.from({length:16},(_,i)=>{const el=document.createElement('div');el.hidden=true;el.dataset.index=String(i);els.tiles.appendChild(el);return el;});
+  const cells=$$('.cell'),bars=$$('.move-row').map(row=>({row,bar:row.querySelector('i'),label:row.querySelector('span')}));
+  const compact=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n);
+  const maxTile=()=>Math.max(2,...board);
+  const snapshot=()=>({board:board.slice(),score,moveCount});
+  const canMove=()=>legalRootBranches(board).length>0;
+  const position=i=>`translate(calc(${(i%4)*100}% + ${i%4} * var(--gap)), calc(${Math.floor(i/4)*100}% + ${Math.floor(i/4)} * var(--gap)))`;
+  const tileClass=v=>v<=2048?'v'+v:'super';
+  const fontFor=v=>String(v).length<=2?'clamp(30px,7vw,52px)':String(v).length===3?'clamp(27px,6.5vw,47px)':String(v).length===4?'clamp(22px,5.7vw,40px)':'clamp(17px,4.8vw,31px)';
+  function addRandom(){const empty=board.map((v,i)=>v?-1:i).filter(i=>i>=0);if(!empty.length)return -1;const i=empty[Math.floor(Math.random()*empty.length)];board[i]=Math.random()<.9?2:4;return i;}
+  function announce(text){els.live.textContent=text;}
+  function save(force=false){const now=performance.now();if(!force&&now-lastSaved<1000)return;lastSaved=now;storageSet('refined2048-best',String(best));storageSet('refined2048-session',JSON.stringify(snapshot()));}
+  function readSession(){
+    try{return Game2048Save.validateGame(JSON.parse(storageGet('refined2048-session','null')),true);}catch{return null;}
+  }
+  function exportSave(){
+    let link=null;
+    try{
+      const text=Game2048Save.encode(snapshot());
+      if(exportURL)URL.revokeObjectURL(exportURL);
+      exportURL=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+      link=document.createElement('a');link.href=exportURL;link.download=`2048-v11.7-${new Date().toISOString().slice(0,10)}-${score}.json`;
+      link.hidden=true;document.body.appendChild(link);link.click();toast('已准备存档下载');
+    }catch{toast('无法导出，请稍后重试。');}finally{link?.remove();}
+  }
+  async function importSave(file){
+    if(!file)return false;
+    const token=++importToken,rev=revision;
+    try{
+      if(!Number.isFinite(file.size)||file.size>Game2048Save.MAX_BYTES)throw new Error('存档过大，未替换当前棋局。');
+      const game=Game2048Save.decode(await file.text());
+      if(token!==importToken||revision!==rev||autoplay){if(token===importToken)toast('棋局已变化，请重新选择要导入的存档。');return false;}
+      const before=snapshot();invalidateAI();cancelVisuals();releaseWake();history=[before];
+      board=game.board;score=game.score;moveCount=game.moveCount;best=Math.max(best,score);revision++;gameOver=!canMove();newIndex=-1;mergedIndices=[];
+      clearStats();flushRender();syncControls();save(true);setStatus('',gameOver?'本局结束':'已恢复存档',gameOver?'可以撤销导入，或开始新的一局。':'可以继续走棋；撤销一步可恢复导入前的棋局。');toast('已恢复存档');announce('已恢复存档。');return true;
+    }catch(error){if(token===importToken)toast(error instanceof Error?error.message:'无法读取这个存档文件。');return false;}
+  }
+  function render(){
+    const turbo=autoplay&&+els.speed.value===0;
+    for(let i=0;i<16;i++){
+      const el=nodes[i],v=board[i];el.hidden=!v;
+      cells[i].setAttribute('aria-label',`第 ${Math.floor(i/4)+1} 行，第 ${i%4+1} 列：${v||'空'}`);
+      if(!v)continue;
+      el.className='tile '+tileClass(v)+(!turbo&&i===newIndex?' spawn':!turbo&&mergedIndices.includes(i)?' merged':'');
+      const text=String(v);if(el.textContent!==text)el.textContent=text;
+      el.style.fontSize=fontFor(v);el.style.setProperty('--pos',position(i));el.style.transform=position(i);
+    }
+    newIndex=-1;mergedIndices=[];
+    els.score.textContent=score.toLocaleString();els.best.textContent=best.toLocaleString();els.maxTile.textContent=maxTile().toLocaleString();
+    els.undo.disabled=!history.length||autoplay||animating;
+    const wasHidden=els.overlay.hidden;els.overlay.hidden=!gameOver;els.overlay.classList.toggle('show',gameOver);
+    if(gameOver){els.gameOverText.textContent=`${score.toLocaleString()} 分 · 最大数字 ${maxTile().toLocaleString()}`;if(wasHidden)announce('游戏结束。'+els.gameOverText.textContent);}
+    save();
+  }
+  function flushRender(){clearTimeout(paintTimer);cancelAnimationFrame(paintFrame);paintTimer=paintFrame=0;lastPaint=performance.now();render();}
+  function schedulePaint(){if(paintTimer||paintFrame)return;paintTimer=setTimeout(()=>{paintTimer=0;paintFrame=requestAnimationFrame(()=>{paintFrame=0;lastPaint=performance.now();render();});},Math.max(0,40-(performance.now()-lastPaint)));}
+  function cancelVisuals(){visualEpoch++;clearTimeout(animationTimer);cancelAnimationFrame(animationFrame);animationTimer=animationFrame=0;animating=false;els.motion.replaceChildren();els.tiles.classList.remove('is-moving');}
+  function animate(motions,duration){
+    if(!duration){flushRender();return;}
+    const epoch=++visualEpoch;animating=true;els.undo.disabled=true;els.tiles.classList.add('is-moving');els.motion.replaceChildren();
+    const fragment=document.createDocumentFragment(),ghosts=[];
+    for(const m of motions){const el=document.createElement('div');el.className='motion-tile '+tileClass(m.value);el.textContent=m.value;el.style.fontSize=fontFor(m.value);el.style.transitionDuration=duration+'ms';el.style.transform=position(m.from);fragment.appendChild(el);ghosts.push([el,m.to]);}
+    els.motion.appendChild(fragment);
+    // Start on the following frame without a synchronous layout read.
+    animationFrame=requestAnimationFrame(()=>{animationFrame=requestAnimationFrame(()=>{
+      if(epoch!==visualEpoch)return;
+      for(const [el,to]of ghosts)el.style.transform=position(to);
+      animationTimer=setTimeout(()=>{if(epoch!==visualEpoch)return;cancelVisuals();flushRender();tryConsumeQueuedAuto();},duration+16);
+    });});
+  }
+  function syncControls(){
+    els.autoBtn.classList.toggle('on',autoplay);els.autoBtn.textContent=autoplay?'暂停 AI':'自动玩';els.autoBtn.setAttribute('aria-pressed',String(autoplay));
+    els.hintBtn.disabled=autoplay||aiBusy||gameOver;els.hintBtn.textContent=aiBusy&&!autoplay?'思考中…':'提示一步';
+    els.undo.disabled=!history.length||autoplay||animating;
+    for(const b of $$('.seg')){b.disabled=autoplay;b.classList.toggle('on',b.dataset.strength===strength);b.setAttribute('aria-pressed',String(b.dataset.strength===strength));}
+    els.strengthCaption.textContent=captions[strength];els.wrap.classList.toggle('autoplay',autoplay);
+  }
+  function invalidateAI(){
+    activeReq=++reqId;clearTimeout(autoTimer);clearTimeout(watchdog);autoTimer=watchdog=0;
+    aiBusy=false;queuedAutoResult=null;autoReadyAt=0;coordinator?.postMessage({type:'cancel'});
+    clearTimeout(hintTimer);els.hint.classList.remove('show');syncControls();
+  }
+  function destroyPool(){coordinator?.terminate();coordinator=null;for(const w of workers)w.terminate();workers=[];for(const u of workerURLs)URL.revokeObjectURL(u);workerURLs=[];}
+  function ensurePool(){
+    if(coordinator)return true;
+    try{
+      const blobURL=id=>{const u=URL.createObjectURL(new Blob([$(id).textContent],{type:'text/javascript'}));workerURLs.push(u);return u;};
+      coordinator=new Worker(blobURL('#ai-coordinator-source'));
+      coordinator.onmessage=e=>{
+        const r=e.data;if(r.id!==activeReq)return;
+        if(r.type==='error'){reportAIError(r.message);return;}
+        if(r.type==='result')finishAI(r);
+      };
+      coordinator.onerror=e=>reportAIError(e.message||'无法启动搜索调度线程');
+      const computeURL=blobURL('#ai-worker-source'),count=Math.min(4,Math.max(1,navigator.hardwareConcurrency||4)),ports=[];
+      for(let i=0;i<count;i++){
+        const w=new Worker(computeURL),channel=new MessageChannel();workers.push(w);ports.push(channel.port1);
+        w.onerror=e=>reportAIError(e.message||'计算线程异常');
+        w.postMessage({type:'connect',port:channel.port2},[channel.port2]);
+      }
+      coordinator.postMessage({type:'init',ports},ports);return true;
+    }catch(e){destroyPool();reportAIError(e.message||'当前浏览器无法启动 AI');return false;}
+  }
+  function askAI(kind='hint'){
+    if(aiBusy||queuedAutoResult||gameOver||(kind==='auto'&&!autoplay)||(animating&&kind!=='auto'))return;
+    const legal=legalRootBranches(board);
+    if(!legal.length){endGame();return;}
+    if(legal.length===1){
+      aiBusy=true;activeReq=++reqId;const id=activeReq,rev=revision;syncControls();
+      queueMicrotask(()=>finishAI({id,revision:rev,best:legal[0].dir,scores:{[legal[0].dir]:0},depth:0,nodes:0,time:0,parallel:0,engine:'forced'}));return;
+    }
+    if(!ensurePool())return;
+    aiBusy=true;activeReq=++reqId;const id=activeReq;if(!autoplay)syncControls();
+    if(!autoplay)setStatus('think','正在分析','正在比较所有可移动方向…');
+    // A failed worker must not leave the interface permanently busy.
+    clearTimeout(watchdog);watchdog=setTimeout(()=>{if(id===activeReq&&aiBusy)reportAIError('本次搜索未响应，请重新点击提示或自动玩。');},15000);
+    coordinator.postMessage({type:'analyze',id,revision,board:board.slice(),strength});
+  }
+  function finishAI(r){
+    if(r.id!==activeReq||r.revision!==revision)return;
+    clearTimeout(watchdog);watchdog=0;aiBusy=false;
+    if(!r.best){if(!canMove())endGame();syncControls();return;}
+    updateStats(r);if(!autoplay)syncControls();
+    if(autoplay){
+      const now=performance.now();if(now-lastStatusPaint>=100){lastStatusPaint=now;setStatus('active','自动玩中',`第 ${moveCount+1} 步 · ${r.ceilingConsensus?'高分残局已深度共识':r.verified?'已复核危险方向':r.engine.startsWith('js')?'大数字兼容搜索':'持续思考，随时可以暂停'}`);}
+      queuedAutoResult=r;tryConsumeQueuedAuto();
+    }else{
+      setStatus('',`建议 ${arrows[r.best]} ${names[r.best]}`,r.engine==='forced'?'当前只有这一个可移动方向。':r.cached?'复用同一棋盘的完整分析结果。':r.recovered?'本次深搜超时，已返回完整的浅层分析。':r.terminalRescued?'残局方向已按完整短期生存复核重新选择。':r.ceilingConsensus?'高分临界局面已通过更深层共识复核。':r.ceilingRejected?'更深层判断未形成共识，保留稳定的原始选择。':r.verified?'已对危险方向做额外复核。':'留出空间，让相同数字更容易合并。');
+      showHint(r.best);announce(`建议向${names[r.best]}移动。`);soundHint();
+    }
+  }
+  function tryConsumeQueuedAuto(){
+    if(!queuedAutoResult||!autoplay||gameOver||animating)return;
+    const wait=autoReadyAt-performance.now();
+    if(wait>1){
+      clearTimeout(autoTimer);const rev=queuedAutoResult.revision;
+      autoTimer=setTimeout(()=>{autoTimer=0;if(autoplay&&queuedAutoResult?.revision===rev)tryConsumeQueuedAuto();},wait);return;
+    }
+    clearTimeout(autoTimer);autoTimer=0;const r=queuedAutoResult;queuedAutoResult=null;consumeAutoResult(r);
+  }
+  function scheduleAuto(){
+    clearTimeout(autoTimer);autoTimer=0;if(!autoplay||gameOver)return;
+    // Start thinking immediately and use the configured move interval only as
+    // a presentation gate. Search now overlaps animation/idle time instead of
+    // being added after it; turbo (0 ms) retains the old throughput path.
+    autoReadyAt=performance.now()+(+els.speed.value);askAI('auto');
+  }
+  function consumeAutoResult(r){
+    if(!autoplay||gameOver||r.revision!==revision)return;
+    if(!doMove(r.best,true)){reportAIError('AI 返回了不可移动的方向。');return;}
+    if(autoplay)scheduleAuto();
+  }
+  function doMove(dir,autoMode=false){
+    if(gameOver||animating||(!autoMode&&autoplay))return false;
+    const turbo=autoMode&&+els.speed.value===0,m=turbo?moveBoardPlain(board,dir):moveBoardDetailed(board,dir);
+    if(!m.moved)return false;
+    if(!autoMode){invalidateAI();clearStats();}
+    history.push(snapshot());if(history.length>60)history.shift();const before=maxTile();
+    board=m.board;score+=m.gain;best=Math.max(score,best);moveCount++;revision++;newIndex=addRandom();mergedIndices=m.merged||[];
+    if(document.visibilityState!=='visible')save();
+    const after=maxTile(),now=performance.now();
+    if(!turbo||now-lastSound>180){lastSound=now;soundMove();}
+    if(m.gain&&!turbo)soundMerges((m.merged||[]).map(i=>m.board[i]));
+    if(after>=2048&&after>before){soundMilestone(after);if(!autoMode)announce(`合并出了 ${after}！`);}
+    if(!canMove()){cancelVisuals();endGame();flushRender();return true;}
+    if(turbo){schedulePaint();return true;}
+    const duration=motionPreference.matches||document.visibilityState!=='visible'?0:autoMode?Math.min(78,Math.max(28,+els.speed.value*.6)):(innerWidth<=620?135:145);
+    animate(m.motions,duration);return true;
+  }
+  function endGame(){gameOver=true;autoplay=false;invalidateAI();releaseWake();setStatus('','本局结束','可以撤销最后一步，或开始新的一局。');flushRender();save(true);soundGameOver();}
+  function newGame(silent=false){
+    autoplay=false;invalidateAI();releaseWake();cancelVisuals();history=[];score=0;moveCount=0;revision++;gameOver=false;board=Array(16).fill(0);addRandom();newIndex=addRandom();mergedIndices=[];
+    clearStats();flushRender();syncControls();save(true);if(!silent){toast('新的一局');announce('新的一局，棋盘已重置。');}
+  }
+  function undo(){
+    if(!history.length||autoplay||animating)return;
+    invalidateAI();cancelVisuals();const s=history.pop();board=s.board;score=s.score;moveCount=s.moveCount;revision++;gameOver=false;newIndex=-1;mergedIndices=[];
+    clearStats();flushRender();syncControls();save(true);soundSoft(150,.025);announce('已撤销一步。');
+  }
+  function toggleAuto(){
+    if(autoplay){autoplay=false;invalidateAI();cancelVisuals();releaseWake();flushRender();save(true);setStatus('','已暂停','你可以手动继续，或再次让 AI 接手。');syncControls();announce('AI 已暂停。');return;}
+    if(gameOver)newGame(true);
+    invalidateAI();cancelVisuals();autoplay=true;flushRender();syncControls();holdWake();setStatus('active','自动玩中','正在思考，随时可以暂停。');askAI('auto');
+  }
+  function setStrength(v){if(autoplay||!captions[v])return;invalidateAI();strength=v;storageSet('refined2048-strength',v);clearStats();syncControls();}
+  function setStatus(mode,title,sub){els.dot.className='status-dot'+(mode?' '+mode:'');els.status.textContent=title;els.sub.textContent=sub;}
+  function clearStats(){
+    els.mMove.textContent=els.mDepth.textContent=els.mNodes.textContent=els.mTime.textContent='—';
+    for(const {row,bar,label}of bars){bar.style.width='0';label.textContent='—';row.style.opacity='1';row.classList.remove('best');}
+    els.analysisCaption.textContent='方向评估';els.analysisNote.textContent='分数越高，AI 越倾向选择该方向；不是获胜概率。';
+    setStatus('','随时可以接手','自己玩，也可以让 AI 帮你想下一步。');
+  }
+  function updateStats(r){
+    const now=performance.now();if(autoplay&&now-lastStatsPaint<100)return;lastStatsPaint=now;
+    els.mMove.textContent=arrows[r.best]+' '+names[r.best];els.mDepth.textContent=r.engine==='forced'?'唯一方向':r.depth;
+    els.mNodes.textContent=compact(r.nodes);els.mTime.textContent=(r.cached?'复用 · ':'')+Math.round(r.time)+' ms';
+    els.analysisCaption.textContent=autoplay?'上一步的方向评估':'当前棋盘的方向评估';
+    els.analysisNote.textContent=r.proofCertified?(r.projectionApplied?'大数字局面经有限视野投影后，当前方向通过短期安全证明；条形仍显示原棋盘评分。':'当前方向已通过短期安全证明；这不代表整局不会失败。'):r.terminalRescued?'所有方向的常规评分均已降至终局底值，已按完整短期生存复核选择方向；这不保证长期存活。':r.ceilingConsensus?'高分临界局面已通过跨深度共识复核；条形显示最终采用深度的评分。':r.ceilingRejected?'更深层搜索出现排序振荡，已回退完整 d4 结果。':r.verified?'推荐方向已通过额外的生存复核；条形显示常规搜索评分。':r.projectionApplied&&r.riskChecked?'已完成大数字生存复核；条形仍显示原棋盘搜索评分。':r.recovered?'深层搜索超时，显示已完整完成的浅层结果。':r.riskAborted?'生存复核达到计算上限，保留完整的常规搜索结果。':'相对评分用于比较方向，不代表获胜概率。';
+    const vals=Object.values(r.scores).filter(Number.isFinite),min=Math.min(...vals),max=Math.max(...vals),range=max-min;
+    for(const {row,bar,label}of bars){const d=row.dataset.dir,v=r.scores[d],valid=Number.isFinite(v);row.classList.toggle('best',d===r.best);row.style.opacity=valid?'1':'.5';bar.style.width=valid?(range<1e-9?100:12+88*(v-min)/range)+'%':'0';label.textContent=!valid?'不可移':d===r.best?'推荐':range<1e-9?'并列':Math.round((v-min)/range*100)+' 分';}
+  }
+  function showHint(dir){clearTimeout(hintTimer);els.hint.textContent=arrows[dir];els.hint.classList.add('show');hintTimer=setTimeout(()=>els.hint.classList.remove('show'),1200);}
+  function toast(text){clearTimeout(toastTimer);els.toast.textContent=text;els.toast.classList.add('show');toastTimer=setTimeout(()=>els.toast.classList.remove('show'),1500);}
+  function reportAIError(reason){autoplay=false;invalidateAI();destroyPool();releaseWake();cancelVisuals();flushRender();syncControls();setStatus('','AI 已暂停',String(reason?.message||reason||'未知错误').slice(0,160));announce('AI 已暂停，仍可手动继续。');}
+  async function holdWake(){
+    if(wakePending||wakeLock||!autoplay||!('wakeLock' in navigator)||document.visibilityState!=='visible')return;
+    wakePending=true;try{const lock=await navigator.wakeLock.request('screen');if(!autoplay||document.visibilityState!=='visible'){await lock.release();return;}wakeLock=lock;lock.addEventListener('release',()=>{if(wakeLock===lock)wakeLock=null;});}catch(_){}finally{wakePending=false;}
+  }
+  function releaseWake(){const lock=wakeLock;wakeLock=null;lock?.release().catch(()=>{});}
+  function ensureAudio(){if(!soundOn)return null;if(!audioCtx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;audioCtx=new AC();}if(audioCtx.state==='suspended')audioCtx.resume().catch(()=>{});return audioCtx;}
+  function tone(freq,dur=.05,vol=.025,type='sine',delay=0){const c=ensureAudio();if(!c)return;const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+delay;o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g).connect(c.destination);o.start(t);o.stop(t+dur+.02);}
+  function soundMove(){tone(118,.035,.012,'triangle');}
+  function soundSoft(f=180,v=.018){tone(f,.045,v,'sine');}
+  function soundMerges(values){values.slice(0,3).forEach((v,i)=>tone(155*Math.pow(2,(Math.log2(v)-2)/16),.075,.018,'sine',i*.018));}
+  function soundHint(){tone(430,.045,.012,'sine');tone(610,.06,.009,'sine',.045);}
+  function soundMilestone(v){const b=v>=4096?330:294;tone(b,.16,.025);tone(b*1.25,.18,.018,'sine',.055);tone(b*1.5,.2,.014,'sine',.11);}
+  function soundGameOver(){tone(180,.12,.018,'triangle');tone(135,.16,.014,'triangle',.09);}
+  function syncSound(){els.soundBtn.setAttribute('aria-pressed',String(soundOn));els.soundBtn.title=soundOn?'关闭声音':'打开声音';els.soundIcon.style.opacity=soundOn?'1':'.45';}
+  function toggleSound(){soundOn=!soundOn;storageSet('refined2048-sound',soundOn?'on':'off');syncSound();if(soundOn)soundSoft(360,.016);toast(soundOn?'声音已开启':'声音已关闭');}
+  function syncSpeed(){const v=+els.speed.value;els.speedText.textContent=v===0?'极速':v+' ms';els.speed.setAttribute('aria-valuetext',v===0?'极速，无额外等待':`每步等待 ${v} 毫秒`);storageSet('refined2048-speed',String(v));}
+  els.newBtn.onclick=()=>newGame();els.overlayNew.onclick=()=>newGame();els.undo.onclick=undo;els.hintBtn.onclick=()=>askAI('hint');els.autoBtn.onclick=toggleAuto;els.soundBtn.onclick=toggleSound;
+  els.exportBtn.onclick=exportSave;
+  els.importBtn.onclick=()=>{importToken++;if(autoplay)toggleAuto();els.saveFile.value='';els.saveFile.click();};
+  els.saveFile.onchange=()=>{const file=els.saveFile.files?.[0];void importSave(file);};
+  els.speed.oninput=()=>{syncSpeed();if(autoplay&&!aiBusy&&!queuedAutoResult)scheduleAuto();};
+  for(const b of $$('.seg'))b.onclick=()=>setStrength(b.dataset.strength);
+  document.addEventListener('pointerdown',()=>ensureAudio(),{once:true});
+  document.addEventListener('keydown',e=>{
+    const target=e.target;if(e.isComposing||e.altKey||e.metaKey||e.ctrlKey||target?.isContentEditable||target?.closest?.('input,textarea,select'))return;
+    const dir={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',W:'up',s:'down',S:'down',a:'left',A:'left',d:'right',D:'right'}[e.key];
+    if(dir){e.preventDefault();ensureAudio();if(!autoplay)doMove(dir);}
+    else if(e.key===' '&&!target?.closest?.('button,summary,a')){e.preventDefault();ensureAudio();if(!e.repeat)toggleAuto();}
+    else if((e.key==='h'||e.key==='H')&&!e.repeat&&!autoplay)askAI('hint');
+    else if((e.key==='m'||e.key==='M')&&!e.repeat)toggleSound();
+    else if(e.key==='Escape'&&autoplay)toggleAuto();
+  });
+  let pointer=null;
+  els.wrap.addEventListener('pointerdown',e=>{if(autoplay||gameOver||e.target?.closest?.('button')||e.isPrimary===false||(e.pointerType==='mouse'&&e.button!==0))return;pointer={id:e.pointerId,x:e.clientX,y:e.clientY};els.wrap.setPointerCapture?.(e.pointerId);});
+  els.wrap.addEventListener('pointerup',e=>{const p=pointer;pointer=null;if(!p||p.id!==e.pointerId||autoplay||animating)return;const dx=e.clientX-p.x,dy=e.clientY-p.y;if(Math.max(Math.abs(dx),Math.abs(dy))>=24)doMove(Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up');});
+  els.wrap.addEventListener('pointercancel',()=>{pointer=null;});els.wrap.addEventListener('lostpointercapture',()=>{pointer=null;});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){save(true);releaseWake();if(animating)cancelVisuals();autoReadyAt=0;tryConsumeQueuedAuto();}else{if(autoplay)holdWake();if(!animating)flushRender();}});
+  window.addEventListener('pagehide',()=>{importToken++;if(exportURL)URL.revokeObjectURL(exportURL);exportURL=null;save(true);autoplay=false;invalidateAI();destroyPool();releaseWake();cancelVisuals();});
+  window.addEventListener('pageshow',e=>{if(e.persisted){syncControls();flushRender();setStatus('','已暂停','你可以继续手动玩，或再次让 AI 接手。');}});
+  window.addEventListener('resize',()=>{if(animating){cancelVisuals();flushRender();tryConsumeQueuedAuto();}});
+  window.addEventListener('error',e=>{if(aiBusy||autoplay)reportAIError(e.error||e.message);});
+  window.addEventListener('unhandledrejection',e=>{if(aiBusy||autoplay)reportAIError(e.reason);});
+  const savedSpeed=Number(storageGet('refined2048-speed','0'));els.speed.value=String(Number.isFinite(savedSpeed)?Math.min(520,Math.max(0,Math.round(savedSpeed/10)*10)):0);syncSpeed();syncSound();
+  const saved=readSession();if(saved){board=saved.board;score=saved.score;moveCount=saved.moveCount;best=Math.max(best,score);gameOver=!canMove();clearStats();flushRender();syncControls();setStatus('',gameOver?'本局结束':'继续上次的棋局',gameOver?'可以开始新的一局。':'进度已保存，点击自动玩即可继续。');}else newGame(true);
+})();
+
+</script>
+</body>
+</html>

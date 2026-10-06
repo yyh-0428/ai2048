@@ -1,0 +1,58 @@
+Built 2048-ai.html (256802 bytes)
+✔ counterfactual moves preserve real rules including nonchain merges and rank 15 (20.122548ms)
+✔ counterfactual horizon mass certificate rejects saturation and malformed tiles (0.557743ms)
+✔ independent confirmation rejects discovery-only win; disabled switch isolates its effect (0.72142ms)
+✔ all legal root samples must finish; a partial trajectory cannot choose a move (0.217289ms)
+✔ strong escape arbitration accepts only both complete banks with bounded paired regret (2.975148ms)
+✔ simulation uses reproducible public-state counter streams and no game RNG (1.282358ms)
+✔ trajectory endpoints are complete pre-action birth states and do not change simulated lifetimes (1.082817ms)
+✔ planner disabled retains V11.7 complete scores, depth and actual direction (433.669737ms)
+✔ worker native continuations finish a complete reproducible sample bank (227.164534ms)
+✔ private exact simulation memo preserves every lifetime, gain, endpoint and final value score (234.918419ms)
+✔ final HTML embeds exact new planner source in both decision and compute workers (1.443112ms)
+✔ a complete baseline at the sample ceiling cannot meet any positive-improvement gate (30.372082ms)
+✔ planner candidate safety proof resets its own facts and has a deterministic node bound (84.238427ms)
+✔ visible planner switch persists only its setting and sends the selected policy to the coordinator (17.978277ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1149.337787
+✔ learned geometry features are exactly D4 invariant and contain no random state (20.691358ms)
+✔ learned critic enumerates every 2/4 birth cell and weights the lower quarter (2.934746ms)
+✔ one disagreeing learned member rejects a proposal that the mean alone accepts (0.787591ms)
+✔ incomplete model roots, wrong shapes, nonfinite weights and unsupported directions cannot select (0.199802ms)
+✔ trained JavaScript predictions match the independent Python golden vectors (3.223884ms)
+✔ long-route guard vetoes a long-horizon regression and rejects incomplete evidence (0.327816ms)
+✔ endpoint guard protects joint surviving routes even when more short trajectories survive (0.991759ms)
+✔ nonfinite primary scores cannot enter either novel decision selector (0.148715ms)
+✔ long spectrum separates capped survivors and confirmation cannot nominate the second-best discovery (2.405035ms)
+✔ visible endpoint switch stores only its setting and isolates its policy from the immediate guard (17.964996ms)
+✔ published native coordinator executes the trained critic on all legal roots without changing main scores or depth (238.812941ms)
+✔ published native long planner evaluates factual simulated endpoints with the embedded model (298.42613ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 670.507654
+{"progress":"seed-1","variant":"arbitrated","moves":4000,"score":287900,"counts":{"trajectoryChecked":3,"trajectoryVeto":2,"trajectoryPromoted":0,"trajectoryEscaped":0,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1665,"plannerChecked":844,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":9,"verified":1}}
+{"completed":1,"expected":8,"id":"seed-1","variant":"arbitrated","moves":6908,"score":365780,"maxTile":16384,"counts":{"trajectoryChecked":10,"trajectoryVeto":8,"trajectoryPromoted":0,"trajectoryEscaped":3,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":2518,"plannerChecked":1806,"plannerChanged":5,"plannerConfirmed":5,"riskAborted":45,"verified":17},"wallMs":248091}
+{"progress":"seed-2","variant":"arbitrated","moves":4000,"score":288308,"counts":{"trajectoryChecked":2,"trajectoryVeto":1,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1743,"plannerChecked":1024,"plannerChanged":2,"plannerConfirmed":2,"riskAborted":22,"verified":0}}
+{"completed":2,"expected":8,"id":"seed-2","variant":"arbitrated","moves":7610,"score":382876,"maxTile":16384,"counts":{"trajectoryChecked":13,"trajectoryVeto":5,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":2771,"plannerChecked":2467,"plannerChanged":9,"plannerConfirmed":9,"riskAborted":65,"verified":2},"wallMs":285444}
+{"progress":"seed-3","variant":"arbitrated","moves":4000,"score":287984,"counts":{"trajectoryChecked":2,"trajectoryVeto":2,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1579,"plannerChecked":980,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":15,"verified":0}}
+{"completed":3,"expected":8,"id":"seed-3","variant":"arbitrated","moves":6026,"score":342904,"maxTile":16384,"counts":{"trajectoryChecked":4,"trajectoryVeto":3,"trajectoryPromoted":0,"trajectoryEscaped":2,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":2107,"plannerChecked":1673,"plannerChanged":3,"plannerConfirmed":3,"riskAborted":31,"verified":1},"wallMs":211576}
+{"completed":4,"expected":8,"id":"seed-4","variant":"arbitrated","moves":2766,"score":255336,"maxTile":16384,"counts":{"trajectoryChecked":4,"trajectoryVeto":2,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":896,"plannerChecked":736,"plannerChanged":3,"plannerConfirmed":3,"riskAborted":25,"verified":2},"wallMs":88259}
+{"progress":"seed-5","variant":"arbitrated","moves":4000,"score":287812,"counts":{"trajectoryChecked":3,"trajectoryVeto":3,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1629,"plannerChecked":1097,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":18,"verified":0}}
+{"completed":5,"expected":8,"id":"seed-5","variant":"arbitrated","moves":4154,"score":290148,"maxTile":16384,"counts":{"trajectoryChecked":4,"trajectoryVeto":4,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1629,"plannerChecked":1168,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":33,"verified":8},"wallMs":156423}
+{"completed":6,"expected":8,"id":"seed-101","variant":"arbitrated","moves":468,"score":177308,"maxTile":8192,"counts":{"trajectoryChecked":2,"trajectoryVeto":1,"trajectoryPromoted":0,"trajectoryEscaped":0,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":79,"plannerChecked":236,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":9,"verified":0},"wallMs":15108}
+{"progress":"seed-102","variant":"arbitrated","moves":4000,"score":288084,"counts":{"trajectoryChecked":1,"trajectoryVeto":1,"trajectoryPromoted":0,"trajectoryEscaped":1,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1556,"plannerChecked":1053,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":8,"verified":0}}
+{"completed":7,"expected":8,"id":"seed-102","variant":"arbitrated","moves":6926,"score":366940,"maxTile":16384,"counts":{"trajectoryChecked":6,"trajectoryVeto":6,"trajectoryPromoted":0,"trajectoryEscaped":2,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":2376,"plannerChecked":2181,"plannerChanged":2,"plannerConfirmed":2,"riskAborted":25,"verified":1},"wallMs":252428}
+{"completed":8,"expected":8,"id":"seed-103","variant":"arbitrated","moves":3739,"score":281656,"maxTile":16384,"counts":{"trajectoryChecked":2,"trajectoryVeto":1,"trajectoryPromoted":0,"trajectoryEscaped":0,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1495,"plannerChecked":919,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":9,"verified":1},"wallMs":137504}
+{"on":{"time":{"median":23.27228600000001,"p95":53.32169080000001,"mean":25.156587374999983},"wallMs":{"median":23.907506500000068,"p95":53.71168134999971,"mean":25.66323739166665},"nodes":{"median":1616210,"p95":3327201,"mean":1790683.0416666667},"simulationCacheHits":{"median":316.5,"p95":568,"mean":324.5}},"off":{"time":{"median":21.867848000000095,"p95":38.60530105000041,"mean":22.920189150000024},"wallMs":{"median":22.251453000000197,"p95":39.0097815500001,"mean":23.315538391666635},"nodes":{"median":1705691,"p95":3425099,"mean":1898522.8333333333},"simulationCacheHits":{"median":0,"p95":0,"mean":0}}}
+Built 2048-ai.html (257731 bytes)

@@ -1,0 +1,1418 @@
+{
+  "date": "2026-10-05T16:25:04.922Z",
+  "node": "v24.19.0",
+  "protocol": {
+    "poolSize": 4,
+    "parallelCPUWorkloads": false,
+    "repeats": 1,
+    "termination": "no legal moves",
+    "pairedBoardAndPRNG": true,
+    "selected": [
+      "original",
+      "stable",
+      "cf"
+    ],
+    "startSHA256": "f70e61c23144d6993a8d29d4dba25d23c29a3e1c283dae7615d3120492bad642"
+  },
+  "signatures": {
+    "original": {
+      "version": "v11.7",
+      "strength": "god",
+      "HTMLSHA256": "809441d4832fe702c02a45237ec484c457664b98eaaad5a8f080c1aaeed9a9f5"
+    },
+    "stable": {
+      "version": "v11.7",
+      "strength": "extreme",
+      "HTMLSHA256": "809441d4832fe702c02a45237ec484c457664b98eaaad5a8f080c1aaeed9a9f5"
+    },
+    "cf": {
+      "version": "current",
+      "strength": "god",
+      "policyOptions": {
+        "counterfactual": true
+      },
+      "HTMLSHA256": "a1396433dc83b906786039e406d57c3e4eaaa9860430abb696b1207452d29055"
+    }
+  },
+  "rows": [
+    {
+      "variant": "original",
+      "repeat": 0,
+      "checkpoint": "seed-2",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-2",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            4,
+            8,
+            2,
+            0,
+            16,
+            4,
+            2,
+            0,
+            1024,
+            4,
+            0,
+            0,
+            8192,
+            4096,
+            2048,
+            2
+          ],
+          "score": 170304,
+          "moveCount": 6992
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 2,
+          "state": 462671606,
+          "draws": 13988
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18230,
+          "spawnMass": 15402,
+          "terminal": false
+        }
+      },
+      "startScore": 170304,
+      "startMoves": 6992,
+      "additionalMoves": 420,
+      "totalMoves": 7412,
+      "score": 176932,
+      "scoreGain": 6628,
+      "maxTile": 8192,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        2,
+        4,
+        8,
+        16,
+        16,
+        1024,
+        32,
+        128,
+        2,
+        512,
+        256,
+        2048,
+        8192,
+        4,
+        4096,
+        2
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 2,
+        "state": 1379662558,
+        "draws": 14828
+      },
+      "spawnMass": 16342,
+      "spawnPotential": 19370,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 5,
+        "verified": 3
+      },
+      "depths": {
+        "4": 75,
+        "5": 335,
+        "6": 10
+      },
+      "meanMs": 5.640267800000008,
+      "p50Ms": 4.042716499999983,
+      "p95Ms": 17.642709999999926,
+      "plannerMeanMs": 0,
+      "wallMs": 2517.7981170000003,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-2-original-r0.jsonl.gz",
+      "logSHA256": "7aeeb7750519a5f1ecb96a30d22c973544cf0410a657119748fdc6be8e8ddd7f",
+      "decisionsSHA256": "fdd4fb0b1182dbc65ecd6e36c4994a93c97d896bcf468e492cb28c9896f3c398",
+      "changes": []
+    },
+    {
+      "variant": "stable",
+      "repeat": 0,
+      "checkpoint": "seed-2",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-2",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            4,
+            8,
+            2,
+            0,
+            16,
+            4,
+            2,
+            0,
+            1024,
+            4,
+            0,
+            0,
+            8192,
+            4096,
+            2048,
+            2
+          ],
+          "score": 170304,
+          "moveCount": 6992
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 2,
+          "state": 462671606,
+          "draws": 13988
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18230,
+          "spawnMass": 15402,
+          "terminal": false
+        }
+      },
+      "startScore": 170304,
+      "startMoves": 6992,
+      "additionalMoves": 4132,
+      "totalMoves": 11124,
+      "score": 290248,
+      "scoreGain": 119944,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        8,
+        64,
+        8,
+        2,
+        2048,
+        256,
+        128,
+        4,
+        2,
+        4096,
+        512,
+        32,
+        16384,
+        1024,
+        2,
+        8
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 2,
+        "state": 1057799134,
+        "draws": 22252
+      },
+      "spawnMass": 24578,
+      "spawnPotential": 29230,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 14,
+        "verified": 6
+      },
+      "depths": {
+        "4": 1572,
+        "5": 2421,
+        "6": 139
+      },
+      "meanMs": 5.834020878267169,
+      "p50Ms": 3.5270790000004126,
+      "p95Ms": 17.688185950000282,
+      "plannerMeanMs": 0,
+      "wallMs": 24996.842885,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-2-stable-r0.jsonl.gz",
+      "logSHA256": "579edbb88b1d62a817e60da3e0fe7f61f10d44ffe5a73afac0d44dadf9170246",
+      "decisionsSHA256": "7653d6dd170a0f43537a4d404f730e54a20c3d5f5f9880173694f6117a06edbb",
+      "changes": []
+    },
+    {
+      "variant": "cf",
+      "repeat": 0,
+      "checkpoint": "seed-2",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-2",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            4,
+            8,
+            2,
+            0,
+            16,
+            4,
+            2,
+            0,
+            1024,
+            4,
+            0,
+            0,
+            8192,
+            4096,
+            2048,
+            2
+          ],
+          "score": 170304,
+          "moveCount": 6992
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 2,
+          "state": 462671606,
+          "draws": 13988
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18230,
+          "spawnMass": 15402,
+          "terminal": false
+        }
+      },
+      "startScore": 170304,
+      "startMoves": 6992,
+      "additionalMoves": 420,
+      "totalMoves": 7412,
+      "score": 176932,
+      "scoreGain": 6628,
+      "maxTile": 8192,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        2,
+        4,
+        8,
+        16,
+        16,
+        1024,
+        32,
+        128,
+        2,
+        512,
+        256,
+        2048,
+        8192,
+        4,
+        4096,
+        2
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 2,
+        "state": 1379662558,
+        "draws": 14828
+      },
+      "spawnMass": 16342,
+      "spawnPotential": 19370,
+      "counts": {
+        "plannerChecked": 291,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 5,
+        "verified": 3
+      },
+      "depths": {
+        "4": 75,
+        "5": 335,
+        "6": 10
+      },
+      "meanMs": 10.965729300000117,
+      "p50Ms": 10.40155600000071,
+      "p95Ms": 24.638612600000293,
+      "plannerMeanMs": 7.645175140893391,
+      "wallMs": 4784.816193999999,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-2-cf-r0.jsonl.gz",
+      "logSHA256": "3b7037c23241f1f960a046859e4c94969e4ee6b93e810e2248ac51a815541cbb",
+      "decisionsSHA256": "60690d5dc93d0eaafad73ab722359745307a81ba04dcbc44fbcca62827c19b8e",
+      "changes": []
+    },
+    {
+      "variant": "cf",
+      "repeat": 0,
+      "checkpoint": "seed-4",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-4",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            8192,
+            1024,
+            8,
+            4,
+            4096,
+            16,
+            16,
+            4,
+            2048,
+            0,
+            2,
+            0,
+            4,
+            0,
+            0,
+            0
+          ],
+          "score": 170492,
+          "moveCount": 7033
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 4,
+          "state": 327212914,
+          "draws": 14070
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18102,
+          "spawnMass": 15414,
+          "terminal": false
+        }
+      },
+      "startScore": 170492,
+      "startMoves": 7033,
+      "additionalMoves": 3238,
+      "totalMoves": 10271,
+      "score": 270548,
+      "scoreGain": 100056,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        4096,
+        512,
+        16,
+        4,
+        8,
+        16384,
+        128,
+        32,
+        4,
+        256,
+        64,
+        1024,
+        2,
+        4,
+        32,
+        16
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 4,
+        "state": 3142713646,
+        "draws": 20546
+      },
+      "spawnMass": 22582,
+      "spawnPotential": 26654,
+      "counts": {
+        "plannerChecked": 1956,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 12,
+        "verified": 5
+      },
+      "depths": {
+        "4": 1294,
+        "5": 1844,
+        "6": 100
+      },
+      "meanMs": 12.14706409913518,
+      "p50Ms": 10.369152999996004,
+      "p95Ms": 31.87196809999908,
+      "plannerMeanMs": 10.607523006646332,
+      "wallMs": 40482.57685099999,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-4-cf-r0.jsonl.gz",
+      "logSHA256": "21d7a0cb511eb08b22f8a1317f235797792422ada07101a2b25d520b25d5eb10",
+      "decisionsSHA256": "841ddec02685d0873f4ca6da2ce08d24a9947662fd273f4a239e32ce96ec79dc",
+      "changes": []
+    },
+    {
+      "variant": "stable",
+      "repeat": 0,
+      "checkpoint": "seed-4",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-4",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            8192,
+            1024,
+            8,
+            4,
+            4096,
+            16,
+            16,
+            4,
+            2048,
+            0,
+            2,
+            0,
+            4,
+            0,
+            0,
+            0
+          ],
+          "score": 170492,
+          "moveCount": 7033
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 4,
+          "state": 327212914,
+          "draws": 14070
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18102,
+          "spawnMass": 15414,
+          "terminal": false
+        }
+      },
+      "startScore": 170492,
+      "startMoves": 7033,
+      "additionalMoves": 7425,
+      "totalMoves": 14458,
+      "score": 378348,
+      "scoreGain": 207856,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        16384,
+        8192,
+        4096,
+        4,
+        2048,
+        512,
+        256,
+        32,
+        8,
+        128,
+        64,
+        16,
+        2,
+        4,
+        2,
+        4
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 4,
+        "state": 3346617692,
+        "draws": 28920
+      },
+      "spawnMass": 31752,
+      "spawnPotential": 37416,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 43,
+        "verified": 2
+      },
+      "depths": {
+        "4": 2305,
+        "5": 4888,
+        "6": 232
+      },
+      "meanMs": 5.335277446599366,
+      "p50Ms": 3.348611000008532,
+      "p95Ms": 16.483644999997335,
+      "plannerMeanMs": 0,
+      "wallMs": 41024.855022,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-4-stable-r0.jsonl.gz",
+      "logSHA256": "ecbd339672e48169b37236f0985efe42f7329434395bc0fa910a994a842cfa59",
+      "decisionsSHA256": "3baffb97cbdb70d8dedb93f31a5e464cb351624d14e500523e48747d92a02a79",
+      "changes": []
+    },
+    {
+      "variant": "original",
+      "repeat": 0,
+      "checkpoint": "seed-4",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-4",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            8192,
+            1024,
+            8,
+            4,
+            4096,
+            16,
+            16,
+            4,
+            2048,
+            0,
+            2,
+            0,
+            4,
+            0,
+            0,
+            0
+          ],
+          "score": 170492,
+          "moveCount": 7033
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 4,
+          "state": 327212914,
+          "draws": 14070
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18102,
+          "spawnMass": 15414,
+          "terminal": false
+        }
+      },
+      "startScore": 170492,
+      "startMoves": 7033,
+      "additionalMoves": 3238,
+      "totalMoves": 10271,
+      "score": 270548,
+      "scoreGain": 100056,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        4096,
+        512,
+        16,
+        4,
+        8,
+        16384,
+        128,
+        32,
+        4,
+        256,
+        64,
+        1024,
+        2,
+        4,
+        32,
+        16
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 4,
+        "state": 3142713646,
+        "draws": 20546
+      },
+      "spawnMass": 22582,
+      "spawnPotential": 26654,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 12,
+        "verified": 5
+      },
+      "depths": {
+        "4": 1294,
+        "5": 1844,
+        "6": 100
+      },
+      "meanMs": 5.450050615503274,
+      "p50Ms": 3.230277999995451,
+      "p95Ms": 17.992990650007357,
+      "plannerMeanMs": 0,
+      "wallMs": 18225.713204,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-4-original-r0.jsonl.gz",
+      "logSHA256": "d16b4b3b6c9c26e273cb96b51114d7e0a1b24e050792f0ea9d30671d9736a67f",
+      "decisionsSHA256": "ca3e2cf220ab7ec5ed29524aefeaa4d9620e485b71547ef13c20126b76f69ec6",
+      "changes": []
+    },
+    {
+      "variant": "original",
+      "repeat": 0,
+      "checkpoint": "seed-5",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-5",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            8192,
+            4096,
+            2,
+            4,
+            2048,
+            1024,
+            4,
+            4,
+            2,
+            8,
+            4,
+            2,
+            4,
+            0,
+            0,
+            0
+          ],
+          "score": 170260,
+          "moveCount": 6987
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 5,
+          "state": 3621849959,
+          "draws": 13978
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18226,
+          "spawnMass": 15394,
+          "terminal": false
+        }
+      },
+      "startScore": 170260,
+      "startMoves": 6987,
+      "additionalMoves": 4154,
+      "totalMoves": 11141,
+      "score": 290148,
+      "scoreGain": 119888,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        4,
+        2,
+        16,
+        2,
+        2,
+        1024,
+        512,
+        4,
+        16384,
+        256,
+        128,
+        2048,
+        4096,
+        4,
+        32,
+        16
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 5,
+        "state": 3201494635,
+        "draws": 22286
+      },
+      "spawnMass": 24530,
+      "spawnPotential": 29018,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 32,
+        "verified": 8
+      },
+      "depths": {
+        "4": 1384,
+        "5": 2643,
+        "6": 127
+      },
+      "meanMs": 5.930715102551521,
+      "p50Ms": 3.716168500002823,
+      "p95Ms": 18.805098050003274,
+      "plannerMeanMs": 0,
+      "wallMs": 25444.264524,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-5-original-r0.jsonl.gz",
+      "logSHA256": "7f31e42b2459c4a8df939a17df8c492b4facf72c7a1839e67360592167d28035",
+      "decisionsSHA256": "9564566559b9c5890eef60e92c70e178e6c8977e3fb8353d172a80dc6696824c",
+      "changes": []
+    },
+    {
+      "variant": "stable",
+      "repeat": 0,
+      "checkpoint": "seed-5",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-5",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            8192,
+            4096,
+            2,
+            4,
+            2048,
+            1024,
+            4,
+            4,
+            2,
+            8,
+            4,
+            2,
+            4,
+            0,
+            0,
+            0
+          ],
+          "score": 170260,
+          "moveCount": 6987
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 5,
+          "state": 3621849959,
+          "draws": 13978
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18226,
+          "spawnMass": 15394,
+          "terminal": false
+        }
+      },
+      "startScore": 170260,
+      "startMoves": 6987,
+      "additionalMoves": 5589,
+      "totalMoves": 12576,
+      "score": 333908,
+      "scoreGain": 163648,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        2,
+        8192,
+        16,
+        2,
+        8,
+        2048,
+        128,
+        256,
+        16384,
+        512,
+        16,
+        8,
+        64,
+        2,
+        4,
+        2
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 5,
+        "state": 2755407641,
+        "draws": 25156
+      },
+      "spawnMass": 27644,
+      "spawnPotential": 32620,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 19,
+        "verified": 5
+      },
+      "depths": {
+        "4": 2118,
+        "5": 3254,
+        "6": 217
+      },
+      "meanMs": 5.449137972803969,
+      "p50Ms": 3.342200999992201,
+      "p95Ms": 18.032466599985476,
+      "plannerMeanMs": 0,
+      "wallMs": 31503.378450999997,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-5-stable-r0.jsonl.gz",
+      "logSHA256": "bf0590a34814b85c9f79eaedc22be277461bb26b3c3ccb4cde95e763c7039371",
+      "decisionsSHA256": "5200d3ed69a39532aa1885e452f5514c0999c3baf5b1fd7a3ac8974316a8413c",
+      "changes": []
+    },
+    {
+      "variant": "cf",
+      "repeat": 0,
+      "checkpoint": "seed-5",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-5",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            8192,
+            4096,
+            2,
+            4,
+            2048,
+            1024,
+            4,
+            4,
+            2,
+            8,
+            4,
+            2,
+            4,
+            0,
+            0,
+            0
+          ],
+          "score": 170260,
+          "moveCount": 6987
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 5,
+          "state": 3621849959,
+          "draws": 13978
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18226,
+          "spawnMass": 15394,
+          "terminal": false
+        }
+      },
+      "startScore": 170260,
+      "startMoves": 6987,
+      "additionalMoves": 4154,
+      "totalMoves": 11141,
+      "score": 290148,
+      "scoreGain": 119888,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        4,
+        2,
+        16,
+        2,
+        2,
+        1024,
+        512,
+        4,
+        16384,
+        256,
+        128,
+        2048,
+        4096,
+        4,
+        32,
+        16
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 5,
+        "state": 3201494635,
+        "draws": 22286
+      },
+      "spawnMass": 24530,
+      "spawnPotential": 29018,
+      "counts": {
+        "plannerChecked": 2779,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 32,
+        "verified": 8
+      },
+      "depths": {
+        "4": 1384,
+        "5": 2643,
+        "6": 127
+      },
+      "meanMs": 12.854805675734344,
+      "p50Ms": 11.475392499996815,
+      "p95Ms": 31.13373925000923,
+      "plannerMeanMs": 10.183541617128574,
+      "wallMs": 54772.48922300001,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-5-cf-r0.jsonl.gz",
+      "logSHA256": "8d255c674281f687a78eb04124a397f3ba2a55da43e24430f5a8face7ba59621",
+      "decisionsSHA256": "3bbab52223d07598a089496c9d5f1a9732c3cc278ec443972ee844a0745773e9",
+      "changes": []
+    },
+    {
+      "variant": "cf",
+      "repeat": 0,
+      "checkpoint": "seed-103",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-103",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            4,
+            0,
+            0,
+            16,
+            0,
+            2,
+            2,
+            2048,
+            0,
+            8,
+            4,
+            4096,
+            2,
+            4,
+            1024,
+            8192
+          ],
+          "score": 170180,
+          "moveCount": 6961
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 103,
+          "state": 2869708293,
+          "draws": 13926
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18354,
+          "spawnMass": 15402,
+          "terminal": false
+        }
+      },
+      "startScore": 170180,
+      "startMoves": 6961,
+      "additionalMoves": 3739,
+      "totalMoves": 10700,
+      "score": 281656,
+      "scoreGain": 111476,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        2,
+        32,
+        64,
+        2,
+        4,
+        16,
+        128,
+        256,
+        2,
+        32,
+        512,
+        4096,
+        8,
+        64,
+        2048,
+        16384
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 103,
+        "state": 2668150963,
+        "draws": 21404
+      },
+      "spawnMass": 23650,
+      "spawnPotential": 28142,
+      "counts": {
+        "plannerChecked": 2418,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 8,
+        "verified": 1
+      },
+      "depths": {
+        "4": 1448,
+        "5": 2180,
+        "6": 111
+      },
+      "meanMs": 12.83265330863847,
+      "p50Ms": 11.275143999955617,
+      "p95Ms": 32.609844999999034,
+      "plannerMeanMs": 10.886922131927872,
+      "wallMs": 49459.81201200001,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-103-cf-r0.jsonl.gz",
+      "logSHA256": "854e13251cb948a6109237b544a0a372a7608a76b1a1017e07d80e390b69b67a",
+      "decisionsSHA256": "9d0533c5c8dce63d38a556a5a6576f40504f9239de7e33c7900d618618bf7b39",
+      "changes": []
+    },
+    {
+      "variant": "stable",
+      "repeat": 0,
+      "checkpoint": "seed-103",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-103",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            4,
+            0,
+            0,
+            16,
+            0,
+            2,
+            2,
+            2048,
+            0,
+            8,
+            4,
+            4096,
+            2,
+            4,
+            1024,
+            8192
+          ],
+          "score": 170180,
+          "moveCount": 6961
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 103,
+          "state": 2869708293,
+          "draws": 13926
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18354,
+          "spawnMass": 15402,
+          "terminal": false
+        }
+      },
+      "startScore": 170180,
+      "startMoves": 6961,
+      "additionalMoves": 7879,
+      "totalMoves": 14840,
+      "score": 387052,
+      "scoreGain": 216872,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        2,
+        4,
+        16,
+        4,
+        8,
+        64,
+        128,
+        256,
+        32,
+        512,
+        1024,
+        2048,
+        8,
+        4096,
+        8192,
+        16384
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 103,
+        "state": 2503560427,
+        "draws": 29684
+      },
+      "spawnMass": 32778,
+      "spawnPotential": 38966,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 58,
+        "verified": 2
+      },
+      "depths": {
+        "4": 2290,
+        "5": 5374,
+        "6": 215
+      },
+      "meanMs": 5.332839347378476,
+      "p50Ms": 3.3506129999877885,
+      "p95Ms": 15.977296100015511,
+      "plannerMeanMs": 0,
+      "wallMs": 43497.68458600005,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-103-stable-r0.jsonl.gz",
+      "logSHA256": "c3120c51018d92908b41bc93215da99b558df6cfeda50c778b50fd97aa21156d",
+      "decisionsSHA256": "738feb7dbd7363e2d69fb7976e0e15e767094fe4c92fed0790865f8071351a50",
+      "changes": []
+    },
+    {
+      "variant": "original",
+      "repeat": 0,
+      "checkpoint": "seed-103",
+      "split": "known-v118-development",
+      "start": {
+        "id": "seed-103",
+        "split": "known-v118-development",
+        "format": "2048-ai-save",
+        "version": 1,
+        "game": {
+          "board": [
+            4,
+            0,
+            0,
+            16,
+            0,
+            2,
+            2,
+            2048,
+            0,
+            8,
+            4,
+            4096,
+            2,
+            4,
+            1024,
+            8192
+          ],
+          "score": 170180,
+          "moveCount": 6961
+        },
+        "random": {
+          "algorithm": "mulberry32",
+          "seed": 103,
+          "state": 2869708293,
+          "draws": 13926
+        },
+        "reachability": {
+          "source": "V11.5 god",
+          "spawnPotential": 18354,
+          "spawnMass": 15402,
+          "terminal": false
+        }
+      },
+      "startScore": 170180,
+      "startMoves": 6961,
+      "additionalMoves": 3739,
+      "totalMoves": 10700,
+      "score": 281656,
+      "scoreGain": 111476,
+      "maxTile": 16384,
+      "terminal": true,
+      "stopReason": "no legal moves",
+      "finalBoard": [
+        2,
+        32,
+        64,
+        2,
+        4,
+        16,
+        128,
+        256,
+        2,
+        32,
+        512,
+        4096,
+        8,
+        64,
+        2048,
+        16384
+      ],
+      "finalRandom": {
+        "algorithm": "mulberry32",
+        "seed": 103,
+        "state": 2668150963,
+        "draws": 21404
+      },
+      "spawnMass": 23650,
+      "spawnPotential": 28142,
+      "counts": {
+        "plannerChecked": 0,
+        "plannerChanged": 0,
+        "plannerConfirmed": 0,
+        "riskAborted": 8,
+        "verified": 1
+      },
+      "depths": {
+        "4": 1448,
+        "5": 2180,
+        "6": 111
+      },
+      "meanMs": 5.50178672345522,
+      "p50Ms": 3.412196999997832,
+      "p95Ms": 16.63925669997696,
+      "plannerMeanMs": 0,
+      "wallMs": 21293.68255800003,
+      "log": "docs/raw-v118/V11_8_PILOT_A/seed-103-original-r0.jsonl.gz",
+      "logSHA256": "f64f20fe980da90cb77863321280be41e58b5749f5cdc47ce8af3afa5d37e7ff",
+      "decisionsSHA256": "92fe087f51e40491df66ddc3587aca78d877f006aa9a3eb5ea4b15ca461f000c",
+      "changes": []
+    }
+  ],
+  "complete": true,
+  "summary": {
+    "original": {
+      "games": 4,
+      "uniqueStarts": 4,
+      "complete": true,
+      "meanAdditionalMoves": 2887.75,
+      "medianAdditionalMoves": 3488.5,
+      "p25AdditionalMoves": 2533.5,
+      "bottomQuartileMean": 420,
+      "earlyDeaths": 1,
+      "earlyDeathRate": 0.25,
+      "meanScore": 254821,
+      "medianScore": 276102,
+      "reached16384": 3,
+      "reached32768": 0,
+      "reached16384Rate": 0.75,
+      "reached32768Rate": 0
+    },
+    "stable": {
+      "games": 4,
+      "uniqueStarts": 4,
+      "complete": true,
+      "meanAdditionalMoves": 6256.25,
+      "medianAdditionalMoves": 6507,
+      "p25AdditionalMoves": 5224.75,
+      "bottomQuartileMean": 4132,
+      "earlyDeaths": 0,
+      "earlyDeathRate": 0,
+      "meanScore": 347389,
+      "medianScore": 356128,
+      "reached16384": 4,
+      "reached32768": 0,
+      "reached16384Rate": 1,
+      "reached32768Rate": 0
+    },
+    "cf": {
+      "games": 4,
+      "uniqueStarts": 4,
+      "complete": true,
+      "meanAdditionalMoves": 2887.75,
+      "medianAdditionalMoves": 3488.5,
+      "p25AdditionalMoves": 2533.5,
+      "bottomQuartileMean": 420,
+      "earlyDeaths": 1,
+      "earlyDeathRate": 0.25,
+      "meanScore": 254821,
+      "medianScore": 276102,
+      "reached16384": 3,
+      "reached32768": 0,
+      "reached16384Rate": 0.75,
+      "reached32768Rate": 0
+    }
+  },
+  "acceptance": {
+    "passed": false,
+    "uniqueStarts": 4,
+    "allComplete": false,
+    "against": {
+      "original": {
+        "passed": false,
+        "checks": {
+          "paired": true,
+          "mean": false,
+          "median": true,
+          "lowerQuartile": true,
+          "earlyDeath": true,
+          "score": true,
+          "tile16384": true,
+          "tile32768": true
+        },
+        "candidate": {
+          "games": 4,
+          "uniqueStarts": 4,
+          "complete": true,
+          "meanAdditionalMoves": 2887.75,
+          "medianAdditionalMoves": 3488.5,
+          "p25AdditionalMoves": 2533.5,
+          "bottomQuartileMean": 420,
+          "earlyDeaths": 1,
+          "earlyDeathRate": 0.25,
+          "meanScore": 254821,
+          "medianScore": 276102,
+          "reached16384": 3,
+          "reached32768": 0,
+          "reached16384Rate": 0.75,
+          "reached32768Rate": 0
+        },
+        "baseline": {
+          "games": 4,
+          "uniqueStarts": 4,
+          "complete": true,
+          "meanAdditionalMoves": 2887.75,
+          "medianAdditionalMoves": 3488.5,
+          "p25AdditionalMoves": 2533.5,
+          "bottomQuartileMean": 420,
+          "earlyDeaths": 1,
+          "earlyDeathRate": 0.25,
+          "meanScore": 254821,
+          "medianScore": 276102,
+          "reached16384": 3,
+          "reached32768": 0,
+          "reached16384Rate": 0.75,
+          "reached32768Rate": 0
+        }
+      },
+      "stable": {
+        "passed": false,
+        "checks": {
+          "paired": true,
+          "mean": false,
+          "median": false,
+          "lowerQuartile": false,
+          "earlyDeath": false,
+          "score": false,
+          "tile16384": false,
+          "tile32768": true
+        },
+        "candidate": {
+          "games": 4,
+          "uniqueStarts": 4,
+          "complete": true,
+          "meanAdditionalMoves": 2887.75,
+          "medianAdditionalMoves": 3488.5,
+          "p25AdditionalMoves": 2533.5,
+          "bottomQuartileMean": 420,
+          "earlyDeaths": 1,
+          "earlyDeathRate": 0.25,
+          "meanScore": 254821,
+          "medianScore": 276102,
+          "reached16384": 3,
+          "reached32768": 0,
+          "reached16384Rate": 0.75,
+          "reached32768Rate": 0
+        },
+        "baseline": {
+          "games": 4,
+          "uniqueStarts": 4,
+          "complete": true,
+          "meanAdditionalMoves": 6256.25,
+          "medianAdditionalMoves": 6507,
+          "p25AdditionalMoves": 5224.75,
+          "bottomQuartileMean": 4132,
+          "earlyDeaths": 0,
+          "earlyDeathRate": 0,
+          "meanScore": 347389,
+          "medianScore": 356128,
+          "reached16384": 4,
+          "reached32768": 0,
+          "reached16384Rate": 1,
+          "reached32768Rate": 0
+        }
+      }
+    }
+  }
+}

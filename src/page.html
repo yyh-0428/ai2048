@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#f3f0e9" />
   <meta name="color-scheme" content="light" />
-  <title>2048 · AI V9.3</title>
+  <title>2048 · AI V11.8</title>
   <style>
     :root{
       --paper:#f3f0e9;
@@ -89,8 +89,9 @@
     .assist-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 15px}
     .assist-btn{height:42px;border-radius:12px;border:1px solid var(--hair);background:rgba(255,255,255,.42);font-size:12px;font-weight:720;cursor:pointer;transition:.16s ease}.assist-btn:hover{background:#fff;border-color:#c6bfb4}.assist-btn:active{transform:scale(.985)}.assist-btn.dark{background:var(--ink);border-color:var(--ink);color:#fff}.assist-btn.dark.on{background:#537761;border-color:#537761}.assist-btn[disabled]{opacity:.38;cursor:not-allowed;transform:none}
     .label-row{display:flex;align-items:center;justify-content:space-between;margin:0 0 7px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
-    .segments{display:grid;grid-template-columns:repeat(3,1fr);padding:3px;border:1px solid var(--hair);border-radius:12px;background:rgba(255,255,255,.30);margin-bottom:13px}
-    .seg{height:31px;border-radius:8px;background:transparent;color:var(--muted);font-size:11px;font-weight:720;cursor:pointer}.seg.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(52,45,35,.08)}
+    .segments{display:grid;grid-template-columns:repeat(4,1fr);padding:3px;border:1px solid var(--hair);border-radius:12px;background:rgba(255,255,255,.30);margin-bottom:13px}
+    .cf-control{display:flex;align-items:center;gap:6px;margin:12px 0 4px;font-size:12px;font-weight:650}.cf-control input{accent-color:#9b7724}.cf-control span{font-size:10px;color:#8a6410}.cf-note{font-size:11px;line-height:1.5;color:var(--muted);margin:0 0 12px}
+    .seg{height:31px;border-radius:8px;background:transparent;color:var(--muted);font-size:11px;font-weight:720;cursor:pointer}.seg.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 4px rgba(52,45,35,.08)}.seg[data-strength="god"].on{color:#8a6410;box-shadow:0 1px 4px rgba(189,143,53,.26)}
     .range-row{margin:0 0 15px}.range-row input{width:100%;accent-color:var(--ink)}
     .metrics{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);margin-top:3px}
     .metric{padding:12px 0}.metric:nth-child(odd){padding-right:10px}.metric:nth-child(even){padding-left:13px;border-left:1px solid var(--hair)}.metric:nth-child(n+3){border-top:1px solid var(--hair)}
@@ -125,6 +126,7 @@
     .range-row input{min-height:28px;cursor:pointer}
     .label-row{font-size:11px;letter-spacing:0;gap:8px}
     .assist-btn{height:46px;font-size:13px}
+    .cf-control{display:flex;align-items:center;gap:6px;margin:12px 0 4px;font-size:12px;font-weight:650}.cf-control input{accent-color:#9b7724}.cf-control span{font-size:10px;color:#8a6410}.cf-note{font-size:11px;line-height:1.5;color:var(--muted);margin:0 0 12px}
     .seg{height:38px;font-size:12px}.seg:disabled{cursor:not-allowed;opacity:.6}
     .metric span{font-size:10px;letter-spacing:0}.metric b{font-size:16px}
     summary{font-size:12px;min-height:44px}
@@ -134,6 +136,8 @@
     .playing-note{color:#6b655b;font-size:12px;line-height:1.7;padding:9px 0}
     .playing-note strong{color:#47433b;font-size:13px}.playing-note p{margin:6px 0 10px}
     .version{font-size:10px;color:#6c665d;letter-spacing:.04em}
+    .save-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+    .save-actions .assist-btn{flex:1;min-width:100px;min-height:44px}
     .engine-details .tech-note{border:0;padding:0 0 12px;font-size:11px;line-height:1.75}
     .board:focus-visible{outline:3px solid #537761;outline-offset:4px}
     @media (max-width:900px){.aside{display:flex;gap:8px}.playing-note{padding-top:8px}}
@@ -200,17 +204,28 @@
             <button class="assist-btn dark" id="autoplayBtn" aria-pressed="false">自动玩</button>
           </div>
 
-          <div class="label-row"><span>思考强度</span><span id="strengthCaption">极致 · 更多残局复核</span></div>
+          <div class="label-row"><span>思考强度</span><span id="strengthCaption">神级 · 高分残局共识复核</span></div>
           <div class="segments" id="strengthSegments" role="group" aria-label="AI 强度">
             <button class="seg" data-strength="fast" aria-pressed="false">轻快</button>
             <button class="seg" data-strength="strong" aria-pressed="false">深入</button>
-            <button class="seg on" data-strength="extreme" aria-pressed="true">极致</button>
+            <button class="seg" data-strength="extreme" aria-pressed="false">极致</button>
+            <button class="seg on" data-strength="god" aria-pressed="true">神级</button>
           </div>
+          <details class="strategy-options"><summary>神级实验策略</summary>
+          <label class="cf-control"><input id="counterfactualToggle" type="checkbox"> 反事实续命规划 <span id="counterfactualBadge">实验</span></label>
+          <p class="cf-note">比较多种后续发展，尝试避开高分拥堵；会增加思考时间。</p>
+          <label class="cf-control"><input id="learnedSurvivalToggle" type="checkbox"> 学习型生存复核 <span id="learnedSurvivalBadge">实验</span></label>
+          <p class="cf-note">从真实终局轨迹学习长程棋形，再由多个模型共同判断。</p>
+          <label class="cf-control"><input id="learnedGuardToggle" type="checkbox"> 生存谱保护规划 <span>实验</span></label>
+          <p class="cf-note">用长期经验复核规划提出的换招；需同时开启反事实规划。</p>
+          <label class="cf-control"><input id="trajectoryToggle" type="checkbox"> 分阶段续命仲裁 <span>实验</span></label>
+          <p class="cf-note">大方块形成后保留长期路线保护，之前允许强模拟证据支持逃生换招。需开启反事实规划。</p>
+          </details>
 
           <div class="range-row" id="speedRow">
             <div class="label-row"><span>走棋间隔</span><span id="speedText">极速</span></div>
             <input id="speed" type="range" min="0" max="520" value="0" step="10" aria-label="自动走棋间隔" aria-describedby="speedHelp" />
-          <p class="control-help" id="speedHelp">只调整观看节奏，AI 的思考预算保持不变。</p>
+          <p class="control-help" id="speedHelp">只调整观看节奏；非极速时 AI 会在动画/等待期间提前思考，预算保持不变。</p>
           </div>
 
           <div class="metrics">
@@ -232,8 +247,13 @@
           </details>
         </section>
 
-        <div class="playing-note"><strong>留一点空间，走得更远。</strong><p>轻快适合快速体验；深入与极致会花更多时间检查残局。合并到 2048 后，还可以继续挑战。</p><span class="version">V9.3 · 全程本地计算</span></div>
-        <details class="engine-details"><summary>操作与 AI 说明</summary><p class="tech-note">方向键、WASD 或滑动移动数字。空格切换自动玩，H 查看提示，Esc 暂停，M 切换声音。<br><br>AI 独立调度多轮搜索，页面动画不计入搜索预算。方向条展示相对评分，额外复核有时会选择更安全的方向。大数字局面使用兼容搜索，耗时可能增加。<br><br>搜索耗时不包含引擎首次启动、结果送达页面和走棋间隔。浏览器后台限速及设备资源竞争仍可能影响实际速度。</p></details>
+        <div class="playing-note"><strong>留一点空间，走得更远。</strong><p>轻快适合快速体验；深入用高速搜索处理拥挤棋盘；极致增加残局复核。神级结合高分残局共识和风险复核，极致沿用稳定策略。合并到 2048 后，还可以继续挑战。</p><span class="version">V11.8 · 全程本地计算</span></div>
+        <details class="save-details"><summary>棋局存档</summary>
+          <p class="control-help">升级或换设备前，先导出存档。导入后可撤销一步，返回之前的棋局。</p>
+          <div class="save-actions"><button class="assist-btn" id="exportBtn" type="button">导出存档</button><button class="assist-btn" id="importBtn" type="button">导入存档</button></div>
+          <input id="saveFile" type="file" accept=".json,application/json" hidden aria-label="选择 2048 存档文件" />
+        </details>
+        <details class="engine-details"><summary>操作与 AI 说明</summary><p class="tech-note">方向键、WASD 或滑动移动数字。空格切换自动玩，H 查看提示，Esc 暂停，M 切换声音。<br><br>V11.8 在原有完整搜索之后增加反事实续命规划实验。高分拥堵时，它让各个方向面对同一组模拟未来，并复核尾部存活是否改善。右侧可独立开关；完整终局结果与仍会退步的局面见随包报告。<br><br>深入模式在极拥挤棋盘使用高速价值核心完成原有搜索深度；轻快和极致保留原有主策略。自动玩会提前计算下一步，让搜索与动画、走棋间隔重叠。速度设置只调整走棋节奏，不降低搜索深度。<br><br>大数字局面继续遵守价值核心的总量证书与兼容回退规则。短期安全证明和常规风险复核保留原有保护；方向条显示相对评分，不代表获胜概率。搜索耗时不包含引擎首次启动、结果送达页面和走棋间隔；浏览器后台限速和设备资源竞争仍会影响实际速度。</p></details>
       </aside>
     </div>
   </main>

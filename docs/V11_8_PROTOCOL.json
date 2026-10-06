@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-05",
+  "version": "11.8",
+  "scope": "counterfactual continuation planning, learned survival-spectrum critic and conservative fusion; no claimed world-first novelty; phase-aware veto arbitration",
+  "knownDevelopment": [
+    "late-game: all eight starts",
+    "late-game-v117: all twenty starts (now known)"
+  ],
+  "freshValidation": {
+    "seedFirst": 18001,
+    "seedLast": 18120,
+    "uniqueStarts": 20,
+    "source": "frozen V11.7 extreme (stable policy)",
+    "targets": [
+      {
+        "count": 16,
+        "score": 170000
+      },
+      {
+        "count": 4,
+        "score": 230000
+      }
+    ],
+    "selection": "first nonterminal reachable distinct canonical boards in precommitted seed order; all failures logged; no candidate results used"
+  },
+  "acceptance": {
+    "comparators": [
+      "exact frozen input V11.6 God HTML",
+      "exact frozen V11.5 God stable HTML"
+    ],
+    "meanAdditionalMovesRatio": 1.05,
+    "medianRatio": 0.98,
+    "bottomQuartileMeanRatio": 0.98,
+    "earlyDeathCutoff": 1000,
+    "earlyDeathRateIncrease": 0,
+    "meanFinalScoreRatio": 1.0,
+    "tile16384RateDecrease": 0,
+    "tile32768RateDecrease": 0,
+    "terminal": "no legal actions only",
+    "paired": "same board, score, moves, complete PRNG state; real game RNG never supplied to planning",
+    "repeats": 2,
+    "atLeastIndependentUniqueStarts": 20,
+    "pairedSeedMeanMedianGain": 0,
+    "pairedSeedWinsAtLeastLosses": true,
+    "minimumLeaveOneSeedOutMeanRatio": 1.02,
+    "noSinglePeakReason": "Prespecified before any fresh18001+ corpus or outcomes: at least25%of independent seeds improve, wins>=losses, paired median gain>=0, and dropping any one seed retains>=2%mean gain. A single exceptional game cannot carry default activation. Repeats are clustered by their20independent seeds.",
+    "lastPreValidationCommit": "2026-10-06T08:03:42.502777+00:00",
+    "pairedSeedPositiveFractionAtLeast": 0.25
+  },
+  "freeze": "hash final strategy parameters, source, HTML, and selected candidate before independent terminal tests. If tuned afterwards use new independent corpus.",
+  "ablation": "planning off; tail guard off; confirmation off, on all eight known starts only",
+  "performance": "same boards, warm up, alternating A/B, same four compute workers, sequential CPU workloads; planner may cost more and no speed claim without matched-board median/P95 evidence",
+  "delivery": "separate small runtime/source package and raw evidence package; no historical raw logs duplicated",
+  "repeatReason": "Counterfactual trajectories are deterministic, but inherited wall-budget verifier/proof paths require repeats; retain both.",
+  "learnedCandidate": {
+    "data": "historical V11.7 stable/v116 r0 only; all 28 seeds are known",
+    "labels": "maximum demonstrated remaining lifetime for per-seed canonical duplicate states",
+    "features": "64 public tile-geometry features; no score, moves, seeds or PRNG inputs",
+    "heads": [
+      256,
+      1024,
+      4096
+    ],
+    "model": "three cluster-bootstrap conditional-survival MLPs,64-32-3,30 fixed epochs,Adam0.002,batch256,one CPU thread; hierarchical products guarantee monotone survival scores",
+    "developmentHoldout": "known seed clusters modulo5=0 for predictive diagnostics only",
+    "decisionGate": "all three improve normalized survival-area score by>=0.02; 256/1024 heads decrease no more than0.002; worst quarter birth-weighted area decrease no more than0.005; original root gap<=0.003; all birth cells exact 90/10; preserve completed inherited risk and immediate mortality",
+    "ablation": "learned off; ensemble consensus off; hybrid with counterfactual; known eight starts only",
+    "worldFirstClaim": false
+  },
+  "learnedGuardCandidate": {
+    "counterfactual": true,
+    "learnedSurvival": false,
+    "learnedGuard": true,
+    "purpose": "short scenario continuations can undervalue long-lived routes; a separate learned survival spectrum may veto those swaps",
+    "gate": "each model area/4096-head/tail nondecrease tolerance0.005;256/1024-head tolerance0.002; incomplete model analysis keeps original main action",
+    "ablation": "guarded vs unguarded cf; learned proposer and model-consensus ablations separately on known starts"
+  },
+  "developmentFeedbackRound2": {
+    "reason": "Initial historical-teacher critic rejected 35/39 known CF swaps, including profitable seed-2 escapes, and direct critic proposals regressed. Train with factual outcomes of the new known-start policies to expose these off-policy escape routes.",
+    "inputs": [
+      "historical V11.7 stable/v116 r0 all 28 known seeds",
+      "V11_8_DEVELOPMENT: cf r0 all eight known starts",
+      "V11_8_LEARNED_DEVELOPMENT: learned r0 all eight known starts",
+      "V11_8_GUARDED_DEVELOPMENT: guarded r0 all eight known starts"
+    ],
+    "unchanged": "64 features,64-32-3 ensemble,30 epochs,seed-cluster bootstrap and held-out seed split; no independent 18001+ data",
+    "candidates": [
+      "learned",
+      "guarded",
+      "hybrid"
+    ],
+    "frozenValidationGates": "unchanged"
+  },
+  "trajectoryCandidate": {
+    "options": {
+      "counterfactual": true,
+      "learnedTrajectory": true
+    },
+    "reason": "Judge the simulated future positions rather than an immediate unfamiliar afterstate; guard both overall future escape potential and paired routes that survive in both alternatives.",
+    "endpoint": "Last processed birth state before its next policy action, or earlier actual terminal state; all16 trajectories complete; use all3 trained critics",
+    "longGate": "Each critic separately, in each disjoint8-path bank: mean survival-area and4096-head gain>=-0.005. If>=2 paired jointly nonterminal trajectories, their mean area and4096-head gain must also>=-0.005. Terminal endpoints have zero future escape score.",
+    "shortGate": "Existing complete-all-root CF mean gain, tail gain, mean>=1.5*paired SE and nonincreased sampled deaths, with confirmation bank and exact inherited risk protections, remain mandatory",
+    "incomplete": "Missing model, endpoint or prediction rejects proposal; no real game RNG supplied",
+    "validation": "Same original prespecified20unique starts,2repeats and all stability/benefit gates; no independent results seen yet"
+  },
+  "spectrumCandidate": {
+    "options": {
+      "counterfactual": true,
+      "learnedTrajectory": true,
+      "trajectoryPromotion": true
+    },
+    "reason": "A96-step ceiling hides differences among surviving routes. Permit a long-spectrum proposal after all legal-root trajectories complete, including ceiling survivors.",
+    "gate": "Both8-path banks: short mean, bottom-quarter mean and sampled death count noninferior; all3critics long-head and survival-area gains>=0.02, area gain>=1.5*paired SE, lower-quarter endpoint-area noninferior, joint-survivor guard preserved. Original score gap<=0.003 and exact immediate death/complete risk constraints preserved.",
+    "confirmation": "Discovery bank alone nominates one direction; confirmation may reject, never reranks or picks a second direction.",
+    "ablation": "spectrum vs trajectory-only and cf; same eight known starts, final independent gates unchanged"
+  },
+  "simulationMemo": {
+    "kind": "decision-preserving exact per-task value reuse, separate from strategy",
+    "key": "packed whole-board low/high words plus identical native continuation depth; fixed native value function; bounded16384entries and discarded after each task",
+    "verify": "identical all completed lifetimes, merge gains, minimum spaces, final scores, endpoint states and selected actions; warmed alternating native A/B, same thread count; benchmark run alone"
+  },
+  "candidateSelectionBeforeIndependent": {
+    "onlyKnownOutcomes": true,
+    "candidates": [
+      "guarded feedback model",
+      "trajectory",
+      "spectrum",
+      "arbitrated",
+      "phased"
+    ],
+    "reference": "the8original and8stable full games inV11_8_DEVELOPMENT",
+    "ranking": "Prefer a candidate satisfying every mean/median/lower-quarter/early-death/score/tile gate on known starts. Then fewer failed gates; ties prefer the smallest stability regression, then greater paired mean gain. This selects exactly one candidate before fresh corpus terminal outcomes.",
+    "sampleIntegrity": "This development ranking is not a strength claim; final20unique x2repeat paired gates against both comparators remain mandatory. No reselecting based on independent outcomes."
+  },
+  "arbitratedCandidate": {
+    "options": {
+      "counterfactual": true,
+      "learnedTrajectory": true,
+      "trajectoryEscape": true
+    },
+    "hypothesis": "The long critic trained on factual teacher outcomes is biased when applied to cheap-policy counterfactual continuations. It successfully protects the long seed-1 route but wrongly vetoes a strong factual seed-2 escape. Permit strong paired short evidence to overrule a completed soft-model veto while preserving all hard safety/value constraints.",
+    "derivedGate": "In EACH of two8-path banks, all usual CF gates pass; summed paired life gain>=96 (one whole horizon), bottom-quarter gain>=96/8, every paired loss bounded by96/8, sampled deaths strictly reduce. These are horizon/bank-size-derived conditions, not a new heuristic weight.",
+    "incomplete": "Missing model/prediction or incomplete simulation never permits arbitration; exact risk, immediate mortality and original full-depth near-value constraints always retain precedence.",
+    "ablation": "arbitrated vs trajectory without escape override, all8known starts; keep all original/spectrum/learned/guarded failures. Exactly one final candidate selected and frozen before fresh independent samples.",
+    "date": "2026-10-06T08:09:54.159325+00:00"
+  },
+  "phasedCandidate": {
+    "date": "2026-10-06T08:42:07.846435+00:00",
+    "options": {
+      "counterfactual": true,
+      "learnedTrajectory": true,
+      "trajectoryEscape": true,
+      "trajectoryAssetGuard": true
+    },
+    "hypothesis": "Short cheap-policy simulation can seriously undervalue mature16384+long routes. Known seed-1 strong escape overruled the joint-survivor veto at16384 and regressed17248to6908moves, while seed-2 escape at8192 gained420to7610. Retain completed model veto at rootMax>=16384; allow the exact previously declared strong escape only below that stage. This stage boundary is an empirical hypothesis, not a safety proof.",
+    "ablation": "phased vs arbitrated and trajectory, all8known starts; only new stage Boolean changes; all final20unique x2repeats gates unchanged; no fresh corpus or outcomes yet"
+  },
+  "otherModeRegression": {
+    "starts": [
+      "seed-2",
+      "seed-4"
+    ],
+    "split": "known regression, not strength validation",
+    "comparators": "input V11.6 same-named fast,strong,extreme",
+    "repeats": 3,
+    "termination": "no legal actions",
+    "limits": "two distinct known starts, all repetitions retained; no overall strength claim from this small regression set"
+  },
+  "exactComparatorCommit": {
+    "date": "2026-10-06T08:48:04.701868+00:00",
+    "reason": "Use exact input/old-stable builds in final independent games, fulfilling direct V11.6 and stable comparisons; earlier known-start reports actually used frozen V11.7 engines retaining these policies and keep their original signature hashes. Numeric gates, repeats, corpus generation source and no-reselection rule unchanged. No fresh corpus or outcomes exist."
+  }
+}

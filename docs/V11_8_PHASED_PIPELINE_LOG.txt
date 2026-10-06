@@ -1,0 +1,48 @@
+Built 2048-ai.html (257731 bytes)
+✔ counterfactual moves preserve real rules including nonchain merges and rank 15 (26.270307ms)
+✔ counterfactual horizon mass certificate rejects saturation and malformed tiles (0.299473ms)
+✔ independent confirmation rejects discovery-only win; disabled switch isolates its effect (0.579135ms)
+✔ all legal root samples must finish; a partial trajectory cannot choose a move (0.305641ms)
+✔ strong escape arbitration accepts only both complete banks with bounded paired regret (3.955509ms)
+✔ native phase arbitration retains the mature long-route veto and preserves a pre-16384 escape (546.277156ms)
+✔ simulation uses reproducible public-state counter streams and no game RNG (1.755794ms)
+✔ trajectory endpoints are complete pre-action birth states and do not change simulated lifetimes (1.097829ms)
+✔ planner disabled retains V11.7 complete scores, depth and actual direction (288.468534ms)
+✔ worker native continuations finish a complete reproducible sample bank (264.31708ms)
+✔ private exact simulation memo preserves every lifetime, gain, endpoint and final value score (248.451002ms)
+✔ final HTML embeds exact new planner source in both decision and compute workers (1.45582ms)
+✔ a complete baseline at the sample ceiling cannot meet any positive-improvement gate (25.666584ms)
+✔ planner candidate safety proof resets its own facts and has a deterministic node bound (79.924995ms)
+✔ visible planner switch persists only its setting and sends the selected policy to the coordinator (18.335083ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1606.016217
+✔ learned geometry features are exactly D4 invariant and contain no random state (19.271569ms)
+✔ learned critic enumerates every 2/4 birth cell and weights the lower quarter (2.75875ms)
+✔ one disagreeing learned member rejects a proposal that the mean alone accepts (0.593267ms)
+✔ incomplete model roots, wrong shapes, nonfinite weights and unsupported directions cannot select (0.19856ms)
+✔ trained JavaScript predictions match the independent Python golden vectors (3.900204ms)
+✔ long-route guard vetoes a long-horizon regression and rejects incomplete evidence (0.335157ms)
+✔ endpoint guard protects joint surviving routes even when more short trajectories survive (1.424343ms)
+✔ nonfinite primary scores cannot enter either novel decision selector (0.187434ms)
+✔ long spectrum separates capped survivors and confirmation cannot nominate the second-best discovery (1.629463ms)
+✔ visible endpoint switch stores only its setting and isolates its policy from the immediate guard (17.534824ms)
+✔ published native coordinator executes the trained critic on all legal roots without changing main scores or depth (254.414631ms)
+✔ published native long planner evaluates factual simulated endpoints with the embedded model (314.234609ms)
+✔ missing trained critic cannot overrule a veto through strong or phase arbitration (194.039316ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 900.967426
+{"progress":"seed-1","variant":"phased","moves":4000,"score":287900,"counts":{"trajectoryChecked":3,"trajectoryVeto":2,"trajectoryPromoted":0,"trajectoryEscaped":0,"trajectoryStageHeld":2,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":1665,"plannerChecked":844,"plannerChanged":1,"plannerConfirmed":1,"riskAborted":9,"verified":1}}
+{"progress":"seed-1","variant":"phased","moves":8000,"score":453456,"counts":{"trajectoryChecked":11,"trajectoryVeto":9,"trajectoryPromoted":0,"trajectoryEscaped":0,"trajectoryStageHeld":9,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":2581,"plannerChecked":2435,"plannerChanged":2,"plannerConfirmed":2,"riskAborted":52,"verified":6}}
+{"progress":"seed-1","variant":"phased","moves":12000,"score":554744,"counts":{"trajectoryChecked":13,"trajectoryVeto":10,"trajectoryPromoted":0,"trajectoryEscaped":0,"trajectoryStageHeld":10,"learnedGuardChecked":0,"learnedGuardVeto":0,"learnedGuardScreened":0,"learnedChecked":0,"learnedChanged":0,"learnedConsensus":0,"plannerScreened":4393,"plannerChecked":3372,"plannerChanged":3,"plannerConfirmed":3,"riskAborted":63,"verified":6}}
